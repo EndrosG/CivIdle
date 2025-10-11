@@ -66,6 +66,8 @@ export class GameState {
    pinStatPanel = false;
    adaptiveGreatPeople = new Map<GreatPerson, Building>();
    flags = GameStateFlags.None;
+   lastClientTickAt = 0;
+   clientOfflineSec = 0;
 }
 
 export type GreatPeopleChoice = GreatPerson[];
@@ -262,7 +264,7 @@ export class GameOptions {
    disabledTodos = new Set<string>();
    showWonderPopup = true;
    showNaturalWonderPopup = true;
-   lastClientTickAt = 0;
+   keepNewTradeWindowOpen = false;
    migrationFlags = MigrationFlags.None;
 }
 

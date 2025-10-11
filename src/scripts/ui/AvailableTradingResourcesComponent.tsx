@@ -33,6 +33,7 @@ export function AvailableTradingResourcesComponent(): React.ReactNode {
    );
    return (
       <TableView
+         style={{ maxHeight: "50vh", overflowY: "auto" }}
          header={[
             { name: t(L.ResourceImportResource), sortable: true },
             { name: t(L.ResourceAmount), sortable: true },
