@@ -1,0 +1,3 @@
+git config core.autocrlf false
+git config core.eol lf
+git add --renormalize .

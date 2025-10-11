@@ -21,8 +21,18 @@ export default defineConfig(({ command }) => {
          host: true,
       },
       build: {
+         rollupOptions: {
+            // don't add hashes
+            output: {
+               entryFileNames: `assets/[name].js`,
+               chunkFileNames: `assets/[name].js`,
+               assetFileNames: `assets/[name][extname]`,
+            },
+         },
+         // not needed with minify=false
          sourcemap: true,
          target: "es2015",
+         // minify: false, // DON'T.
       },
       test: {
          browser: {

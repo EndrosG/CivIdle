@@ -9,6 +9,8 @@
       "build": "tsc",
       "start": "npm run build && electron-forge start -- --in-process-gpu --disable-direct-composition",
       "package": "npm run clean && npm run build && electron-forge package",
+      "build-only": "npm run build",
+      "package-only": "electron-forge package",
       "make": "npm run build && electron-forge make",
       "publish": "npm run build && electron-forge publish",
       "lint": "echo \"No linting configured\""
@@ -20,9 +22,10 @@
    },
    "license": "MIT",
    "dependencies": {
+      "@fishpondstudio/steamworks.js": "^0.3.8",
+      "@types/node": "^18.19.130",
       "fs-extra": "^11.1.0",
-      "mime": "^3.0.0",
-      "@fishpondstudio/steamworks.js": "^0.3.8"
+      "mime": "^3.0.0"
    },
    "devDependencies": {
       "@electron-forge/cli": "^6.0.4",

@@ -9,8 +9,8 @@ export default defineConfig(function (_a) {
         base: "",
         plugins: [
             react(),
-            buildAtlas("rome", command === "serve"),
-            buildAtlas("person", command === "serve"),
+            buildAtlas("person1", command === "serve", "Person", "jpg"),
+            buildAtlas("person2", command === "serve", "Person", "jpg"),
             buildAtlas("building", command === "serve"),
             buildAtlas("tile", command === "serve"),
             buildAtlas("flag", command === "serve"),
@@ -33,7 +33,8 @@ export default defineConfig(function (_a) {
         },
     };
 });
-function buildAtlas(folder, watch) {
+function buildAtlas(folder, watch, nameOverride, format) {
+    if (format === void 0) { format = "png"; }
     return Spritesmith({
         watch: watch,
         src: {
@@ -42,15 +43,19 @@ function buildAtlas(folder, watch) {
         },
         apiOptions: {
             generateSpriteName: function (filePath) {
-                return "".concat(folder.charAt(0).toUpperCase()).concat(folder.slice(1), "_").concat(path.basename(filePath, ".png"));
+                var name = nameOverride !== null && nameOverride !== void 0 ? nameOverride : "".concat(folder.charAt(0).toUpperCase()).concat(folder.slice(1));
+                return "".concat(name, "_").concat(path.basename(filePath, ".png"));
             },
         },
         target: {
-            image: "./src/images/textures_".concat(folder, ".png"),
+            image: "./src/images/textures_".concat(folder, ".").concat(format),
             css: [["./src/images/textures_".concat(folder, ".json"), { format: "json_texture" }]],
         },
         spritesmithOptions: {
-            padding: 1,
+            padding: 2,
+            exportOpts: {
+                format: format,
+            },
         },
     });
 }
