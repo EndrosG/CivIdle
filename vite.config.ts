@@ -30,9 +30,9 @@ export default defineConfig(({ command }) => {
             },
          },
          // not needed with minify=false
-         sourcemap: true,
+         // sourcemap: true,
          target: "es2015",
-         // minify: false, // DON'T.
+         minify: false, // DON'T.
       },
       test: {
          browser: {

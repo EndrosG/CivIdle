@@ -6,6 +6,10 @@ export interface IResourceDefinition {
 }
 
 export class ResourceDefinitions {
+   // Lydias Mod
+   Wisdom = { name: () => t(L.Wisdom) };
+//   Bicycle = { name: () => t(L.Bicycle) };
+
    Worker: IResourceDefinition = { name: () => t(L.Worker) };
    Power: IResourceDefinition = { name: () => t(L.Power) };
    Science: IResourceDefinition = { name: () => t(L.Science) };

@@ -19,6 +19,7 @@ import {
    getYellowCraneTowerRange,
    isFestival,
 } from "../../../shared/logic/BuildingLogic";
+import { Config } from "../../../shared/logic/Config";
 import { MANAGED_IMPORT_RANGE } from "../../../shared/logic/Constants";
 import { GameFeature, hasFeature } from "../../../shared/logic/FeatureLogic";
 import {
@@ -381,22 +382,28 @@ export class WorldScene extends Scene {
       const building = tile?.building;
       const grid = tileToPoint(xy);
       if (building) {
+         const configBT = Config.Building[building.type];
          switch (building.type) {
-            case "Caravansary": {
+            case "Caravansary":
+            case "Caravansary2":
+            case "Caravansary3":
+            case "Caravansary4": {
                const ri = building as IResourceImportBuildingData;
                if (hasFlag(ri.resourceImportOptions, ResourceImportOptions.ManagedImport)) {
                   this.highlightRange(grid, MANAGED_IMPORT_RANGE);
                }
                break;
             }
-            case "Warehouse": {
+            case "Warehouse":
+            case "Warehouse2":
+            case "Warehouse3": {
                const ri = building as IResourceImportBuildingData;
                if (hasFlag(ri.resourceImportOptions, ResourceImportOptions.ManagedImport)) {
-                  this.highlightRange(grid, 2);
+                  this.highlightRange(grid, MANAGED_IMPORT_RANGE);
                   break;
                }
                if (hasFeature(GameFeature.WarehouseUpgrade, gs)) {
-                  this.highlightRange(grid, 1);
+                  this.highlightRange(grid, configBT.range ? configBT.range : 1);
                }
                break;
             }

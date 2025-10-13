@@ -34,7 +34,7 @@ export function UpgradeableWonderComponent({ gameState, xy }: IBuildingComponent
             </div>
          )}
          <div className="separator" />
-         {jsxMapOf(getBuildingCost({ type: building.type, level: building.level }), (res, amount) => {
+         {jsxMapOf(getBuildingCost({ type: building.type, level: building.level, stack: building.stack }), (res, amount) => {
             return (
                <div key={res} className="row">
                   <div className="f1 text-strong">{Config.Resource[res].name()}</div>

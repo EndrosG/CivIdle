@@ -4,7 +4,7 @@ import { formatPercent } from "../utilities/Helper";
 import { L, t } from "../utilities/i18n";
 import type { ITechAgeDefinition, ITechDefinition } from "./ITechDefinition";
 
-export const MAX_TECH_COLUMN = 27;
+export const MAX_TECH_COLUMN = 31;
 export const MAX_TECH_AGE: TechAge = "ColdWarAge";
 
 export class TechAgeDefinitions {
@@ -53,6 +53,22 @@ export class TechAgeDefinitions {
       to: 27,
       name: () => t(L.InformationAge),
       color: 0x55efc4,
+   };
+   FutureAge = {
+      idx: 10,
+      from: 28,
+      to: 30,
+      name: () => t(L.FutureAge),
+      color: 4521915,
+      hidden: true,
+   };
+   AscensionAge = {
+      idx: 11,
+      from: 31,
+      to: 31,
+      name: () => t(L.AscensionAge),
+      color: 3407786,
+      hidden: true,
    };
 }
 
@@ -583,7 +599,7 @@ export class TechDefinitions {
       name: () => t(L.Electricity),
       column: 16,
       requireTech: ["Railway", "Drilling", "RapidFire"],
-      unlockBuilding: ["CoalPowerPlant", "ReinforcedConcretePlant"],
+      unlockBuilding: ["CoalPowerPlant", "ReinforcedConcretePlant", "Caravansary2"],
       additionalUpgrades: () => [t(L.ElectrificationUpgrade)],
    };
 
@@ -811,7 +827,7 @@ export class TechDefinitions {
       name: () => t(L.MutualAssuredDestruction),
       column: 23,
       requireTech: ["MilitaryTactics", "Semiconductor"],
-      unlockBuilding: ["NuclearSubmarineYard", "AircraftCarrierYard"],
+      unlockBuilding: ["NuclearSubmarineYard", "AircraftCarrierYard", "NuclearArmsRace"],
    };
 
    Computer: ITechDefinition = {
@@ -825,7 +841,7 @@ export class TechDefinitions {
       name: () => t(L.Globalization),
       column: 23,
       requireTech: ["Television", "MonetarySystem"],
-      unlockBuilding: ["OpticalFiberPlant"],
+      unlockBuilding: ["OpticalFiberPlant", "Warehouse2"],
    };
 
    Nanotechnology: ITechDefinition = {
@@ -844,7 +860,7 @@ export class TechDefinitions {
       name: () => t(L.WorldWideWeb),
       column: 24,
       requireTech: ["Globalization", "Computer"],
-      unlockBuilding: ["InternetServiceProvider"],
+      unlockBuilding: ["InternetServiceProvider", "Caravansary3"],
    };
    FinancialLeverage: ITechDefinition = {
       name: () => t(L.FinancialLeverage),
@@ -906,7 +922,33 @@ export class TechDefinitions {
       name: () => t(L.Future),
       column: 27,
       requireTech: ["Blockchain", "VirtualReality", "Robotics", "ArtificialIntelligence"],
-      unlockBuilding: ["AldersonDisk", "DysonSphere", "MatrioshkaBrain"],
+      unlockBuilding: ["AldersonDisk", "DysonSphere", "MatrioshkaBrain", "DysonHabitat"],
+   };
+
+   // Added by Lydia
+   Future2 = {
+      name: () => t(L.Future2),
+      column: 28,
+      requireTech: ["Future"],
+      unlockBuilding: ["DysonHabitat2", "Caravansary4", "Warehouse3"],
+   };
+   Future3 = {
+      name: () => t(L.Future3),
+      column: 29,
+      requireTech: ["Future2"],
+      unlockBuilding: ["Retreat1"],
+   };
+   Future4 = {
+      name: () => t(L.Future4),
+      column: 30,
+      requireTech: ["Future3"],
+      unlockBuilding: ["ZPMLab"],
+   };
+   AscensionTheory = {
+      name: () => t(L.AscensionTheory),
+      column: 31,
+      requireTech: ["Future4"],
+      unlockBuilding: ["Retreat2"],
    };
 }
 

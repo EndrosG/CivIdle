@@ -171,9 +171,10 @@ function CancelUpgradeComponent({ building }: { building: IBuildingData }): Reac
    const gs = useGameState();
 
    const cancelUpgrade = () => {
-      if (building.status === "upgrading") {
+      if (building.status === "upgrading" || building.status === "downgrading" || building.status === "stacking") {
          building.status = "completed";
          building.desiredLevel = building.level;
+         building.desiredStack = building.stack;
          notifyGameStateUpdate();
       }
    };
@@ -183,9 +184,10 @@ function CancelUpgradeComponent({ building }: { building: IBuildingData }): Reac
          if (!b) {
             return;
          }
-         if (b.status === "upgrading") {
+         if (b.status === "upgrading" || b.status === "downgrading" || b.status === "stacking") {
             b.status = "completed";
             b.desiredLevel = b.level;
+            b.desiredStack = b.stack;
          }
       });
 

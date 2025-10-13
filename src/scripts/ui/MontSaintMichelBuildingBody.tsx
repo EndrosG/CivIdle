@@ -52,6 +52,7 @@ export function MontSaintMichelBuildingBody({ gameState, xy }: IBuildingComponen
                      playClick();
                      safeAdd(building.resources, "Culture", -maxAmount);
                      building.level++;
+                     building.desiredLevel = building.level;
                      notifyGameStateUpdate();
                   } else {
                      playError();

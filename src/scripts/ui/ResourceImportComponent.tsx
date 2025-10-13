@@ -55,7 +55,9 @@ export function ResourceImportComponent({ gameState, xy }: IBuildingComponentPro
    }
 
    const storage = getStorageFor(xy, gameState);
-   const baseCapacity = getResourceImportCapacity(building, 1);
+   const configBT = Config.Building[building.type];
+   const importCapacity = configBT?.importCapacity ? configBT.importCapacity : 1;
+   const baseCapacity = getResourceImportCapacity(building, importCapacity);
    const capacityMultiplier = totalMultiplierFor(xy, "output", 1, false, gameState);
    const resources = keysOf(unlockedResources(gameState, "Koti")).filter((r) => !NoStorage[r] && !NoPrice[r]);
    const idleCapacity = getResourceImportIdleCapacity(xy, gameState);

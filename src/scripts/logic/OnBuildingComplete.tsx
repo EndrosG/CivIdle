@@ -8,6 +8,7 @@ import {
    isWorldWonder,
 } from "../../../shared/logic/BuildingLogic";
 import { Config } from "../../../shared/logic/Config";
+import { GLOBAL_PARAMS } from "../../../shared/logic/Constants";
 import { RebirthFlags, type GameState } from "../../../shared/logic/GameState";
 import { getGameOptions, getGameState } from "../../../shared/logic/GameStateLogic";
 import { getGrid, getXyBuildings } from "../../../shared/logic/IntraTickCache";
@@ -162,6 +163,8 @@ export function onBuildingComplete(xy: Tile): void {
          }
          gs.claimedGreatPeople = getRebirthGreatPeopleCount();
          let pickPerRoll = 1;
+         let count = 0;
+         let countAuto = 0;
          const choiceCount = getGreatPeopleChoiceCount(gs);
          if (getGameOptions().porcelainTowerMaxPickPerRoll) {
             pickPerRoll = clamp(Math.floor(gs.claimedGreatPeople / 50), 1, Number.POSITIVE_INFINITY);
@@ -172,7 +175,16 @@ export function onBuildingComplete(xy: Tile): void {
             choiceCount,
             getCurrentAge(gs),
             gs.city,
-         ).forEach((c) => gs.greatPeopleChoicesV2.push(c));
+         ).forEach((c) => {
+            // gs.greatPeopleChoicesV2.push(c)
+            count++;
+            if (GLOBAL_PARAMS.GP_AUTO_CHOICE_AFTER > 0 && count >= GLOBAL_PARAMS.GP_AUTO_CHOICE_AFTER) {
+               safeAdd(gs.greatPeople, c.choices[0], c.amount);
+               countAuto++;
+            } else {
+               gs.greatPeopleChoicesV2.push(c);
+            }
+         });
          if (gs.greatPeopleChoicesV2.length > 0) {
             playAgeUp();
             showModal(<ChooseGreatPersonModal permanent={false} />);
@@ -266,6 +278,7 @@ export function onBuildingComplete(xy: Tile): void {
          const lastRebirth = options.rebirthInfo[options.rebirthInfo.length - 1];
          if (lastRebirth && hasFlag(lastRebirth.flags, RebirthFlags.EasterBunny)) {
             const count = Math.floor(lastRebirth.greatPeopleAtRebirth / 10);
+            let countAuto = 0;
             for (let i = 0; i < count; i++) {
                const candidates = rollGreatPeopleThisRun(
                   getUnlockedTechAges(gs),
@@ -273,7 +286,12 @@ export function onBuildingComplete(xy: Tile): void {
                   getGreatPeopleChoiceCount(gs),
                );
                if (candidates) {
-                  gs.greatPeopleChoicesV2.push(candidates);
+                  if (GLOBAL_PARAMS.GP_AUTO_CHOICE_AFTER > 0 && i >= GLOBAL_PARAMS.GP_AUTO_CHOICE_AFTER) {
+                     safeAdd(gs.greatPeople, candidates.choices[0], candidates.amount);
+                     countAuto++;
+                  } else {
+                     gs.greatPeopleChoicesV2.push(candidates);
+                  }
                }
             }
             if (gs.greatPeopleChoicesV2.length > 0) {

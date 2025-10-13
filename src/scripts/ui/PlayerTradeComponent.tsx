@@ -172,6 +172,22 @@ export function PlayerTradeComponent({ gameState }: { gameState: GameState }): R
                      onClick={(e) => (e.target as HTMLInputElement)?.select()}
                   />
                </div>
+               <div className="row">
+                  <div className="f1">
+                     <button className="f1" onClick={(e) => { savedMaxTradeAmountFilter = 1e6; setTradeAmountFilter(savedMaxTradeAmountFilter); }}>
+                        1M
+                     </button>
+                     <button className="f1" onClick={(e) => { savedMaxTradeAmountFilter = 1e7; setTradeAmountFilter(savedMaxTradeAmountFilter); }}>
+                        10M
+                     </button>
+                     <button className="f1" onClick={(e) => { savedMaxTradeAmountFilter = 1e8; setTradeAmountFilter(savedMaxTradeAmountFilter); }}>
+                        100M
+                     </button>
+                     <button className="f1" onClick={(e) => { savedMaxTradeAmountFilter = 1e9; setTradeAmountFilter(savedMaxTradeAmountFilter); }}>
+                        1B
+                     </button>
+                  </div>
+               </div>
                <div className="row mt10">
                   <button
                      className="f1 text-center text-strong"

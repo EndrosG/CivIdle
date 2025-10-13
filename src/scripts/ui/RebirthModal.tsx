@@ -20,7 +20,7 @@ import {
    makeGreatPeopleFromThisRunPermanent,
    rollPermanentGreatPeople,
 } from "../../../shared/logic/RebirthLogic";
-import { getAgeForTech, getCurrentAge } from "../../../shared/logic/TechLogic";
+import { getAgeForTech, getCurrentAge, getScienceAmount } from "../../../shared/logic/TechLogic";
 import { Tick } from "../../../shared/logic/TickLogic";
 import { UserAttributes } from "../../../shared/utilities/Database";
 import {
@@ -32,6 +32,7 @@ import {
    range,
    reduceOf,
    rejectIn,
+   safeAdd,
    safeParseInt,
 } from "../../../shared/utilities/Helper";
 import { L, t } from "../../../shared/utilities/i18n";
@@ -460,9 +461,15 @@ export function RebirthModal(): React.ReactNode {
                         flags |= RebirthFlags.EasterBunny;
                      }
 
+                     // Added by Lydia: The Big Retreat
+                     let nextScience = 0;
+                     if (findSpecialBuilding("Retreat2", gs)) {
+                        nextScience = Math.floor(getScienceAmount(gs) / 1e2);
+                     }
+
                      getGameOptions().rebirthInfo.push({
                         greatPeopleAtRebirth: greatPeopleAtRebirthCount,
-                        greatPeopleThisRun: reduceOf(gs.greatPeople, (prev, k, v) => prev + v, 0),
+                        greatPeopleThisRun: reduceOf(gs.greatPeople, (prev, k, v) => prev + v, 0) - gs.claimedGreatPeople,
                         totalEmpireValue: Tick.current.totalValue,
                         totalTicks: gs.tick,
                         totalSeconds: gs.seconds,
@@ -487,6 +494,10 @@ export function RebirthModal(): React.ReactNode {
                            }
                         });
                      }
+
+                     // Added by Lydia: The Big Retreat
+                     const hq = findSpecialBuilding("Headquarter", getGameState())?.building.resources;
+                     safeAdd(hq, "Science", nextScience);
 
                      try {
                         await Promise.all([saveGame(), clientHeartbeat()]);

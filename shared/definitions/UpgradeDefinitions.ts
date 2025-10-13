@@ -413,7 +413,12 @@ export class UpgradeDefinitions {
       buildingMultiplier: {
          BondMarket: { output: 1 },
          Warehouse: { storage: 1 },
+         Warehouse2: { storage: 1 },
+         Warehouse3: { storage: 1 },
          Caravansary: { storage: 1 },
+         Caravansary2: { storage: 1 },
+         Caravansary3: { storage: 1 },
+         Caravansary4: { storage: 1 },
       },
    };
 
@@ -423,7 +428,12 @@ export class UpgradeDefinitions {
       buildingMultiplier: {
          BondMarket: { output: 1 },
          Warehouse: { storage: 1 },
+         Warehouse2: { storage: 1 },
+         Warehouse3: { storage: 1 },
          Caravansary: { storage: 1 },
+         Caravansary2: { storage: 1 },
+         Caravansary3: { storage: 1 },
+         Caravansary4: { storage: 1 },
       },
       additionalUpgrades: () => [t(L.LiberalismLevel3DescHTML)],
    };
@@ -434,7 +444,12 @@ export class UpgradeDefinitions {
       buildingMultiplier: {
          BondMarket: { output: 1 },
          Warehouse: { storage: 1 },
+         Warehouse2: { storage: 1 },
+         Warehouse3: { storage: 1 },
          Caravansary: { storage: 1 },
+         Caravansary2: { storage: 1 },
+         Caravansary3: { storage: 1 },
+         Caravansary4: { storage: 1 },
       },
       tick: () => {
          forEach(Config.Building, (b, def) => {
@@ -452,7 +467,12 @@ export class UpgradeDefinitions {
          BondMarket: { output: 1 },
          StockExchange: { output: 1 },
          Warehouse: { storage: 1 },
+         Warehouse2: { storage: 1 },
+         Warehouse3: { storage: 1 },
          Caravansary: { storage: 1 },
+         Caravansary2: { storage: 1 },
+         Caravansary3: { storage: 1 },
+         Caravansary4: { storage: 1 },
       },
       additionalUpgrades: () => [t(L.LiberalismLevel5DescHTMLV3)],
    };

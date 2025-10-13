@@ -1,3 +1,4 @@
+import { addSystemMessage } from "../../src/scripts/rpc/RPCClient";
 import type { Building } from "../definitions/BuildingDefinitions";
 import type { IUnlockable } from "../definitions/ITechDefinition";
 import { NoPrice, NoStorage, type Resource } from "../definitions/ResourceDefinitions";
@@ -10,6 +11,7 @@ import {
    filterInPlace,
    filterOf,
    forEach,
+   formatNumber,
    hasFlag,
    isEmpty,
    isNullOrUndefined,
@@ -46,6 +48,7 @@ import {
    getMarketBuyAmount,
    getMarketSellAmount,
    getMaxInputDistance,
+   getMultipliersFor,
    getPowerRequired,
    getResourceImportCapacity,
    getResourceImportIdleCapacity,
@@ -67,7 +70,7 @@ import {
    useWorkers,
 } from "./BuildingLogic";
 import { Config } from "./Config";
-import { MANAGED_IMPORT_RANGE } from "./Constants";
+import { GLOBAL_PARAMS, MANAGED_IMPORT_RANGE } from "./Constants";
 import { GameFeature, hasFeature } from "./FeatureLogic";
 import type { GameState } from "./GameState";
 import { getGameOptions } from "./GameStateLogic";
@@ -239,10 +242,35 @@ export function transportAndConsumeResources(
       clearTransportSourceCache();
    }
 
-   if (building.desiredLevel > building.level) {
-      building.status = building.level > 0 ? "upgrading" : "building";
-   } else {
-      building.desiredLevel = building.level;
+   // Modified by Lydia
+   if (building.status === "completed") {
+      if (building.desiredLevel > building.level) {
+         building.status = building.level > 0 ? "upgrading" : "building";
+      } else if (
+         building.desiredLevel < building.level &&
+         building.desiredLevel >= building.level - 5 &&
+         building.desiredLevel > 0
+      ) {
+         building.status = "downgrading";
+      } else {
+         building.desiredLevel = building.level;
+      }
+   }
+   // Added by Lydia
+   if (!building.stack) {
+      building.stack = 1;
+      building.desiredStack = 1;
+   }
+   if (
+      GLOBAL_PARAMS.USE_STACKING &&
+      building.status === "completed" &&
+      building.desiredStack > building.stack
+   ) {
+      if (building.level === 0) {
+         building.stack = building.desiredStack;
+      } else {
+         building.status = "stacking";
+      }
    }
 
    // The following code is wrong, but I keep it here to avoid making the same mistake again. Don't assume
@@ -324,26 +352,42 @@ export function transportAndConsumeResources(
    }
 
    if (
-      (building.status === "completed" || building.status === "upgrading") &&
+      (building.status === "completed" ||
+         building.status === "upgrading" ||
+         building.status === "downgrading" ||
+         building.status === "stacking") &&
       isSpecialBuilding(building.type)
    ) {
       Tick.next.specialBuildings.set(building.type, tile as Required<ITileData>);
    }
 
    if (building.status === "building" || building.status === "upgrading") {
+      // adapted from lmc (liliannes modded client)
+      if (Config.Building[building.type].power && building.level >= GLOBAL_PARAMS.BUILDINGS_HIGH_LEVEL) {
+         Tick.next.powerBuildings.add(xy);
+      }
+
       const cost = getBuildingCost(building);
+      // Lydia: I still use full greedy mode for wonders! Because I do not play rover focus runs!
+      const maxCost = getTotalBuildingCost(building, building.level, building.desiredLevel, building.stack);
+      /*
       const maxCost = isWorldWonder(building.type)
          ? cost
          : getTotalBuildingCost(building, building.level, building.desiredLevel);
+      */
       const { total } = getBuilderCapacity(building, xy, gs);
       const remainingAmount = new Map<Resource, number>();
       let completed = true;
+      let maxCompleted = true;
       forEach(cost, function checkConstructionUpgradeResources(res, amount) {
          const amountArrived = building.resources[res] ?? 0;
          const amountInTransit = getAmountInTransit(xy, res);
          const threshold = getGameOptions().greedyTransport ? (maxCost[res] ?? 0) : amount;
          if (completed && amountArrived < amount) {
             completed = false;
+         }
+         if (maxCompleted && maxCost[res] && amountArrived < maxCost[res]) {
+            maxCompleted = false;
          }
          // Already full
          if (amountArrived >= threshold) {
@@ -384,7 +428,29 @@ export function transportAndConsumeResources(
          OnBuildingProductionComplete.emit({ xy, offline });
       }
 
-      if (completed) {
+      if (maxCompleted && !isSpecialBuilding(building.type)) {
+         // QuickPath aka Shortcut
+         // does not fit for wonders (= SpecialBuildings) which need the OnBuildingOrUpgradeComplete fired for each single level
+         building.level = building.desiredLevel;
+         forEach(maxCost, (res, amount) => {
+            safeAdd(building.resources, res, -amount);
+         });
+         building.suspendedInput.clear();
+         let buildingComplete = false;
+         if (building.status === "building") {
+            building.status = building.desiredLevel > building.level ? "upgrading" : "completed";
+            buildingComplete = true;
+         }
+         OnBuildingOrUpgradeComplete.emit(xy);
+         // `OnBuildingComplete` should fire after `OnBuildingOrUpgradeComplete` because Wonder Complete Modal
+         // is shown in `OnBuildingComplete`, which should not show if there are other modals open
+         if (buildingComplete) {
+            OnBuildingComplete.emit(xy);
+         }
+         if (building.status === "upgrading" && building.level >= building.desiredLevel) {
+            building.status = "completed";
+         }
+      } else if (completed) {
          building.level++;
          forEach(cost, (res, amount) => {
             safeAdd(building.resources, res, -amount);
@@ -409,6 +475,150 @@ export function transportAndConsumeResources(
       return;
    }
 
+   // Added by Lydia
+   if (building.status === "downgrading") {
+      if (GLOBAL_PARAMS.DEBUG_DOWNGRADING) {
+         addSystemMessage(
+            `Computing Downgrading for ${building.type} level ${building.level} to desiredLevel ${building.desiredLevel}`,
+         );
+      }
+      if (Config.Building[building.type].power && building.level >= GLOBAL_PARAMS.BUILDINGS_HIGH_LEVEL) {
+         Tick.next.powerBuildings.add(xy);
+      }
+      building.level--;
+      const cost = getBuildingCost(building);
+      const completed = true;
+      if (completed) {
+         forEach(cost, (res, amount) => {
+            safeAdd(building.resources, res, +amount);
+         });
+         building.suspendedInput.clear();
+         OnBuildingOrUpgradeComplete.emit(xy);
+         if (building.level <= building.desiredLevel) {
+            if (GLOBAL_PARAMS.DEBUG_DOWNGRADING) {
+               addSystemMessage(
+                  `Completing Downgrading for ${building.type} level ${building.level} to desiredLevel ${building.desiredLevel}`,
+               );
+            }
+            building.status = "completed";
+         }
+      }
+      return;
+   }
+   if (building.status === "stacking") {
+      if (Config.Building[building.type].power && building.level >= GLOBAL_PARAMS.BUILDINGS_HIGH_LEVEL) {
+         Tick.next.powerBuildings.add(xy);
+      }
+      if (GLOBAL_PARAMS.DEBUG_STACKING) {
+         addSystemMessage(
+            `Computing Stacking for ${building.type} level ${building.level} curStack ${building.stack} desiredStack ${building.desiredStack}`,
+         );
+      }
+      const prevCost = getTotalBuildingCost(building, 0, building.level, building.stack);
+      const newCost = getTotalBuildingCost(building, 0, building.level, building.stack + 1);
+      const fullCost = getTotalBuildingCost(building, 0, building.level, building.desiredStack);
+
+      const cost = {};
+      const maxCost = {};
+      forEach(newCost, (res, amount) => safeAdd(cost, res, amount));
+      forEach(fullCost, (res, amount) => safeAdd(maxCost, res, amount));
+      forEach(prevCost, (res, amount) => safeAdd(cost, res, -amount));
+      forEach(prevCost, (res, amount) => safeAdd(maxCost, res, -amount));
+
+      if (GLOBAL_PARAMS.DEBUG_STACKING) {
+         addSystemMessage(`Checking Stacking for ${building.type}`);
+         addSystemMessage(JSON.stringify(cost));
+         addSystemMessage(JSON.stringify(maxCost));
+      }
+
+      const { total: total2 } = getBuilderCapacity(building, xy, gs);
+      const toTransport = /* @__PURE__ */ new Map();
+      let completed = true;
+      let maxCompleted = true;
+      forEach(cost, function checkConstructionStackingResources(res, amount) {
+         const amountArrived = building.resources[res] ?? 0;
+         const amountInTransit = getAmountInTransit(xy, res);
+         const threshold = getGameOptions().greedyTransport ? (maxCost[res] ?? 0) : amount;
+         if (completed && amountArrived < amount) {
+            completed = false;
+         }
+         if (maxCompleted && maxCost[res] && amountArrived < maxCost[res]) {
+            maxCompleted = false;
+         }
+         // Already full
+         if (amountArrived >= threshold) {
+            building.suspendedInput.set(res, SuspendedInput.AutoSuspended);
+            return;
+         }
+         // Will be full
+         const amountLeft = threshold - amountInTransit - amountArrived;
+         if (amountLeft <= 0) {
+            return;
+         }
+         if (building.suspendedInput.get(res) === SuspendedInput.ManualSuspended) {
+            return;
+         }
+         building.suspendedInput.delete(res);
+         building.suspendedInput.delete(res);
+         toTransport.set(res, amountLeft);
+      });
+      if (toTransport.size > 0) {
+         const builderCapacityPerResource = total2 / toTransport.size;
+         toTransport.forEach(function transportConstructionStackingResources(amount, res) {
+            if (GLOBAL_PARAMS.DEBUG_STACKING) {
+               addSystemMessage(
+                  `Checking Stacking.toTransport for res ${res} with needed ${formatNumber(amount)}`,
+               );
+            }
+            transportResource(
+               res,
+               clamp(amount, 0, builderCapacityPerResource),
+               builderCapacityPerResource,
+               xy,
+               gs,
+               getInputMode(building, gs),
+               transportSourceCache,
+            );
+         });
+      }
+      if (building.status === "stacking" && isWorldWonder(building.type)) {
+         OnBuildingProductionComplete.emit({ xy, offline });
+      }
+      if (maxCompleted) {
+         // QuickPath aka Shortcut
+         building.stack = building.desiredStack;
+         forEach(maxCost, (res, amount) => {
+            if (GLOBAL_PARAMS.DEBUG_STACKING) {
+               addSystemMessage(
+                  `Processing Stacking.maxComplete for res ${res} with needed ${formatNumber(amount)}`,
+               );
+            }
+            safeAdd(building.resources, res, -amount);
+         });
+         building.suspendedInput.clear();
+         OnBuildingOrUpgradeComplete.emit(xy);
+         if (building.status === "stacking" && building.stack >= building.desiredStack) {
+            building.status = "completed";
+         }
+      } else if (completed) {
+         building.stack++;
+         forEach(cost, (res, amount) => {
+            if (GLOBAL_PARAMS.DEBUG_STACKING) {
+               addSystemMessage(
+                  `Processing Stacking.Complete for res ${res} with needed ${formatNumber(amount)}`,
+               );
+            }
+            safeAdd(building.resources, res, -amount);
+         });
+         building.suspendedInput.clear();
+         OnBuildingOrUpgradeComplete.emit(xy);
+         if (building.status === "stacking" && building.stack >= building.desiredStack) {
+            building.status = "completed";
+         }
+      }
+      return;
+   }
+
    if (gs.unlockedTech.Banking && building.level >= 10) {
       mapSafePush(Tick.next.tileMultipliers, xy, {
          storage: 1,
@@ -416,14 +626,22 @@ export function transportAndConsumeResources(
       });
    }
 
-   if (building.type === "Caravansary") {
+   // Modified by Lydia using match() function and range from Building
+   const configBT = Config.Building[building.type];
+   if (building.type.match("Caravansary")) {
       Tick.next.playerTradeBuildings.set(xy, building);
+      const range = (configBT.range ? configBT.range : 1) + GLOBAL_PARAMS.CARAVANSARIES_EXTRA_RANGE;
       if (hasFeature(GameFeature.WarehouseExtension, gs)) {
-         for (const point of getGrid(gs).getNeighbors(tileToPoint(xy))) {
+         for (const point of getGrid(gs).getRange(tileToPoint(xy), range)) {
             const nxy = pointToTile(point);
             const b = gs.tiles.get(nxy)?.building;
-            if (b?.type === "Warehouse" && b.status === "completed") {
-               Tick.next.playerTradeBuildings.set(nxy, b);
+            if (b) {
+               if (b.type.match("Warehouse") && b.status === "completed") {
+                  Tick.next.playerTradeBuildings.set(nxy, b);
+               // adapted from lmc (liliannes modded client)
+               } else if (GLOBAL_PARAMS.CARAVANSARIES_USE_EVERYTHING && !isSpecialBuilding(b.type)) {
+                  Tick.next.playerTradeBuildings.set(nxy, b);
+               }
             }
          }
       }
@@ -433,7 +651,7 @@ export function transportAndConsumeResources(
       const ri = building as IResourceImportBuildingData;
       if (hasFlag(ri.resourceImportOptions, ResourceImportOptions.ManagedImport)) {
          const storage = getStorageFor(xy, gs);
-         const totalCapacity = getResourceImportCapacity(ri, totalMultiplierFor(xy, "output", 1, false, gs));
+         const totalCapacity = getResourceImportCapacity(ri, (configBT.importCapacity ? configBT.importCapacity : 1) * totalMultiplierFor(xy, "output", 1, false, gs));
 
          const result = new Map<Resource, number>();
          let total = 0;
@@ -490,10 +708,16 @@ export function transportAndConsumeResources(
    //////////////////////////////////////////////////
 
    let hasTransported = false;
+   let totalInputAmount = 0;
+   forEach(input, (res, amount) => {
+      totalInputAmount += amount;
+   });
 
    forEach(input, function forEachTransportResources(res, rawAmount) {
       let amount = rawAmount * getStockpileCapacity(building);
-      let maxAmount = getStockpileMax(building) * rawAmount;
+      // let maxAmount = getStockpileMax(building) * rawAmount;
+      // Lydia: if getStockpileMax = Unlimited then adjust the limit per resource to the relativ importance of the resources -- e.g. LocomotiveFactory takes 1 engine and 10 steel -> totalInputAmount = 11
+      let maxAmount = getStockpileMax(building) !== Number.POSITIVE_INFINITY ? (getStockpileMax(building) * rawAmount) : Math.round(rawAmount / totalInputAmount * total);
 
       if ("resourceImports" in building) {
          const ri = building as IResourceImportBuildingData;
@@ -676,6 +900,17 @@ export function transportAndConsumeResources(
       if (gs.unlockedUpgrades.Liberalism5) {
          mapSafePush(Tick.next.levelBoost, xy, { value: 5, source: Config.Upgrade.Liberalism5.name() });
       }
+   }
+
+   // Lydia: this is needed to get levelBoost effects from Wonders and GreatPeople working
+   const totalLevelBoost = totalMultiplierFor(xy, "levelBoost", 1, false, gs);
+   if (totalLevelBoost > 0) {
+      getMultipliersFor(xy, false, gs).map((m2, idx) => {
+         if (!m2.levelBoost) {
+            return null;
+         }
+         mapSafePush(Tick.next.levelBoost, xy, { value: m2.levelBoost, source: m2.source });
+      });
    }
 
    ////////// Production (when storage is NOT full)
@@ -911,13 +1146,14 @@ export function transportResource(
       const fromBuildingType = gs.tiles.get(from)?.building?.type;
       const toBuildingType = gs.tiles.get(targetXy)?.building?.type;
 
-      if (fromBuildingType === "Warehouse" || toBuildingType === "Warehouse") {
+      if (fromBuildingType?.match("Warehouse") || toBuildingType?.match("Warehouse")) {
          if (gs.unlockedUpgrades.Liberalism3) {
             transportCapacity = Number.POSITIVE_INFINITY;
          } else if (hasFeature(GameFeature.WarehouseUpgrade, gs)) {
             const point = tileToPoint(from);
+            const configBT = Config.Building[sourceBuilding.type];
             const distance = getGrid(gs).distance(point.x, point.y, targetPoint.x, targetPoint.y);
-            if (distance <= 1) {
+            if (distance <= (configBT.range ? configBT.range : 1)) {
                transportCapacity = Number.POSITIVE_INFINITY;
             }
          }

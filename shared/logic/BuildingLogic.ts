@@ -8,8 +8,7 @@ import { NoPrice, NoStorage, type Deposit, type Resource } from "../definitions/
 import type { Tradition } from "../definitions/TraditionDefinitions";
 import {
    clamp,
-   forEach,
-   hasFlag,
+   forEach, formatNumber, hasFlag,
    isEmpty,
    isNullOrUndefined,
    keysOf,
@@ -23,14 +22,14 @@ import {
    sizeOf,
    sum,
    tileToPoint,
-   type Tile,
+   type Tile
 } from "../utilities/Helper";
 import { srand } from "../utilities/Random";
 import type { PartialSet, PartialTabulate } from "../utilities/TypeDefinitions";
 import { TypedEvent } from "../utilities/TypedEvent";
 import { L, t } from "../utilities/i18n";
 import { Config } from "./Config";
-import { MANAGED_IMPORT_RANGE, MAX_PETRA_SPEED_UP } from "./Constants";
+import { GLOBAL_PARAMS, MANAGED_IMPORT_RANGE, MAX_PETRA_SPEED_UP } from "./Constants";
 import { GameFeature, hasFeature } from "./FeatureLogic";
 import type { GameOptions, GameState } from "./GameState";
 import { getGameState } from "./GameStateLogic";
@@ -225,7 +224,7 @@ interface IStorageResult {
 
 export function getPetraBaseStorage(petra: IBuildingData): number {
    const HOUR = 60 * 60;
-   return HOUR * petra.level;
+   return HOUR * petra.level * (GLOBAL_PARAMS.USE_STACKING ? petra.stack : 1);
 }
 
 export function getMaxWarpSpeed(gs: GameState): number {
@@ -265,16 +264,16 @@ export function getStorageFor(xy: Tile, gs: GameState): IStorageResult {
    let base = 0;
 
    switch (building?.type) {
-      case "Market": {
-         base = building.level * STORAGE_TO_PRODUCTION * 10;
-         break;
-      }
-      case "Caravansary": {
-         base = getResourceImportCapacity(building, 1) * STORAGE_TO_PRODUCTION;
-         break;
-      }
-      case "Warehouse": {
-         base = getResourceImportCapacity(building, 1) * STORAGE_TO_PRODUCTION * 10;
+      case "Market":
+      case "Caravansary":
+      case "Caravansary2":
+      case "Caravansary3":
+      case "Caravansary4":
+      case "Warehouse":
+      case "Warehouse2":
+      case "Warehouse3": {
+         const buildingStorageCapacity = Config.Building[building.type]?.storageCapacity;
+         base = getResourceImportCapacity(building, buildingStorageCapacity ? buildingStorageCapacity : 1) * STORAGE_TO_PRODUCTION;
          break;
       }
       case "Petra": {
@@ -489,6 +488,7 @@ export function getScienceFromBuildings() {
 }
 
 type BuildingCostInput = Pick<IBuildingData, "type" | "level"> & {
+   stack?: number | 1;
    tradition?: Tradition | null;
    religion?: Religion | null;
 };
@@ -500,7 +500,10 @@ type BuildingCostInput = Pick<IBuildingData, "type" | "level"> & {
  */
 export function getBuildingCost(building: BuildingCostInput): PartialTabulate<Resource> {
    const type = building.type;
-   const level = building.level;
+   let stack = 1;
+   if (building.stack && building.stack > 0) {
+      stack = building.stack;
+   }
    let cost = { ...Config.Building[type].construction };
    if (isEmpty(cost)) {
       cost = { ...Config.Building[type].input };
@@ -528,12 +531,12 @@ export function getBuildingCost(building: BuildingCostInput): PartialTabulate<Re
       }
       keysOf(cost).forEach((res) => {
          const price = Config.ResourcePrice[res] ?? 1;
-         cost[res] = (Math.pow(1.5, building.level) * multiplier * cost[res]!) / price;
+         cost[res] = (Math.pow(1.5, building.level) * stack * (Math.floor(Math.log10(stack) * 100)/1000 + 1) * multiplier * cost[res]!) / price;
       });
    } else {
       const multiplier = 10;
       keysOf(cost).forEach((res) => {
-         cost[res] = Math.pow(1.5, level) * multiplier * cost[res]!;
+         cost[res] = Math.pow(1.5, building.level) * stack * (Math.floor(Math.log10(stack) * 100)/1000 + 1) * multiplier * cost[res]!;
       });
    }
    return cost;
@@ -545,16 +548,21 @@ export function getTotalBuildingCost(
    building: Omit<BuildingCostInput, "level">,
    currentLevel: number,
    desiredLevel: number,
+   currentStack?: number | 1,
 ): PartialTabulate<Resource> {
    console.assert(currentLevel <= desiredLevel);
+   if (!currentStack || currentStack < 1) {
+      currentStack = building.stack;
+   }
    const hash = (Config.BuildingHash[building.type]! << 22) + (currentLevel << 11) + desiredLevel;
    const cached = totalBuildingCostCache.get(hash);
-   if (cached) {
+   if (cached && currentStack === 1) {
       return cached;
    }
    const start: BuildingCostInput = {
       type: building.type,
       level: currentLevel,
+      stack: currentStack,
       tradition: building.tradition,
       religion: building.religion,
    };
@@ -611,7 +619,7 @@ export function getBuildingValue(building: IBuildingData): number {
    if (building.type === "Petra") {
       level = 1;
    }
-   return getResourcesValue(getTotalBuildingCost(building, 0, level));
+   return getResourcesValue(getTotalBuildingCost(building, 0, level, building.stack));
 }
 
 export function getCurrentPriority(building: IBuildingData, gs: GameState): number {
@@ -625,6 +633,8 @@ export function getCurrentPriority(building: IBuildingData, gs: GameState): numb
    switch (building.status) {
       case "building":
       case "upgrading":
+      case "downgrading":
+      case "stacking":
          return building.constructionPriority;
       case "completed":
          return building.productionPriority;
@@ -668,25 +678,54 @@ interface BuildingPercentageResult {
    percent: number;
    secondsLeft: number;
    cost: PartialTabulate<Resource>;
+   maxCost: PartialTabulate<Resource>;
 }
 
 export function getBuildingPercentage(xy: Tile, gs: GameState): BuildingPercentageResult {
    const building = gs.tiles.get(xy)?.building;
    if (!building) {
-      return { percent: 0, secondsLeft: Number.POSITIVE_INFINITY, cost: {} };
+      return { percent: 0, secondsLeft: Number.POSITIVE_INFINITY, cost: {}, maxCost: {} };
    }
-   if (building.status === "completed") {
-      return { percent: 1, secondsLeft: 0, cost: {} };
+   // Reworked by Lydia
+   switch (building.status) {
+      case "completed":
+      case "downgrading": {
+         return { percent: 1, secondsLeft: 0, cost: {}, maxCost: {} };
+      }
+      case "stacking": {
+         const { total } = getBuilderCapacity(building, xy, gs);
+
+         const prevCost = getTotalBuildingCost(building, 0, building.level, building.stack);
+         const newCost = getTotalBuildingCost(building, 0, building.level, building.stack+1);
+         const fullCost = getTotalBuildingCost(building, 0, building.level, building.desiredStack);
+         const cost = {};
+         const maxCost = {};
+         forEach(newCost, (res, amount) => safeAdd(cost, res, amount));
+         forEach(prevCost, (res, amount) => safeAdd(cost, res, -amount));
+         forEach(fullCost, (res, amount) => safeAdd(maxCost, res, amount));
+         forEach(prevCost, (res, amount) => safeAdd(maxCost, res, -amount));
+
+         let totalCost = 0;
+         let inStorage = 0;
+         forEach(cost, (res, amount) => {
+            totalCost += amount;
+            inStorage += clamp(building.resources[res] ?? 0, 0, amount);
+         });
+         return { cost, maxCost, percent: inStorage / totalCost, secondsLeft: Math.ceil((totalCost - inStorage) / total) };
+      }
+      default: {
+         const { total } = getBuilderCapacity(building, xy, gs);
+         const cost = getBuildingCost(building);
+         const maxCost = getTotalBuildingCost(building, building.level, building.desiredLevel, building.stack);
+         let totalCost = 0;
+         let inStorage = 0;
+         forEach(cost, (res, amount) => {
+            totalCost += amount;
+            inStorage += clamp(building.resources[res] ?? 0, 0, amount);
+         });
+         return { cost, maxCost, percent: inStorage / totalCost, secondsLeft: Math.ceil((totalCost - inStorage) / total) };
+      }
    }
-   const { total } = getBuilderCapacity(building, xy, gs);
-   const cost = getBuildingCost(building);
-   let totalCost = 0;
-   let inStorage = 0;
-   forEach(cost, (res, amount) => {
-      totalCost += amount;
-      inStorage += clamp(building.resources[res] ?? 0, 0, amount);
-   });
-   return { cost, percent: inStorage / totalCost, secondsLeft: Math.ceil((totalCost - inStorage) / total) };
 }
 
 export function getBuildingLevelLabel(xy: Tile, gs: GameState): string {
@@ -702,8 +741,11 @@ export function getBuildingLevelLabel(xy: Tile, gs: GameState): string {
    if (isWorldOrNaturalWonder(b.type)) {
       if (b.type === "SwissBank") {
          // Swiss Bank is a special case, we show the level boost (below)
-      } else if (BuildingShowLevel.has(b.type)) {
+      } else if (BuildingShowLevel.has(b.type) || b.level > 1 || b.stack > 1) {
          const extraLevel = getWonderExtraLevel(b.type);
+         if (GLOBAL_PARAMS.SHOW_STACKING && b.stack > 1) {
+            return extraLevel > 0 ? `${formatNumber(b.stack)}x${b.level}+${extraLevel}` : `${formatNumber(b.stack)}x${b.level}`;
+         }
          return extraLevel > 0 ? `${b.level}+${extraLevel}` : String(b.level);
       } else {
          return "";
@@ -727,6 +769,23 @@ function getNextLevel(currentLevel: number, x: number) {
 export function getUpgradeTargetLevels(b: IBuildingData): number[] {
    const next5 = getNextLevel(b.level, 5);
    return [b.level + 1, next5, next5 + 5, next5 + 10, next5 + 15];
+}
+
+// Added by Lydia
+export function getDowngradeTargetLevels(b: IBuildingData): number[] {
+   return [b.level - 1, b.level - 2, Math.floor((b.level -3) / 5) * 5];
+}
+
+// Added by Lydia
+export function getStackingTargetLevels(b: IBuildingData): number[] {
+   const next5 = getNextLevel(b.stack, 5);
+   if (b.stack < 1000) {
+      return [b.stack + 1, next5, next5 + 5, getNextLevel(b.stack, 25), getNextLevel(b.stack, 100), getNextLevel(b.stack, 1000), Math.floor(b.stack * 1.5), Math.floor(b.stack * 2)];
+   }
+   if (b.stack < 5000) {
+      return [b.stack + 1, getNextLevel(b.stack, 25), getNextLevel(b.stack, 100), getNextLevel(b.stack, 1000), Math.floor(b.stack * 1.5), Math.floor(b.stack * 2)];
+   }
+   return [b.stack + 1, getNextLevel(b.stack, 1000), Math.floor(b.stack * 1.5), Math.floor(b.stack * 2)];
 }
 
 export function isSpecialBuilding(building?: Building): boolean {
@@ -762,7 +821,7 @@ export function isWorldOrNaturalWonder(building?: Building): boolean {
 }
 
 export function getResourceImportCapacity(building: IHaveTypeAndLevel, multiplier: number): number {
-   return multiplier * building.level * 10;
+   return multiplier * building.level * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) * 10;
 }
 
 export function getResourceImportIdleCapacity(xy: Tile, gs: GameState): number {
@@ -771,8 +830,9 @@ export function getResourceImportIdleCapacity(xy: Tile, gs: GameState): number {
       return 0;
    }
    const warehouse = building as IResourceImportBuildingData;
+   const buildingImportCapacity = Config.Building[building.type]?.importCapacity;
    return (
-      getResourceImportCapacity(warehouse, totalMultiplierFor(xy, "output", 1, false, gs)) -
+      getResourceImportCapacity(warehouse, (buildingImportCapacity ? buildingImportCapacity : 1) * totalMultiplierFor(xy, "output", 1, false, gs)) -
       reduceOf(
          warehouse.resourceImports,
          (prev, k, v) => {
@@ -791,7 +851,7 @@ export function getBuilderCapacity(
    const builder =
       sum(Tick.current.globalMultipliers.builderCapacity, "value") +
       totalMultiplierFor(xy, "worker", 0, false, gs);
-   let baseCapacity = clamp(building.level, 1, Number.POSITIVE_INFINITY);
+   let baseCapacity = clamp(building.level * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1), 1, Number.POSITIVE_INFINITY);
 
    if (isWorldWonder(building.type)) {
       baseCapacity *= getWonderBaseBuilderCapacity(building.type);
@@ -828,6 +888,7 @@ export function getMarketSellAmount(sellResource: Resource, xy: Tile, gs: GameSt
    if (!buyResource) return 0;
    return (
       building.level *
+      (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) *
       getMarketBaseSellAmount(sellResource, buyResource) *
       totalMultiplierFor(xy, "output", 1, false, gs)
    );
@@ -907,7 +968,7 @@ export function getPowerRequired(building: IBuildingData, gs: GameState): number
    if (level <= 0) {
       return 0;
    }
-   return Math.round(Math.pow(4, level));
+   return Math.round(Math.pow(4, level) * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1));
 }
 
 export function getElectrificationLevel(building: IBuildingData, gs: GameState): number {
@@ -1236,7 +1297,7 @@ export function getEastIndiaCompanyUpgradeCost(level: number): number {
 
 export function getPompidou(gs: GameState): ICentrePompidouBuildingData | null {
    const pompidou = findSpecialBuilding("CentrePompidou", gs);
-   if (pompidou && getCurrentAge(gs) === "InformationAge") {
+   if (pompidou && (getCurrentAge(gs) === "InformationAge" || getCurrentAge(gs) === "FutureAge" || getCurrentAge(gs) === "AscensionAge")) {
       return pompidou.building as ICentrePompidouBuildingData;
    }
    return null;

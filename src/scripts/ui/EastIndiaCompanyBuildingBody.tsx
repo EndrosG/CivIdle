@@ -56,6 +56,7 @@ export function EastIndiaCompanyBuildingBody({ gameState, xy }: IBuildingCompone
                   }
                   safeAdd(building.resources, "TradeValue", -cost);
                   building.level++;
+                  building.desiredLevel = building.level;
                   playClick();
                   notifyGameStateUpdate();
                }}

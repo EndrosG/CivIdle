@@ -21,7 +21,7 @@ import {
    totalMultiplierFor,
 } from "./BuildingLogic";
 import { Config } from "./Config";
-import { SCIENCE_VALUE } from "./Constants";
+import { GLOBAL_PARAMS, SCIENCE_VALUE } from "./Constants";
 import type { GameState } from "./GameState";
 import { TILE_SIZE } from "./GameStateLogic";
 import { NotProducingReason, Tick, type MultiplierType, type MultiplierWithSource } from "./TickLogic";
@@ -108,7 +108,8 @@ export function getBuildingIO(
          }
       }
       if ("resourceImports" in b && type === "input") {
-         const totalCapacity = getResourceImportCapacity(b, totalMultiplierFor(xy, "output", 1, false, gs));
+         const configBT = Config.Building[b.type];
+         const totalCapacity = getResourceImportCapacity(b, (configBT.importCapacity ? configBT.importCapacity : 1) * totalMultiplierFor(xy, "output", 1, false, gs));
          const rib = b as IResourceImportBuildingData;
          const totalSetCapacity = reduceOf(rib.resourceImports, (prev, k, v) => prev + v.perCycle, 0);
          const scaleFactor = clamp(totalSetCapacity > 0 ? totalCapacity / totalSetCapacity : 0, 0, 1);
@@ -165,7 +166,7 @@ export function getBuildingIO(
                level += lb.value;
             });
          }
-         let value = v * level;
+         let value = v * level * (GLOBAL_PARAMS.USE_STACKING ? b.stack : 1);
          if (hasFlag(options, IOFlags.Capacity)) {
             value *= b.capacity;
          }

@@ -23,6 +23,9 @@ export function MapTileBonusComponent({ xy }: { xy: string }): React.ReactNode {
    if (!building) {
       return null;
    }
+   if (!Config.Building[building]) {
+      return null;
+   }
    return (
       <>
          <button className="w100 row jcc mb10" onClick={() => Singleton().sceneManager.loadScene(WorldScene)}>

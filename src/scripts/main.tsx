@@ -7,6 +7,7 @@ import "../css/Main.css";
 import CabinMedium from "../fonts/CabinMedium.ttf?url";
 import OldTypefaces from "../fonts/OldTypefaces.ttf";
 import Platypi from "../fonts/Platypi-Medium.ttf";
+import TextureAlias from "../images/textures_alias.json";
 import TextureBuildingDef from "../images/textures_building.json";
 import TextureBuilding from "../images/textures_building.png";
 import TextureFlagDef from "../images/textures_flag.json";
@@ -166,6 +167,9 @@ export async function loadBundle() {
          //    console.warn("Unused Great Person", k);
          // }
       }
+   });
+   TextureAlias.forEach((dest, source) => {
+      textures[dest] = textures[source];
    });
    console.timeEnd("Load Sprite sheets");
 

@@ -50,9 +50,42 @@ function requireDevelopment(): void {
    }
 }
 
+function eval2(arg) {
+   return (0, eval)(arg);
+}
+
 export async function handleChatCommand(command: string): Promise<void> {
    const parts = command.split(" ");
    switch (parts[0]) {
+      case "jsonStringify":
+      case "js": {
+         const restOfLine = parts.slice(1).join(" ");
+         const line = `JSON.stringify(${restOfLine})`;
+         const output = eval2(line);
+         addSystemMessage(`> ${output}`);
+         break;
+      }
+      case "eval":
+      case "e": {
+         const restOfLine = parts.slice(1).join(" ");
+         const output = eval2(restOfLine);
+         addSystemMessage(`> ${output}`);
+         break;
+      }
+      case "evalPromise":
+      case "ep": {
+         const restOfLine = parts.slice(1).join(" ");
+         const output = eval2(restOfLine);
+         if (output instanceof Promise) {
+            addSystemMessage("Evaluated a promise, waiting for it to resolve...");
+            output.then((result) => {
+               addSystemMessage(`> ${result}`);
+            });
+         } else {
+            addSystemMessage(`> ${output}`);
+         }
+         break;
+      }
       case "loadsave": {
          requireDevelopment();
          const [handle] = await window.showOpenFilePicker();

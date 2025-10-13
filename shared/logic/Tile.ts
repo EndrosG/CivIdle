@@ -20,7 +20,7 @@ export interface ITileData {
    building?: IBuildingData;
 }
 
-export type BuildingStatus = "building" | "upgrading" | "completed";
+export type BuildingStatus = "building" | "upgrading" | "completed" | "downgrading" | "stacking";
 
 export enum BuildingOptions {
    None = 0,
@@ -53,6 +53,8 @@ export interface IBuildingData {
    type: Building;
    level: number;
    desiredLevel: number;
+   stack: number;
+   desiredStack: number;
    resources: PartialTabulate<Resource>;
    status: BuildingStatus;
    capacity: number;
@@ -164,13 +166,13 @@ export interface IItaipuDamBuildingData extends IBuildingData {
    productionMultiplier: number;
 }
 
-export type IHaveTypeAndLevel = Pick<IBuildingData, "type" | "level">;
+export type IHaveTypeAndLevel = Pick<IBuildingData, "type" | "level" | "stack">;
 
 export const STOCKPILE_CAPACITY_MIN = 0;
-export const STOCKPILE_CAPACITY_MAX = 20;
+export const STOCKPILE_CAPACITY_MAX = 50;    // Modified by Lydia
 
 export const STOCKPILE_MAX_MIN = 0;
-export const STOCKPILE_MAX_MAX = 100;
+export const STOCKPILE_MAX_MAX = 1000;    // Modified by Lydia
 
 export const PRIORITY_MIN = 1;
 export const PRIORITY_MAX = 10;
@@ -184,6 +186,8 @@ export function makeBuilding(data: Pick<IBuildingData, "type"> & Partial<IBuildi
    const building: IBuildingData = {
       level: 0,
       desiredLevel: 1,
+      stack: 1,
+      desiredStack: 1,
       resources: {},
       status: "building",
       capacity: 1,
@@ -213,7 +217,10 @@ export function makeBuilding(data: Pick<IBuildingData, "type"> & Partial<IBuildi
          }
          break;
       }
-      case "Caravansary": {
+      case "Caravansary":
+      case "Caravansary2":
+      case "Caravansary3":
+      case "Caravansary4": {
          const trade = building as IResourceImportBuildingData;
          if (!trade.resourceImports) {
             trade.resourceImports = {};
@@ -223,7 +230,9 @@ export function makeBuilding(data: Pick<IBuildingData, "type"> & Partial<IBuildi
          }
          break;
       }
-      case "Warehouse": {
+      case "Warehouse":
+      case "Warehouse2":
+      case "Warehouse3": {
          const warehouse = building as IWarehouseBuildingData;
          if (!warehouse.resourceImports) {
             warehouse.resourceImports = {};

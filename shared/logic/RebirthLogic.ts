@@ -19,6 +19,7 @@ import {
    shuffle,
 } from "../utilities/Helper";
 import { Config } from "./Config";
+import { GLOBAL_PARAMS } from "./Constants";
 import type { GameOptions, GameState, GreatPeopleChoice, GreatPeopleChoiceV2 } from "./GameState";
 import { getGameOptions, getGameState } from "./GameStateLogic";
 import { Tick } from "./TickLogic";
@@ -158,7 +159,8 @@ export function rollPermanentGreatPeople(
          Config.GreatPerson,
          (_, v) =>
             (isNullOrUndefined(v.city) || v.city === city) &&
-            Config.TechAge[v.age].idx <= currentTechAgeIdx + 1,
+            Config.TechAge[v.age].idx <= currentTechAgeIdx + 1 &&
+            !(GLOBAL_PARAMS.GP_IGNORE_PROMOTION && v.type === 2),
       ),
    );
    let amountLeft = totalAmount;
@@ -191,7 +193,9 @@ export function rollGreatPeopleThisRun(
       keysOf(
          filterOf(
             Config.GreatPerson,
-            (_, v) => (isNullOrUndefined(v.city) || v.city === city) && ages.has(v.age),
+            (_, v) => (isNullOrUndefined(v.city) || v.city === city) &&
+            ages.has(v.age) &&
+            !(GLOBAL_PARAMS.GP_IGNORE_PROMOTION && v.type === 2),
          ),
       ),
    );

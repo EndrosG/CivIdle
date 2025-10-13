@@ -49,6 +49,9 @@ export function LoadingPage({
          <img className="energy-star" src={energyStar} />
          CivIdle {getFullVersion()}
          <br />
+         Lydias own version
+         <br />
+         <br />
          Proudly Presented by Fish Pond Studio
          <br />
          <br />

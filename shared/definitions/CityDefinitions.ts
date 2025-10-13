@@ -237,6 +237,7 @@ export class CityDefinitions {
          Headquarter: () => t(L.Reichstag),
       },
       uniqueBuildings: {
+         WirecardAG: "FinancialArbitrage",		// FinancialLeverage geht leider nicht wegen Software und so ... da knall die Prüfung der Daten.
          CologneCathedral: "HolyEmpire",
          Elbphilharmonie: "Skyscraper",
       },
@@ -421,4 +422,5 @@ interface ICityDefinition {
    requireGreatPeopleLevel: number;
    requireSupporterPack: boolean;
    festivalDesc: () => string;
+   hidden?: boolean;
 }

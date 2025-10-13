@@ -116,6 +116,7 @@ export class GlobalMultipliers {
    output: IValueWithSource[] = [];
    worker: IValueWithSource[] = [];
    storage: IValueWithSource[] = [];
+   levelBoost: IValueWithSource[] = [];
 }
 
 export const GlobalMultiplierNames: Record<keyof GlobalMultipliers, () => string> = {
@@ -128,6 +129,7 @@ export const GlobalMultiplierNames: Record<keyof GlobalMultipliers, () => string
    output: () => t(L.ProductionMultiplier),
    worker: () => t(L.WorkerCapacityMultiplier),
    storage: () => t(L.StorageMultiplier),
+   levelBoost: () => t(L.BuildingLevelBoost),
 };
 
 export function freezeTickData(t: ITickData): ITickData {
@@ -154,6 +156,7 @@ interface IMultiplier {
    output: number;
    worker: number;
    storage: number;
+   levelBoost: number;
 }
 
 export type Multiplier = RequireAtLeastOne<IMultiplier>;
@@ -161,7 +164,7 @@ export type MultiplierWithStability = Multiplier & { unstable?: boolean };
 export type MultiplierWithSource = Multiplier & { source: string; unstable?: boolean };
 export type LevelBoost = { value: number; source: string };
 
-export const AllMultiplierTypes = ["input", "output", "worker", "storage"] satisfies (keyof IMultiplier)[];
+export const AllMultiplierTypes = ["input", "output", "worker", "storage", "levelBoost"] satisfies (keyof IMultiplier)[];
 
 export type MultiplierType = keyof IMultiplier;
 export const MultiplierTypeDesc: Record<MultiplierType, () => string> = {
@@ -169,6 +172,7 @@ export const MultiplierTypeDesc: Record<MultiplierType, () => string> = {
    worker: () => t(L.WorkerMultiplier),
    storage: () => t(L.StorageMultiplier),
    input: () => t(L.ConsumptionMultiplier),
+   levelBoost: () => t(L.BuildingLevelBoost),
 };
 
 export interface IValueWithSource {

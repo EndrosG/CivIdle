@@ -351,7 +351,9 @@ export class TileVisual extends Container {
             this.showTimeLeft(tileData, gameState);
             return;
          }
-         case "upgrading": {
+         case "upgrading":
+         case "downgrading":
+         case "stacking": {
             this._construction.visible = false;
             this._notProducing.visible = false;
             this._upgrade.visible = true;

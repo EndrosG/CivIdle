@@ -12,6 +12,35 @@ import type { City } from "./CityDefinitions";
 import type { TechAge } from "./TechDefinitions";
 
 export class GreatPersonDefinitions {
+   // Lydia //////////////
+   JanMarsalek: IGreatPersonDefinition = boostOf({
+      name: () => t(L.JanMarsalek),
+      boost: {
+         multipliers: ["output", "storage"],
+         buildings: ["WirecardAG"]
+      },
+      time: "1980 - now AD",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "ColdWarAge",
+      city: "German",
+      // type: GreatPersonType.Normal,
+   });
+   MarkusBraun: IGreatPersonDefinition = boostOf({
+      name: () => t(L.MarkusBraun),
+      // desc: (self, level) => t(L.BuildingLevelBoostDesc, { value: self.value(level), building: "WirecardAG" }),
+      boost: {
+         multipliers: ["levelBoost"],
+         buildings: ["WirecardAG"]
+      },
+      time: "1969 ~ now AD",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "ColdWarAge",
+      city: "German",
+      // type: GreatPersonType.Normal,
+   });
+
    // Bronze /////////////////////////////////////////////////////////////////////////////////////////////////
 
    Hammurabi: IGreatPersonDefinition = boostOf({
@@ -333,7 +362,7 @@ export class GreatPersonDefinitions {
       name: () => t(L.EmperorWuOfHan),
       boost: {
          multipliers: ["output", "storage"],
-         buildings: ["Caravansary"],
+         buildings: ["Caravansary", "Caravansary2", "Caravansary3", "Caravansary4"],
       },
       time: "156 ~ 87 BC",
       value: (level) => level * 2,
@@ -1045,7 +1074,7 @@ export class GreatPersonDefinitions {
       name: () => t(L.RudolfDiesel),
       boost: {
          multipliers: ["output", "storage"],
-         buildings: ["OilRefinery", "LocomotiveFactory"],
+         buildings: ["OilRefinery", "LocomotiveFactory", "Caravansary2"],
       },
       time: "1858 ~ 1913 AD",
       value: (level) => level,
@@ -1619,7 +1648,7 @@ export class GreatPersonDefinitions {
       name: () => t(L.TimBernersLee),
       boost: {
          multipliers: ["output", "storage"],
-         buildings: ["InternetServiceProvider", "OpticalFiberPlant"],
+         buildings: ["InternetServiceProvider", "OpticalFiberPlant", "Caravansary3", "Warehouse2"],
       },
       time: "1955 ~ ",
       value: (level) => level,
@@ -1643,7 +1672,7 @@ export class GreatPersonDefinitions {
       name: () => t(L.DennisRitchie),
       boost: {
          multipliers: ["output", "storage"],
-         buildings: ["SoftwareCompany", "MaglevFactory"],
+         buildings: ["SoftwareCompany", "MaglevFactory", "Caravansary4", "Warehouse3"],
       },
       time: "1941 ~ 2011 AD",
       value: (level) => level,
@@ -1703,7 +1732,7 @@ export class GreatPersonDefinitions {
       name: () => t(L.CarlSagan),
       boost: {
          multipliers: ["output", "storage"],
-         buildings: ["SpaceCenter", "Peacekeeper"],
+         buildings: ["SpaceCenter", "Peacekeeper", "RadioStation"],
       },
       time: "1934 ~ 1996 AD",
       value: (level) => level,

@@ -9,6 +9,7 @@ import {
    isWorldWonder,
 } from "./BuildingLogic";
 import { Config } from "./Config";
+import { GLOBAL_PARAMS } from "./Constants";
 import type { GameState } from "./GameState";
 import { getTypeBuildings, getXyBuildings } from "./IntraTickCache";
 import { getCurrentAge } from "./TechLogic";
@@ -56,7 +57,7 @@ export function calculateHappiness(gs: GameState) {
          } else if (Tick.current.happinessExemptions.has(xy)) {
             // Do nothing
          } else {
-            ++fromBuildings;
+            fromBuildings += (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1);
          }
       }
       if (isWorldWonder(building.type)) {

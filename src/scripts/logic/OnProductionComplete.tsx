@@ -23,6 +23,7 @@ import {
    EAST_INDIA_COMPANY_BOOST_PER_EV,
    EXPLORER_SECONDS,
    FESTIVAL_CONVERSION_RATE,
+   GLOBAL_PARAMS,
    MAX_EXPLORER,
    MAX_TELEPORT,
    SCIENCE_VALUE,
@@ -30,7 +31,7 @@ import {
    TOWER_BRIDGE_GP_PER_CYCLE,
    TRADE_TILE_ALLY_BONUS,
    TRADE_TILE_BONUS,
-   TRADE_TILE_NEIGHBOR_BONUS,
+   TRADE_TILE_NEIGHBOR_BONUS
 } from "../../../shared/logic/Constants";
 import { GameFeature, hasFeature } from "../../../shared/logic/FeatureLogic";
 import { GameStateFlags } from "../../../shared/logic/GameState";
@@ -116,6 +117,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
    const buildingsByType = getTypeBuildings(gs);
    const grid = getGrid(gs);
    const buildingName = Config.Building[building.type].name();
+   const buildingLevelStack = building.level * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1);
 
    switch (building.type) {
       case "Headquarter": {
@@ -256,9 +258,9 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "PyramidOfGiza": {
-         forEach(Config.Building, (building, def) => {
+         forEach(Config.Building, (building2, def) => {
             if (def.output.Worker) {
-               addMultiplier(building, { output: 1 }, buildingName);
+               addMultiplier(building2, { output: buildingLevelStack, levelBoost: buildingLevelStack }, buildingName);
             }
          });
          break;
@@ -287,7 +289,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          for (const neighbor of grid.getNeighbors(tileToPoint(xy))) {
             const xy = pointToTile(neighbor);
             const building = getWorkingBuilding(xy, gs);
-            if (building?.type === "Caravansary") {
+            if (building?.type.match("Caravansary")) {
                mapSafePush(Tick.next.tileMultipliers, xy, {
                   output: 5,
                   storage: 5,
@@ -335,7 +337,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "AngkorWat": {
-         mapSafeAdd(Tick.next.workersAvailable, "Worker", 1000);
+         mapSafeAdd(Tick.next.workersAvailable, "Worker", 1000 * buildingLevelStack);
          for (const neighbor of grid.getNeighbors(tileToPoint(xy))) {
             mapSafePush(Tick.next.tileMultipliers, pointToTile(neighbor), {
                worker: 1,
@@ -624,7 +626,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "Neuschwanstein": {
          getXyBuildings(gs).forEach((building, xy) => {
             if (isWorldWonder(building.type) && building.status !== "completed") {
-               mapSafePush(Tick.next.tileMultipliers, xy, { worker: 10, source: buildingName });
+               mapSafePush(Tick.next.tileMultipliers, xy, { worker: 10 * buildingLevelStack, source: buildingName });
             }
          });
          break;
@@ -725,7 +727,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "GreatSphinx": {
-         for (const point of grid.getRange(tileToPoint(xy), 2)) {
+         for (const point of grid.getRange(tileToPoint(xy), 2 * buildingLevelStack)) {
             const tileXy = pointToTile(point);
             const b = gs.tiles.get(tileXy)?.building;
             if (b && (Config.BuildingTier[b.type] ?? 0) > 1) {
@@ -747,7 +749,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       }
       case "Hollywood": {
          let count = 0;
-         for (const point of grid.getRange(tileToPoint(xy), 2)) {
+         for (const point of grid.getRange(tileToPoint(xy), 2 * buildingLevelStack)) {
             const tileXy = pointToTile(point);
             const b = gs.tiles.get(tileXy)?.building;
             if (
@@ -764,10 +766,10 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "GoldenGateBridge": {
          forEach(Config.Building, (b, def) => {
             if (def.output.Power) {
-               addMultiplier(b, { output: 1 }, buildingName);
+               addMultiplier(b, { output: buildingLevelStack }, buildingName);
             }
          });
-         for (const point of grid.getRange(tileToPoint(xy), 1)) {
+         for (const point of grid.getRange(tileToPoint(xy), 2 * buildingLevelStack)) {
             Tick.next.powerPlants.add(pointToTile(point));
          }
          break;
@@ -849,7 +851,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "MountTai": {
          forEach(Config.Building, (b, def) => {
             if (!isSpecialBuilding(b) && def.output.Science) {
-               addMultiplier(b, { output: 1 }, buildingName);
+               addMultiplier(b, { output: buildingLevelStack }, buildingName);
             }
          });
          const total = getGreatPersonTotalLevel("Confucius", gs);
@@ -1178,8 +1180,13 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          const currentAge = getCurrentAge(gs);
          const count = Config.TechAge[currentAge].idx + 1;
          addMultiplier("Warehouse", { storage: count }, buildingName);
+         addMultiplier("Warehouse2", { storage: count }, buildingName);
+         addMultiplier("Warehouse3", { storage: count }, buildingName);
          addMultiplier("Market", { storage: count }, buildingName);
          addMultiplier("Caravansary", { storage: count }, buildingName);
+         addMultiplier("Caravansary2", { storage: count }, buildingName);
+         addMultiplier("Caravansary3", { storage: count }, buildingName);
+         addMultiplier("Caravansary4", { storage: count }, buildingName);
          const total =
             getGreatPersonTotalLevel("AlbertEinstein", gs, options) +
             (options.ageWisdom[Config.GreatPerson.AlbertEinstein.age] ?? 0);
@@ -1319,10 +1326,23 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          }
          break;
       }
+
+      // Added by Lydia
+      case "NuclearArmsRace": {
+         // no "" + extraLevel" for NAR because there is no " + extraLevel" for LHC.
+         const level = (1 + 0.5 * (building.level - 1) * GLOBAL_PARAMS.NAR_MULTI) * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1);
+         forEach(Config.GreatPerson, (p2, def) => {
+            if (def.age === "ColdWarAge") {
+               def.tick(p2, level, `${buildingName}: ${def.name()}`, GreatPersonTickFlag.None);
+            }
+         });
+         break;
+      }
+
       case "InternationalSpaceStation": {
          const extraLevel = getWonderExtraLevel(building.type);
          Tick.next.globalMultipliers.storage.push({
-            value: 5 + (building.level - 1 + extraLevel),
+            value: (5 + (building.level - 1 + extraLevel)) * building.stack,
             source: buildingName,
          });
          break;
@@ -1330,7 +1350,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "MarinaBaySands": {
          const extraLevel = getWonderExtraLevel(building.type);
          Tick.next.globalMultipliers.worker.push({
-            value: 5 + 1 * (building.level - 1 + extraLevel),
+            value: (5 + 1 * (building.level - 1 + extraLevel) * GLOBAL_PARAMS.MARINA_BAY_SANDS_MULTI) * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1),
             source: buildingName,
          });
          break;
@@ -1338,7 +1358,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "PalmJumeirah": {
          const extraLevel = getWonderExtraLevel(building.type);
          Tick.next.globalMultipliers.builderCapacity.push({
-            value: 10 + 2 * (building.level - 1 + extraLevel),
+            value: (10 + 2 * (building.level - 1 + extraLevel) * GLOBAL_PARAMS.PALM_JUMEIRAH_MULTI) * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1),
             source: buildingName,
          });
          break;
@@ -1346,7 +1366,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "AldersonDisk": {
          const extraLevel = getWonderExtraLevel(building.type);
          Tick.next.globalMultipliers.happiness.push({
-            value: 25 + 5 * (building.level - 1 + extraLevel),
+            value: (25 + 5 * (building.level - 1 + extraLevel)) * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1),
             source: buildingName,
          });
          break;
@@ -1354,7 +1374,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "DysonSphere": {
          const extraLevel = getWonderExtraLevel(building.type);
          Tick.next.globalMultipliers.output.push({
-            value: 5 + 1 * (building.level - 1 + extraLevel),
+            value: (5 + 1 * (building.level - 1 + extraLevel)) * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1),
             source: buildingName,
          });
          break;
@@ -1362,11 +1382,11 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "MatrioshkaBrain": {
          const extraLevel = getWonderExtraLevel(building.type);
          Tick.next.globalMultipliers.sciencePerBusyWorker.push({
-            value: 5 + (building.level - 1 + extraLevel),
+            value: (5 + (building.level - 1 + extraLevel)) * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1),
             source: buildingName,
          });
          Tick.next.globalMultipliers.sciencePerIdleWorker.push({
-            value: 5 + (building.level - 1 + extraLevel),
+            value: (5 + (building.level - 1 + extraLevel)) * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1),
             source: buildingName,
          });
          const hq = Tick.current.specialBuildings.get("Headquarter");
@@ -1379,14 +1399,14 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          if (building.level + extraLevel > 1) {
             forEach(Config.Building, (b, def) => {
                if (def.output.Science) {
-                  addMultiplier(b, { output: building.level - 1 + extraLevel }, buildingName);
+                  addMultiplier(b, { output: (building.level - 1 + extraLevel) * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) }, buildingName);
                }
             });
          }
          break;
       }
       case "LargeHadronCollider": {
-         const level = 2 + building.level - 1;
+         const level = (2 + building.level - 1) * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1);
          forEach(Config.GreatPerson, (p, def) => {
             if (def.age === "InformationAge") {
                def.tick(p, level, `${buildingName}: ${def.name()}`, GreatPersonTickFlag.None);
@@ -1395,7 +1415,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "OsakaCastle": {
-         for (const point of grid.getRange(tileToPoint(xy), 1)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingLevelStack)) {
             Tick.next.powerPlants.add(pointToTile(point));
          }
          break;
@@ -1558,7 +1578,9 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "YearOfTheSnake": {
          for (const point of grid.getRange(tileToPoint(xy), 2)) {
             mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {
-               output: building.level,
+               // Modified by Lydia
+               output: buildingLevelStack,
+               levelBoost: buildingLevelStack,
                source: buildingName,
             });
          }
@@ -1582,18 +1604,26 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "TowerBridge": {
-         safeAdd(building.resources, "Cycle", isFestival("TowerBridge", gs) ? 1.2 : 1);
+         safeAdd(building.resources, "Cycle", (isFestival("TowerBridge", gs) ? 1.2 : 1) * buildingLevelStack);
          let hasGreatPeople = false;
+         let count = 0;
+         let countAuto = 0;
          while ((building.resources.Cycle ?? 0) >= TOWER_BRIDGE_GP_PER_CYCLE) {
             safeAdd(building.resources, "Cycle", -TOWER_BRIDGE_GP_PER_CYCLE);
+            count++;
             const candidates1 = rollGreatPeopleThisRun(
                getUnlockedTechAges(gs),
                gs.city,
                getGreatPeopleChoiceCount(gs),
             );
             if (candidates1) {
-               gs.greatPeopleChoicesV2.push(candidates1);
-               hasGreatPeople = true;
+               if (GLOBAL_PARAMS.GP_AUTO_CHOICE_AFTER > 0 && count >= GLOBAL_PARAMS.GP_AUTO_CHOICE_AFTER) {
+                  safeAdd(gs.greatPeople, candidates1.choices[0], candidates1.amount);
+                  countAuto++;
+               } else {
+                  gs.greatPeopleChoicesV2.push(candidates1);
+                  hasGreatPeople = true;
+               }
             }
          }
          if (hasGreatPeople && !hasOpenModal()) {
@@ -1654,7 +1684,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          }
          for (const point of grid.getRange(tileToPoint(xy), 2)) {
             mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {
-               storage: building.level,
+               storage: buildingLevelStack,
                source: buildingName,
             });
          }
@@ -1663,15 +1693,23 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "Louvre": {
          const louvre = building as ILouvreBuildingData;
          const greatPeopleAtRebirth = getRebirthGreatPeopleCount();
+         let count = 0;
+         let countAuto = 0;
          while (louvre.greatPeopleCount < Math.floor(greatPeopleAtRebirth / 10)) {
             ++louvre.greatPeopleCount;
+            count++;
             const candidates = rollGreatPeopleThisRun(
                getUnlockedTechAges(gs),
                gs.city,
                getGreatPeopleChoiceCount(gs),
             );
             if (candidates) {
-               gs.greatPeopleChoicesV2.push(candidates);
+               if (GLOBAL_PARAMS.GP_AUTO_CHOICE_AFTER > 0 && count >= GLOBAL_PARAMS.GP_AUTO_CHOICE_AFTER) {
+                  safeAdd(gs.greatPeople, candidates.choices[0], candidates.amount);
+                  countAuto++;
+               } else {
+                  gs.greatPeopleChoicesV2.push(candidates);
+               }
             }
             if (!hasOpenModal() && gs.greatPeopleChoicesV2.length > 0) {
                playAgeUp();
@@ -1766,7 +1804,8 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                resource,
                (10_000_000 *
                   multiplier *
-                  (building.level + (Tick.current.electrified.get(xy) ?? 0) + levelBoost)) /
+                  (building.level + (Tick.current.electrified.get(xy) ?? 0) + levelBoost)) *
+                  (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) /
                   price,
                Array.from(Tick.current.playerTradeBuildings.keys()),
                gs,

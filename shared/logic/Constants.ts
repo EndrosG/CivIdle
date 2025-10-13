@@ -66,6 +66,28 @@ export const TRADE_TILE_NEIGHBOR_BONUS = 1;
 export const TRADE_TILE_ALLY_BONUS = 2;
 export const DISABLED_TEMPORARILY_DURING_BETA = true;
 
+export const GLOBAL_PARAMS = {
+  BUILDINGS_HIGH_LEVEL: 25,		// defaults: vanilla: infinite ; lmc: 32 ; lmc_lydia: 29, works better for me than 32 if I tend to upgrade to 30 only before stacking
+  CARAVANSARIES_USE_EVERYTHING: true,		// defaults: vanilla: false ; lmc: true ; lmc_lydia: true
+
+  CARAVANSARIES_EXTRA_RANGE: 0,			// defaults: vanilla: 0 ; lmc: 0 ; lmc_lydia: 0
+//  CARAVANSARIES_USE_SWISSBANK: false,		// defaults: vanilla: false ; lmc: false ; lmc_lydia: false
+  DEBUG_DOWNGRADING: false,
+  SHOW_DOWNGRADING: true,		// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
+  DEBUG_STACKING: false,
+  SHOW_STACKING: true,		// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
+  USE_STACKING: true,		// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
+  WONDER_STACKING: true,	// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
+  DEBUG_HIDDEN: true,		// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
+  GP_IGNORE_PROMOTION: true,		// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
+  // ignores GP type "promote"
+  GP_AUTO_CHOICE_AFTER: 10,		// defaults: vanilla: infinite ; lmc: infinite ; lmc_lydia: 500, but 10 from UserScript
+  NAR_MULTI: 1,		// defaults: vanilla: 0, lmc: 0, lmc_lydia: 1 -- wonder only exists in lmc_lydia
+  PALM_JUMEIRAH_MULTI: 1,
+  MARINA_BAY_SANDS_MULTI: 1,
+};
+
+
 interface IRecipe {
    building: Building;
    input: PartialTabulate<Resource>;

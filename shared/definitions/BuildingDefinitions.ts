@@ -15,6 +15,9 @@ export interface IBuildingDefinition {
    output: PartialTabulate<Resource>;
    vision?: number;
    deposit?: PartialSet<Deposit>;
+   range?: number,
+   importCapacity?: number,
+   storageCapacity?: number,
    power?: true;
    max?: number;
    wikipedia?: string;
@@ -812,20 +815,141 @@ export class BuildingDefinitions {
       input: {},
       output: {},
       construction: { Brick: 1, Horse: 1, Tool: 1 },
+      range: 1,
+      importCapacity: 1,
+      storageCapacity: 1,
+   };
+   Caravansary2: IBuildingDefinition = {
+      name: () => t(L.Caravansary2),
+      desc: () => t(L.CaravansaryDesc),
+      input: {},
+      output: {},
+      construction: { Train: 1, Engine: 1, Coal: 2, Steel: 2, Brick: 2, Horse: 3, Lumber: 3 },
+      range: 1,
+      importCapacity: 2,
+      storageCapacity: 5,
+   };
+   Caravansary3: IBuildingDefinition = {
+      name: () => t(L.Caravansary3),
+      desc: () => t(L.CaravansaryDesc),
+      input: {},
+      output: {},
+      construction: { Airplane: 3, Train: 3, Car: 3, Computer: 3, ReinforcedConcrete: 10, Engine: 10, Steel: 10 },
+      range: 2,
+      importCapacity: 10,
+      storageCapacity: 25,
+      power: true,
+   };
+   Caravansary4: IBuildingDefinition = {
+      name: () => t(L.Caravansary4),
+      desc: () => t(L.CaravansaryDesc),
+      input: {},
+      output: {},
+      construction: { Maglev: 5, Train: 10, Robocar: 2, Supercomputer: 2, ReinforcedConcrete: 20, Engine: 20, Rebar: 20 },
+      range: 3,
+      importCapacity: 40,
+      storageCapacity: 100,
+      power: true,
    };
    Market: IBuildingDefinition = {
       name: () => t(L.Market),
+      desc: () => t(L.MarketDesc),
       input: {},
       output: {},
-      desc: () => t(L.MarketDesc),
       construction: { Brick: 2, Copper: 2, Lumber: 2 },
+      importCapacity: 1,
+      storageCapacity: 10,		// vanilla client says: market has 10x storage
    };
    Warehouse: IBuildingDefinition = {
       name: () => t(L.Warehouse),
+      desc: () => t(L.WarehouseDesc),
       input: {},
       output: {},
-      desc: () => t(L.WarehouseDesc),
       construction: { Lumber: 1, Brick: 1, Horse: 1 },
+      range: 1,
+      importCapacity: 1,
+      storageCapacity: 10,		// vanilla client says: warehouse has 10x storage
+   };
+   Warehouse2: IBuildingDefinition = {
+      name: () => t(L.Warehouse2),
+      desc: () => t(L.WarehouseDesc),
+      input: {},
+      output: {},
+      construction: { Engine: 2, Steel: 2, Brick: 5, Horse: 5, Lumber: 5 },
+      range: 1,
+      importCapacity: 2,
+      storageCapacity: 50,
+   };
+   Warehouse3: IBuildingDefinition = {
+      name: () => t(L.Warehouse3),
+      desc: () => t(L.WarehouseDesc),
+      input: {},
+      output: {},
+      construction: { Maglev: 1, Train: 1, Robocar: 1, Supercomputer: 1, ReinforcedConcrete: 10, Engine: 10, Rebar: 10 },
+      range: 2,
+      importCapacity: 10,
+      storageCapacity: 250,
+      power: true,
+   };
+
+   DysonHabitat: IBuildingDefinition = {
+      name: () => t(L.DysonHabitat),
+      input: { Maglev: 1, Internet: 5, Computer: 5, Politics: 2, Culture: 50, Philosophy: 20, Garment: 16, Wheat: 100, Water: 110, MutualFund: 1, Stock: 1, Bond: 1 },
+      output: { Worker: 2500000 },
+      max: 12,
+      power: true,
+   };
+   DysonHabitat2: IBuildingDefinition = {
+      name: () => t(L.DysonHabitat2),
+      input: { Water: 1000, Wheat: 500, Maglev: 1, Internet: 4, Software: 1, Computer: 4, Politics: 10, Law: 10, Culture: 100, Philosophy: 60, Book: 40, Opera: 10, Faith: 20, Music: 40, Painting: 40, Garment: 8, Marble: 1, Furniture: 4, Cloth: 5, Tool: 3, Lumber: 5, Brick: 1, Wood: 5, Stone: 1, MutualFund: 1, Stock: 1, Bond: 1, Gold: 1 },
+      output: { Worker: 3000000 },
+      max: 12,
+      power: true,
+   };
+   WirecardAG: IBuildingDefinition = {
+      name: () => t(L.WirecardAG),
+      input: { Stock: 5, Forex: 0.975, Bond: 1, MutualFund: 1, Gold: 0.333, Internet: 1, Software: 2, Computer: 5, Garment: 1 },
+      output: { Koti: 0.1 },
+      max: 1,
+      power: true,
+   };
+   NuclearArmsRace: IBuildingDefinition = {
+      name: () => t(L.NuclearArmsRace),
+      desc: () => t(L.NuclearArmsRaceDesc),
+      input: {},
+      output: {},
+      construction: { AircraftCarrier: 10, NuclearSubmarine: 10, NuclearMissile: 10, Satellite: 30, FighterJet: 100, AtomicBomb: 100, Rocket: 200, Artillery: 300, Tank: 400 },
+      max: 1,
+      special: 1,
+      wikipedia: "Nuclear_arms_race",
+   };
+   Retreat1: IBuildingDefinition = {
+      name: () => t(L.Retreat1),
+      desc: () => t(L.Retreat1Desc),
+      input: { Philosophy: 300, Faith: 100, Culture: 100, Water: 20, Wheat: 20 },
+      output: { Wisdom: 1 },
+      construction: { Philosophy: 300, Faith: 100, Culture: 100, Science: 500 },
+      wikipedia: "Retreat_(spiritual)",
+   };
+   Retreat2: IBuildingDefinition = {
+      name: () => t(L.Retreat2),
+      desc: () => t(L.Retreat2Desc),
+      input: {},
+      output: {},
+      construction: { Wisdom: 100 },
+      max: 1,
+      special: 1,
+      wikipedia: "Ascension",
+      power: true,
+   };
+   ZPMLab: IBuildingDefinition = {
+      name: () => t(L.ZPMLab),
+      input: {},
+      output: { Power: 1e6 },
+      construction: { Rebar: 1000, ReinforcedConcrete: 1000, Supercomputer: 1000, Wisdom: 1000 },
+      max: 3,
+      wikipedia: "Zero-point_energy",
+      power: true,
    };
    CloneFactory: IBuildingDefinition = {
       name: () => t(L.CloneFactory),
