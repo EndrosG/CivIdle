@@ -1,4 +1,3 @@
-import { addSystemMessage } from "../../src/scripts/rpc/RPCClient";
 import type { Building } from "../definitions/BuildingDefinitions";
 import type { IUnlockable } from "../definitions/ITechDefinition";
 import { NoPrice, NoStorage, type Resource } from "../definitions/ResourceDefinitions";

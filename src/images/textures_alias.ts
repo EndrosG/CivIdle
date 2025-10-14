@@ -1,4 +1,4 @@
-{
+export const TextureAliases = {
     "Building_DysonHabitat": "Building_Apartment",
     "Building_DysonHabitat2": "Building_Apartment",
     "Building_WirecardAG": "Building_MutualFund",
@@ -12,6 +12,10 @@
     "Building_Retreat2": "Building_Villa",
     "Building_ZPMLab": "Building_SupercomputerLab",
 
-    "Person_JanMarsalek": "Person_HarryMarkowitz",
-    "Person_MarkusBraun": "Person_HarryMarkowitz"
+    "Person_JanMarsalek": "Person_EnricoFermi",
+    "Person_MarkusBraun": "Person_EnricoFermi",
 }
+//    "Person_JanMarsalek": "Person_HarryMarkowitz",
+//    "Person_MarkusBraun": "Person_HarryMarkowitz",
+
+// export type TextureAlias = keyof TextureAliases;

@@ -26,6 +26,7 @@ import {
 import { L, t } from "../../../shared/utilities/i18n";
 import { useGameState } from "../Global";
 import { AccountLevelNames } from "../logic/AccountLevel";
+import { PendingClaims } from "../logic/PendingClaim";
 import { client, useTrades, useUser } from "../rpc/RPCClient";
 import { getCountryName } from "../utilities/CountryCode";
 import { useForceUpdate } from "../utilities/Hook";
@@ -41,7 +42,6 @@ import { FormatNumber } from "./HelperComponents";
 import { PendingClaimModal } from "./PendingClaimModal";
 import { RenderHTML } from "./RenderHTMLComponent";
 import { AccountLevelComponent, MiscTextureComponent, PlayerFlagComponent } from "./TextureSprites";
-import { PendingClaims } from "../logic/PendingClaim";
 
 const savedResourceWantFilters: Set<Resource> = new Set();
 const savedResourceOfferFilters: Set<Resource> = new Set();
@@ -526,6 +526,20 @@ function PlayerTradeFilterModal({
                         }}
                         onClick={(e) => (e.target as HTMLInputElement)?.select()}
                      />
+                  </div>
+                  <div className="row">
+                     <button className="f1 p0" onClick={(e) => { savedMaxTradeAmountFilter = 1e6; forceUpdate(); applyFilters(); }}>
+                        1M
+                     </button>
+                     <button className="f1 p0" onClick={(e) => { savedMaxTradeAmountFilter = 1e7; forceUpdate(); applyFilters(); }}>
+                        10M
+                     </button>
+                     <button className="f1 p0" onClick={(e) => { savedMaxTradeAmountFilter = 1e8; forceUpdate(); applyFilters(); }}>
+                        100M
+                     </button>
+                     <button className="f1 p0" onClick={(e) => { savedMaxTradeAmountFilter = 1e9; forceUpdate(); applyFilters(); }}>
+                        1B
+                     </button>
                   </div>
                   <div className="sep5" />
                   <div>{t(L.AccountLevel)}</div>

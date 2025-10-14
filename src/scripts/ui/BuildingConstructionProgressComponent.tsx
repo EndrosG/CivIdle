@@ -28,7 +28,7 @@ export function BuildingConstructionProgressComponent({
       return null;
    }
    const { base, multiplier, total } = getBuilderCapacity(building, xy, gameState);
-   const { cost, percent, secondsLeft } = getBuildingPercentage(xy, gameState);
+   const { cost, maxCost, percent, secondsLeft } = getBuildingPercentage(xy, gameState);
    const enabledResourceCount = sizeOf(cost) - building.suspendedInput.size;
    const builderCapacityPerResource = enabledResourceCount > 0 ? total / enabledResourceCount : 0;
    return (
@@ -56,7 +56,11 @@ export function BuildingConstructionProgressComponent({
                            {t(L.Capacity)}
                         </TextWithHelp>
                      </th>
-                     <th className="text-right">{t(L.ConstructionDelivered)}</th>
+                     <th className="text-right">
+                        <TextWithHelp content={t(L.ConstructionDeliveredTooltip)}>
+                           {t(L.ConstructionDelivered)}
+                        </TextWithHelp>
+                     </th>
                   </tr>
                   {jsxMapOf(cost, (res, value) => {
                      return (
@@ -93,6 +97,12 @@ export function BuildingConstructionProgressComponent({
                               <FormatNumber value={value} />
                               <span className="text-desc ml5">
                                  {formatPercent((building.resources[res] ?? 0) / value)}
+                              </span>
+                              <br />
+                              <FormatNumber value={building.resources[res] ?? 0} />/
+                              <FormatNumber value={maxCost[res]} />
+                              <span className="text-desc ml5">
+                                 {formatPercent((building.resources[res] ?? 0) / (maxCost[res] ? maxCost[res] : value))}
                               </span>
                            </td>
                         </tr>

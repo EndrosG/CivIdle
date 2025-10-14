@@ -1,7 +1,8 @@
 import Tippy from "@tippyjs/react";
 import classNames from "classnames";
-import { isBuildingUpgradable, isWorldWonder } from "../../../shared/logic/BuildingLogic";
+import { isBuildingUpgradable, isSpecialBuilding, isWorldWonder } from "../../../shared/logic/BuildingLogic";
 import { Config } from "../../../shared/logic/Config";
+import { GLOBAL_PARAMS } from "../../../shared/logic/Constants";
 import { GameFeature, hasFeature } from "../../../shared/logic/FeatureLogic";
 import { notifyGameStateUpdate } from "../../../shared/logic/GameStateLogic";
 import { getBuildingsByType } from "../../../shared/logic/IntraTickCache";
@@ -33,17 +34,17 @@ export function ConstructionPage({ tile }: { tile: ITileData }): React.ReactNode
    const canDecreaseDesiredLevel = () => building.desiredLevel > building.level + 1;
 
    const increaseDesiredLevel = () => {
-      if (!isBuildingUpgradable(building.type)) {
-         return;
-      }
+      /*      if (!isBuildingUpgradable(building.type)) {
+               return;
+            } */
       playClick();
       building.desiredLevel++;
       notifyGameStateUpdate();
    };
    const decreaseDesiredLevel = () => {
-      if (!isBuildingUpgradable(building.type)) {
-         return;
-      }
+      /*      if (!isBuildingUpgradable(building.type)) {
+               return;
+            } */
       if (canDecreaseDesiredLevel()) {
          playClick();
          building.desiredLevel--;
@@ -52,6 +53,21 @@ export function ConstructionPage({ tile }: { tile: ITileData }): React.ReactNode
    };
    useShortcut("UpgradePageIncreaseLevel", () => increaseDesiredLevel(), [tile]);
    useShortcut("UpgradePageDecreaseLevel", () => decreaseDesiredLevel(), [tile]);
+
+   // Added by Lydia
+   const canDecreaseDesiredStack = () => building.desiredStack > building.stack + 1;
+   const increaseDesiredStack = () => {
+      playClick();
+      building.desiredStack++;
+      notifyGameStateUpdate();
+   };
+   const decreaseDesiredStack = () => {
+      if (canDecreaseDesiredStack()) {
+         playClick();
+         building.desiredStack--;
+         notifyGameStateUpdate();
+      }
+   };
 
    return (
       <div className="window">
@@ -62,7 +78,47 @@ export function ConstructionPage({ tile }: { tile: ITileData }): React.ReactNode
                <BuildingDescriptionComponent gameState={gs} xy={tile.tile} />
             ) : null}
             <BuildingConstructionProgressComponent xy={tile.tile} gameState={gs} />
-            {isBuildingUpgradable(building.type) ? (
+            {isSpecialBuilding(building.type) && !GLOBAL_PARAMS.WONDER_STACKING ? null : (building.status === "stacking") ? (
+               <fieldset>
+                  <legend>{t(L.Level)}</legend>
+                  <div className="row text-strong">
+                     <div className="f1 text-large">
+                        {building.stack > 0 ? building.stack : <div className="m-icon">construction</div>}
+                     </div>
+                     <div className="m-icon">keyboard_double_arrow_right</div>
+                     <div
+                        className="f1 row jce"
+                        onWheel={(e) => {
+                           if (e.deltaY < 0) {
+                              increaseDesiredStack();
+                           }
+                           if (e.deltaY > 0 && canDecreaseDesiredStack()) {
+                              decreaseDesiredStack();
+                           }
+                        }}
+                     >
+                        <div
+                           className={classNames({
+                              "m-icon mr5": true,
+                              "text-link": canDecreaseDesiredStack(),
+                              "text-desc": !canDecreaseDesiredStack(),
+                           })}
+                           onClick={() => decreaseDesiredStack()}
+                        >
+                           indeterminate_check_box
+                        </div>
+                        <Tippy content={t(L.ScrollWheelAdjustLevelTooltip)}>
+                           <div className="text-large text-center" style={{ width: "40px" }}>
+                              {building.desiredStack}
+                           </div>
+                        </Tippy>
+                        <div className="m-icon ml5 text-link" onClick={() => increaseDesiredStack()}>
+                           add_box
+                        </div>
+                     </div>
+                  </div>
+               </fieldset>
+            ) : isBuildingUpgradable(building.type) ? (
                <fieldset>
                   <legend>{t(L.Level)}</legend>
                   <div className="row text-strong">
@@ -105,7 +161,7 @@ export function ConstructionPage({ tile }: { tile: ITileData }): React.ReactNode
             ) : null}
             {!isWorldWonder(building.type) && building.level > 0 ? (
                <WarningComponent className="mb10 text-small" icon="warning">
-                  <RenderHTML html={t(L.UpgradeBuildingNotProducingDescV2)} />
+                  <RenderHTML html={building.status === "downgrading" ? t(L.DowngradeBuildingNotProducingDescV2) : t(L.UpgradeBuildingNotProducingDescV2)} />
                </WarningComponent>
             ) : null}
             {hasFeature(GameFeature.BuildingProductionPriority, gs) ? (

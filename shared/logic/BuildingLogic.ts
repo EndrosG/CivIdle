@@ -573,7 +573,9 @@ export function getTotalBuildingCost(
       forEach(cost, (res, amount) => safeAdd(result, res, amount));
       ++start.level;
    }
-   totalBuildingCostCache.set(hash, Object.freeze(result));
+   if (currentStack === 1) {
+      totalBuildingCostCache.set(hash, Object.freeze(result));
+   }
    return result;
 }
 
@@ -747,9 +749,9 @@ export function getBuildingLevelLabel(xy: Tile, gs: GameState): string {
       } else if (BuildingShowLevel.has(b.type) || b.level > 1 || b.stack > 1) {
          const extraLevel = getWonderExtraLevel(b.type);
          if (GLOBAL_PARAMS.SHOW_STACKING && b.stack > 1) {
-            return extraLevel > 0 ? `${formatNumber(b.stack)}x${b.level}+${extraLevel}` : `${formatNumber(b.stack)}x${b.level}`;
+            return extraLevel > 0 ? `${formatNumber(b.stack)}x${b.level}+${formatNumber(extraLevel)}` : `${formatNumber(b.stack)}x${b.level}`;
          }
-         return extraLevel > 0 ? `${b.level}+${extraLevel}` : String(b.level);
+         return extraLevel > 0 ? `${b.level}+${formatNumber(extraLevel)}` : String(b.level);
       } else {
          return "";
       }
@@ -759,10 +761,10 @@ export function getBuildingLevelLabel(xy: Tile, gs: GameState): string {
    Tick.current.levelBoost.get(xy)?.forEach((lb) => {
       levelBoost += lb.value;
    });
-   if (levelBoost > 0) {
-      return `${b.level}+${levelBoost}`;
+   if (GLOBAL_PARAMS.SHOW_STACKING && b.stack > 1) {
+      return levelBoost > 0 ? `${formatNumber(b.stack)}x${b.level}+${formatNumber(levelBoost)}` : `${formatNumber(b.stack)}x${b.level}`;
    }
-   return String(b.level);
+   return levelBoost > 0 ? `${b.level}+${formatNumber(levelBoost)}` : String(b.level);
 }
 
 function getNextLevel(currentLevel: number, x: number) {

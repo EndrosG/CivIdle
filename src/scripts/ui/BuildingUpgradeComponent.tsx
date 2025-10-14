@@ -186,15 +186,15 @@ export function BuildingUpgradeComponent({ gameState, xy }: IBuildingComponentPr
          const newStack = idx === 0 ? b.stack + 1 : stack;
          // similar to "stacking" section I here need to calculate differently with fullCost - prevCost
          mapOf(getTotalBuildingCost(b, 0, b.level, newStack), (res, amount) => {
-            if (res in resCost) {
-               resCost[res] = resCost[res]! + amount;
+            if (resCost[res]) {
+               resCost[res] += amount;
             } else {
                resCost[res] = amount;
             }
          });
          mapOf(getTotalBuildingCost(b, 0, b.level, b.stack), (res, amount) => {
-            if (res in resCost) {
-               resCost[res] = resCost[res]! - amount;
+            if (resCost[res]) {
+               resCost[res] -= amount;
             } else {
                resCost[res] = -amount;
             }
@@ -306,8 +306,8 @@ export function BuildingUpgradeComponent({ gameState, xy }: IBuildingComponentPr
                </div>
                {GLOBAL_PARAMS.SHOW_STACKING && building.stack > 1 ? (
                <div className="f1 text-center">
-                  <div className="text-strong text-large">{building.level}</div>
-                  <div className="text-small text-desc">{t(L.Level)}</div>
+                  <div className="text-strong text-large">{building.stack}</div>
+                  <div className="text-small text-desc">{t(L.Stack)}</div>
                </div>
                ) : null}
                {Config.BuildingTier[building.type]? (

@@ -86,6 +86,7 @@ export const GLOBAL_PARAMS = {
   PALM_JUMEIRAH_MULTI: 1,
   MARINA_BAY_SANDS_MULTI: 1,
 };
+globalThis.GLOBAL_PARAMS = GLOBAL_PARAMS;
 
 
 interface IRecipe {

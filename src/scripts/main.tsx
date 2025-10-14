@@ -8,7 +8,8 @@ import "../css/Main.css";
 import CabinMedium from "../fonts/CabinMedium.ttf?url";
 import OldTypefaces from "../fonts/OldTypefaces.ttf";
 import Platypi from "../fonts/Platypi-Medium.ttf";
-import TextureAlias from "../images/textures_alias.json";
+// import TextureAlias from "../images/textures_alias.json";
+import { TextureAliases } from "../images/textures_alias";
 import TextureBuildingDef from "../images/textures_building.json";
 import TextureBuilding from "../images/textures_building.png";
 import TextureFlagDef from "../images/textures_flag.json";
@@ -170,9 +171,11 @@ export async function loadBundle() {
          // }
       }
    });
-   TextureAlias.forEach((dest, source) => {
+   for (const dest in TextureAliases) {
+      const source = TextureAliases[dest];
       textures[dest] = textures[source];
-   });
+
+   }
    console.timeEnd("Load Sprite sheets");
 
    return { main, textures };

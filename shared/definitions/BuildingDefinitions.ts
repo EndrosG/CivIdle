@@ -858,7 +858,7 @@ export class BuildingDefinitions {
       output: {},
       construction: { Brick: 2, Copper: 2, Lumber: 2 },
       importCapacity: 1,
-      storageCapacity: 10,		// vanilla client says: market has 10x storage
+      storageCapacity: 1e4,		// vanilla client says: market has 10x storage // lmc has multipliers // lydia worked with * 1000
    };
    Warehouse: IBuildingDefinition = {
       name: () => t(L.Warehouse),
