@@ -40,6 +40,7 @@ import {
    getGrid,
    getXyBuildings,
 } from "./IntraTickCache";
+import { LogicResult } from "./LogicResult";
 import { getGreatPersonTotalLevel } from "./RebirthLogic";
 import { getBuildingsThatProduce, getResourcesValue } from "./ResourceLogic";
 import { getAgeForTech, getBuildingUnlockTech, getCurrentAge } from "./TechLogic";
@@ -301,27 +302,27 @@ export function getStorageFor(xy: Tile, gs: GameState): IStorageResult {
       default: {
          base =
             60 *
-               reduceOf(
-                  getBuildingIO(
-                     xy,
-                     "input",
-                     IOFlags.Multiplier | IOFlags.StableOnly | IOFlags.IgnoreLevelBoost,
-                     gs,
-                  ),
-                  accumulate,
-                  0,
-               ) +
+            reduceOf(
+               getBuildingIO(
+                  xy,
+                  "input",
+                  IOFlags.Multiplier | IOFlags.StableOnly | IOFlags.IgnoreLevelBoost,
+                  gs,
+               ),
+               accumulate,
+               0,
+            ) +
             STORAGE_TO_PRODUCTION *
-               reduceOf(
-                  getBuildingIO(
-                     xy,
-                     "output",
-                     IOFlags.Multiplier | IOFlags.StableOnly | IOFlags.IgnoreLevelBoost,
-                     gs,
-                  ),
-                  accumulate,
-                  0,
-               );
+            reduceOf(
+               getBuildingIO(
+                  xy,
+                  "output",
+                  IOFlags.Multiplier | IOFlags.StableOnly | IOFlags.IgnoreLevelBoost,
+                  gs,
+               ),
+               accumulate,
+               0,
+            );
          break;
       }
    }
@@ -531,12 +532,12 @@ export function getBuildingCost(building: BuildingCostInput): PartialTabulate<Re
       }
       keysOf(cost).forEach((res) => {
          const price = Config.ResourcePrice[res] ?? 1;
-         cost[res] = (Math.pow(1.5, building.level) * stack * (Math.floor(Math.log10(stack) * 100)/1000 + 1) * multiplier * cost[res]!) / price;
+         cost[res] = (Math.pow(1.5, building.level) * stack * (Math.floor(Math.log10(stack) * 100) / 1000 + 1) * multiplier * cost[res]!) / price;
       });
    } else {
       const multiplier = 10;
       keysOf(cost).forEach((res) => {
-         cost[res] = Math.pow(1.5, building.level) * stack * (Math.floor(Math.log10(stack) * 100)/1000 + 1) * multiplier * cost[res]!;
+         cost[res] = Math.pow(1.5, building.level) * stack * (Math.floor(Math.log10(stack) * 100) / 1000 + 1) * multiplier * cost[res]!;
       });
    }
    return cost;
@@ -590,8 +591,8 @@ export function getWonderCostMultiplier(type: Building): number {
    }
    const multiplier = Math.round(
       300 +
-         10 * Math.pow(ageIdx, 3) * Math.pow(techIdx, 2) +
-         (100 * Math.pow(5, ageIdx) * Math.pow(1.5, techIdx)) / Math.pow(techIdx, 2),
+      10 * Math.pow(ageIdx, 3) * Math.pow(techIdx, 2) +
+      (100 * Math.pow(5, ageIdx) * Math.pow(1.5, techIdx)) / Math.pow(techIdx, 2),
    );
    return multiplier;
 }
@@ -696,7 +697,7 @@ export function getBuildingPercentage(xy: Tile, gs: GameState): BuildingPercenta
          const { total } = getBuilderCapacity(building, xy, gs);
 
          const prevCost = getTotalBuildingCost(building, 0, building.level, building.stack);
-         const newCost = getTotalBuildingCost(building, 0, building.level, building.stack+1);
+         const newCost = getTotalBuildingCost(building, 0, building.level, building.stack + 1);
          const fullCost = getTotalBuildingCost(building, 0, building.level, building.desiredStack);
          const cost = {};
          const maxCost = {};
@@ -741,6 +742,8 @@ export function getBuildingLevelLabel(xy: Tile, gs: GameState): string {
    if (isWorldOrNaturalWonder(b.type)) {
       if (b.type === "SwissBank") {
          // Swiss Bank is a special case, we show the level boost (below)
+      } else if (b.type === "BranCastle") {
+         return String(LogicResult.branCastleLevel);
       } else if (BuildingShowLevel.has(b.type) || b.level > 1 || b.stack > 1) {
          const extraLevel = getWonderExtraLevel(b.type);
          if (GLOBAL_PARAMS.SHOW_STACKING && b.stack > 1) {
@@ -773,7 +776,7 @@ export function getUpgradeTargetLevels(b: IBuildingData): number[] {
 
 // Added by Lydia
 export function getDowngradeTargetLevels(b: IBuildingData): number[] {
-   return [b.level - 1, b.level - 2, Math.floor((b.level -3) / 5) * 5];
+   return [b.level - 1, b.level - 2, Math.floor((b.level - 3) / 5) * 5];
 }
 
 // Added by Lydia
@@ -1444,4 +1447,8 @@ const UpgradableWorldWonders = new Set<Building>([
 
 export function isBuildingUpgradable(building: Building): boolean {
    return !isSpecialBuilding(building) || UpgradableWorldWonders.has(building);
+}
+
+export function getBranCastleRequiredWorkers(level: number): number {
+   return 1000 * 2 ** level;
 }

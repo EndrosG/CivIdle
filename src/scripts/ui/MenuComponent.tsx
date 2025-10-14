@@ -1,11 +1,14 @@
 import classNames from "classnames";
 import type { PropsWithChildren } from "react";
 import { useEffect, useRef, useState } from "react";
+import { isHalloween } from "../../../shared/definitions/TimedBuildingUnlock";
 import { DISCORD_URL, SUPPORTER_PACK_URL } from "../../../shared/logic/Constants";
 import { Tick } from "../../../shared/logic/TickLogic";
 import { isSaveOwner } from "../../../shared/utilities/DatabaseShared";
 import { isNullOrUndefined, sizeOf } from "../../../shared/utilities/Helper";
 import { L, t } from "../../../shared/utilities/i18n";
+import Bat from "../../images/Bat.svg";
+import SpiderWeb from "../../images/SpiderWeb.svg";
 import { compressSave, saveGame, useFloatingMode } from "../Global";
 import { client, usePlatformInfo, useUser } from "../rpc/RPCClient";
 import { SteamClient, isSteam } from "../rpc/SteamClient";
@@ -78,6 +81,7 @@ export function MenuComponent(): React.ReactNode {
          window.removeEventListener("pointerdown", onPointerDown);
       };
    }, []);
+   const now = new Date();
    return (
       <>
          <div className="menus">
@@ -295,8 +299,8 @@ export function MenuComponent(): React.ReactNode {
                      className="menu-popover-item"
                      onPointerDown={() => {
                         const userId = user?.userId ?? "Unknown Id";
-                        const tag = `(CivIdle/${userId}/${user?.handle ?? "Unknown Handle"})`;
-                        const subject = `Your Subject Here ${tag}`;
+                        const tag = `(${user?.handle ?? "Unknown Handle"}/${userId})`;
+                        const subject = `CivIdle In-Game Message ${tag}`;
                         const body = [
                            "Please provide as much details as possible (step-by-step reproductions, screenshots, screen recording, etc)\n",
                            "----- Keep the following tag for identification -----",
@@ -365,6 +369,31 @@ export function MenuComponent(): React.ReactNode {
                   </div>
                </div>
             </div>
+            {isHalloween(now) ? (
+               <img
+                  src={SpiderWeb}
+                  style={{
+                     position: "absolute",
+                     top: -25,
+                     right: 50,
+                     zIndex: 1,
+                     pointerEvents: "none",
+                     width: 80,
+                  }}
+               />
+            ) : null}
+            {isHalloween(now) ? (
+               <img
+                  src={Bat}
+                  style={{
+                     position: "absolute",
+                     top: -20,
+                     right: 200,
+                     zIndex: 1,
+                     pointerEvents: "none",
+                  }}
+               />
+            ) : null}
          </div>
          <div className="separator"></div>
       </>

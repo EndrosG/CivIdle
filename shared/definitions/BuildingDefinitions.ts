@@ -1002,7 +1002,7 @@ export class BuildingDefinitions {
    // #region Natural Wonders ////////////////////////////////////////////////////////////////////////////////
    Alps: IBuildingDefinition = {
       name: () => t(L.Alps),
-      desc: () => t(L.AlpsDesc),
+      desc: () => t(L.AlpsDescV2),
       input: {},
       output: {},
       construction: {},
@@ -1405,7 +1405,7 @@ export class BuildingDefinitions {
    };
    GreatSphinx: IBuildingDefinition = {
       name: () => t(L.GreatSphinx),
-      desc: () => t(L.GreatSphinxDesc),
+      desc: () => t(L.GreatSphinxDescV2),
       input: {},
       output: {},
       max: 1,
@@ -1448,7 +1448,7 @@ export class BuildingDefinitions {
       desc: () => t(L.UnitedNationsDescV2),
       input: {},
       output: {},
-      construction: { Politics: 100, Law: 100, Diplomacy: 100 },
+      construction: { Politics: 100, Tank: 100, Diplomacy: 100 },
       max: 1,
       special: BuildingSpecial.WorldWonder,
       wikipedia: "United_Nations",
@@ -2315,6 +2315,17 @@ export class BuildingDefinitions {
       max: 0,
       special: BuildingSpecial.NaturalWonder,
       wikipedia: "Sundarbans",
+   };
+
+   BranCastle: IBuildingDefinition = {
+      name: () => t(L.BranCastle),
+      desc: () => t(L.BranCastleDescV2),
+      input: {},
+      output: {},
+      construction: { Coin: 100, Faith: 100, Knight: 100 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "Bran_Castle",
    };
 
    // #endregion /////////////////////////////////////////////////////////////////////////////////////////////
