@@ -94,6 +94,10 @@ export function getPlayerMap() {
 
 let ws: WebSocket | null = null;
 
+export function isConnected(): boolean {
+   return ws?.readyState === WebSocket.OPEN;
+}
+
 export const client = rpcClient<ServerImpl>({
    request: (method: string, params: any[]) => {
       return new Promise((resolve, reject) => {
@@ -128,6 +132,10 @@ export function getTrades(): IClientTrade[] {
       }
       return false;
    });
+}
+
+export function getTradeCount(): number {
+   return trades.size;
 }
 
 export const usePlayerMap = makeObservableHook(OnPlayerMapChanged, () => playerMap);
