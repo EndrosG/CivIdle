@@ -56,6 +56,8 @@ const BuildingBodyOverride: Partial<Record<Building, FunctionComponent<IBuilding
    Warehouse2: WarehouseBuildingBody,
    Warehouse3: WarehouseBuildingBody,
    NuclearArmsRace: UpgradableWonderBuildingBody,
+   VanGoghMuseum: UpgradableWonderBuildingBody,
+   InternationalCriminalCourt: UpgradableWonderBuildingBody,
 
    Petra: PetraBuildingBody,
    OxfordUniversity: ScienceProductionWonderBuildingBody,

@@ -6,6 +6,39 @@ import type { Deposit } from "./ResourceDefinitions";
 import type { Tech } from "./TechDefinitions";
 
 export class CityDefinitions {
+   // Lydia
+   Dutch: ICityDefinition = {
+      name: () => t(L.Dutch),
+      deposits: {
+         Water: 0.05,
+         Copper: 0.02,
+         Iron: 0.02,
+         Wood: 0.03,
+         Stone: 0.02,
+         Gold: 0.01,
+         Coal: 0.01,
+         Oil: 0.03,
+         Aluminum: 0.02,
+         NaturalGas: 0.03,
+         Uranium: 0.01,
+      },
+      size: 40,
+      buildingNames: {
+         Headquarter: () => t(L.NoordeindePalace),
+      },
+      uniqueBuildings: {
+         UtrechtDistrict: "Urbanization",
+         VanGoghMuseum: "Television",
+         InternationalCriminalCourt: "MilitaryTactics",
+      },
+      uniqueMultipliers: {},
+      naturalWonders: { DeltaWorks: true },
+      requireGreatPeopleLevel: 10,
+      requireSupporterPack: false,
+      festivalDesc: () => t(L.BicycleCulture),
+      hidden: true,
+   };
+
    Rome: ICityDefinition = {
       name: () => t(L.Roman),
       deposits: {

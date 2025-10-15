@@ -13,11 +13,47 @@ import type { TechAge } from "./TechDefinitions";
 
 export class GreatPersonDefinitions {
    // Lydia //////////////
+   FlorisV: IGreatPersonDefinition = boostOf({
+      name: () => t(L.FlorisV),
+      boost: {
+         multipliers: ["output", "storage"],
+         buildings: ["DairyFarm", "CheeseMaker"],
+      },
+      time: "1254 - 1296",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "MiddleAge",
+      city: "Dutch",
+   });
+   JanVermeer: IGreatPersonDefinition = boostOf({
+      name: () => t(L.JanVermeer),
+      boost: {
+         multipliers: ["output", "storage"],
+         buildings: ["PaintersGuild", "Museum"],
+      },
+      time: "1632 - 1675",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "RenaissanceAge",
+      city: "Dutch",
+   });
+   VincentVanGogh: IGreatPersonDefinition = boostOf({
+      name: () => t(L.VincentVanGogh),
+      boost: {
+         multipliers: ["levelBoost", "storage"],
+         buildings: ["PaintersGuild", "Museum"],
+      },
+      time: "1853 - 1890",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "IndustrialAge",
+      city: "Dutch",
+   });
    JanMarsalek: IGreatPersonDefinition = boostOf({
       name: () => t(L.JanMarsalek),
       boost: {
          multipliers: ["output", "storage"],
-         buildings: ["WirecardAG"]
+         buildings: ["WirecardAG"],
       },
       time: "1980 - now AD",
       value: (level) => level,
@@ -30,7 +66,7 @@ export class GreatPersonDefinitions {
       name: () => t(L.MarkusBraun),
       // desc: (self, level) => t(L.BuildingLevelBoostDesc, { value: self.value(level), building: "WirecardAG" }),
       boost: {
-         multipliers: ["levelBoost"],
+         multipliers: ["levelBoost", "storage"],
          buildings: ["WirecardAG"]
       },
       time: "1969 ~ now AD",

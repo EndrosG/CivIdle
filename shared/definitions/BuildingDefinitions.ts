@@ -809,6 +809,8 @@ export class BuildingDefinitions {
       output: { Bitcoin: 1 },
       power: true,
    };
+
+   // Modified or Added by Lydia
    Caravansary: IBuildingDefinition = {
       name: () => t(L.Caravansary),
       desc: () => t(L.CaravansaryDesc),
@@ -951,6 +953,57 @@ export class BuildingDefinitions {
       wikipedia: "Zero-point_energy",
       power: true,
    };
+
+   // Lydia: Dutch
+   BicycleFactory: IBuildingDefinition = {
+      name: () => t(L.BicycleFactory),
+      input: { Steel: 1, Wood: 1, Tool: 1 },
+      output: { Bicycle: 1, EVDummy: 1 },
+      construction: { Brick: 2, Steel: 1, Tool: 1, Engine: 0.5 },
+      // power: true,
+      // Electricity comes after Railway!
+   };
+   UtrechtDistrict: IBuildingDefinition = {
+      name: () => t(L.UtrechtDistrict),
+      desc: () => t(L.UtrechtDistrictDesc),
+      input: { Train: 1, Water: 10, Bread: 10, Cheese: 10, Bicycle: 5, Tool: 1 },
+      output: { Worker: 3000 },
+      construction: { Steel: 2, Train: 1, Brick: 2, Lumber: 2, Water: 5, Bread: 5, Cheese: 10, Bicycle: 5, Tool: 1 },
+      power: true,
+      wikipedia: "Utrecht",
+   };
+   VanGoghMuseum: IBuildingDefinition = {
+      name: () => t(L.VanGoghMuseum),
+      desc: () => t(L.VanGoghMuseumDesc),
+      input: {},
+      output: {},
+      construction: { Painting: 100, Culture: 50 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "Van_Gogh_Museum",
+   };
+   InternationalCriminalCourt: IBuildingDefinition = {
+      name: () => t(L.InternationalCriminalCourt),
+      desc: () => t(L.InternationalCriminalCourtDesc),
+      input: {},
+      output: {},
+      construction: { Law: 200, Politics: 50, Diplomacy: 10 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "International_Criminal_Court",
+   };
+   DeltaWorks: IBuildingDefinition = {
+      name: () => t(L.DeltaWorks),
+      desc: () => t(L.DeltaWorksDesc),
+      input: {},
+      output: { Power: 100 },
+      construction: {},
+      max: 0,
+      special: BuildingSpecial.NaturalWonder,
+      wikipedia: "Delta_Works",
+   };
+
+   // CivIdle Standard again
    CloneFactory: IBuildingDefinition = {
       name: () => t(L.CloneFactory),
       input: {},

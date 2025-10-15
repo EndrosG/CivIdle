@@ -15,6 +15,7 @@ export async function clientHeartbeat(): Promise<void> {
    if (Config.City[mycity].hidden === true) {
       if (GLOBAL_PARAMS.DEBUG_HIDDEN === true) {
          addSystemMessage(`Debug info (heartbeat): ${mycity} is a hidden city. Replacing by German.`);
+         GLOBAL_PARAMS.DEBUG_HIDDEN = false;
       }
       mycity = "German";
    }
@@ -22,6 +23,7 @@ export async function clientHeartbeat(): Promise<void> {
    if (Config.TechAge[myage].hidden === true) {
       if (GLOBAL_PARAMS.DEBUG_HIDDEN === true) {
          addSystemMessage(`Debug info (heartbeat): ${myage} is a hidden age. Replacing by InformationAge.`);
+         GLOBAL_PARAMS.DEBUG_HIDDEN = false;
       }
       myage = "InformationAge";
    }

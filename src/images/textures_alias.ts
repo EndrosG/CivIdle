@@ -12,9 +12,22 @@ export const TextureAliases = {
     "Building_Retreat2": "Building_Villa",
     "Building_ZPMLab": "Building_SupercomputerLab",
 
-    "Person_JanMarsalek": "Person_EnricoFermi",
-    "Person_MarkusBraun": "Person_EnricoFermi",
+    "Person_JanMarsalek": "Person_RobertNoyce",
+    "Person_MarkusBraun": "Person_PhiloFarnsworth",
+    "Person_Lydia": "Person_Dido",
+
+    // Dutch:
+    "Building_Headquarter_Dutch": "Building_Hermitage",
+    "Person_FlorisV": "Person_RabindranathTagore",
+    "Person_JanVermeer": "Person_ChristopherColumbus",
+    "Person_VincentVanGogh": "Person_GeorgiusAgricola",
+    "Building_BicycleFactory": "Building_LocomotiveFactory",
+    "Building_UtrechtDistrict": "Building_Villa",
+    "Building_VanGoghMuseum": "Building_Museum",
+    "Building_InternationalCriminalCourt": "Building_Courthouse",
+    "Building_DeltaWorks": "Building_HydroDam",
 }
+//    "Person_MarkusBraun": "Person_EnricoFermi",
 //    "Person_JanMarsalek": "Person_HarryMarkowitz",
 //    "Person_MarkusBraun": "Person_HarryMarkowitz",
 

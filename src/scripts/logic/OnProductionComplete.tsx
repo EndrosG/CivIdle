@@ -1355,7 +1355,25 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          });
          break;
       }
+      // Lydia: Dutch
+      case "VanGoghMuseum": {
+         // const extraLevel = getWonderExtraLevel(building.type);
+         // addMultiplier("PaintersGuild", { levelBoost: (building.level + extraLevel) * building.stack, storage: 1 }, buildingName);
+         addMultiplier("PaintersGuild", { levelBoost: buildingLevelStack, storage: buildingLevelStack / 2 }, buildingName);
+         addMultiplier("Museum", { levelBoost: buildingLevelStack, storage: buildingLevelStack / 2 }, buildingName);
+         break;
+      }
+      case "InternationalCriminalCourt": {
+         addMultiplier("Courthouse", { levelBoost: buildingLevelStack, storage: buildingLevelStack / 2 }, buildingName);
+         break;
+      }
+      case "DeltaWorks": {
+         addMultiplier("Aqueduct", { levelBoost: buildingLevelStack, storage: buildingLevelStack / 2 }, buildingName);
+         addMultiplier("HydroDam", { levelBoost: buildingLevelStack, storage: buildingLevelStack / 2 }, buildingName);
+         break;
+      }
 
+      // CivIdle Standard, Modified by Lydia for stacking
       case "InternationalSpaceStation": {
          const extraLevel = getWonderExtraLevel(building.type);
          Tick.next.globalMultipliers.storage.push({

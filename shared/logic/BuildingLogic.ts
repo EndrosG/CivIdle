@@ -1430,6 +1430,8 @@ export function getWonderGreatPerson(building: Building): GreatPerson | undefine
 }
 
 const UpgradableWorldWonders = new Set<Building>([
+   "VanGoghMuseum",
+   "InternationalCriminalCourt",
    "InternationalSpaceStation",
    "MarinaBaySands",
    "PalmJumeirah",
