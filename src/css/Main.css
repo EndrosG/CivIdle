@@ -46,11 +46,12 @@ body {
    overflow: hidden;
    position: fixed;
    left: 0;
+   right: 0;
    top: 0;
    bottom: 0;
-   right: 0;
    margin: 0;
    padding: 0;
+   background-color: #000000;
 }
 
 * {
@@ -59,8 +60,8 @@ body {
 
 #game-ui {
    position: absolute;
-   width: var(--game-ui-width);
-   right: 0;
+   width: calc(var(--game-ui-width) - env(safe-area-inset-right, 0));
+   right: env(safe-area-inset-right, 0);
    top: 0;
    bottom: 0;
 }
@@ -157,7 +158,7 @@ body .tippy-box {
 #top-left-panel {
    position: absolute;
    top: 5.5rem;
-   left: 1rem;
+   left: calc(1rem + env(safe-area-inset-left, 0));
    display: flex;
    flex-direction: column;
    gap: 0.5rem;

@@ -891,8 +891,12 @@ export function getMarketSellAmount(sellResource: Resource, xy: Tile, gs: GameSt
    const market = building as IMarketBuildingData;
    const buyResource = market.availableResources[sellResource];
    if (!buyResource) return 0;
+   let level = building.level;
+   Tick.current.levelBoost.get(xy)?.forEach((lb) => {
+      level += lb.value;
+   });
    return (
-      building.level *
+      level *
       (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) *
       getMarketBaseSellAmount(sellResource, buyResource) *
       totalMultiplierFor(xy, "output", 1, false, gs)
