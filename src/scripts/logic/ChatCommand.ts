@@ -27,6 +27,7 @@ import {
 } from "../../../shared/utilities/Helper";
 import { compressSave, decompressSave, overwriteSaveGame, resetToCity, saveGame } from "../Global";
 import {
+   addChatMessage,
    addSystemMessage,
    canEarnGreatPeopleFromReborn,
    clearSystemMessages,
@@ -57,19 +58,25 @@ function eval2(arg) {
 export async function handleChatCommand(command: string): Promise<void> {
    const parts = command.split(" ");
    switch (parts[0]) {
+      // Copied and adapted from LMC
       case "jsonStringify":
       case "js": {
          const restOfLine = parts.slice(1).join(" ");
          const line = `JSON.stringify(${restOfLine})`;
          const output = eval2(line);
-         addSystemMessage(`> ${output}`);
+         addChatMessage(`> ${output}`);
+         break;
+      }
+      case "jsecho": {
+         const restOfLine = parts.slice(1).join(" ");
+         addChatMessage(`> ${restOfLine}`);
          break;
       }
       case "eval":
       case "e": {
          const restOfLine = parts.slice(1).join(" ");
          const output = eval2(restOfLine);
-         addSystemMessage(`> ${output}`);
+         addChatMessage(`> ${output}`);
          break;
       }
       case "evalPromise":
@@ -77,12 +84,12 @@ export async function handleChatCommand(command: string): Promise<void> {
          const restOfLine = parts.slice(1).join(" ");
          const output = eval2(restOfLine);
          if (output instanceof Promise) {
-            addSystemMessage("Evaluated a promise, waiting for it to resolve...");
+            addChatMessage("Evaluated a promise, waiting for it to resolve...");
             output.then((result) => {
-               addSystemMessage(`> ${result}`);
+               addChatMessage(`> ${result}`);
             });
          } else {
-            addSystemMessage(`> ${output}`);
+            addChatMessage(`> ${output}`);
          }
          break;
       }

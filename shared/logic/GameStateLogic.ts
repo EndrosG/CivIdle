@@ -17,6 +17,10 @@ export function getGameState(): GameState {
 export function getGameOptions(): GameOptions {
    return savedGame.options;
 }
+// Adapted from lmc
+globalThis.getGameState = getGameState;
+globalThis.getGameOptions = getGameOptions;
+
 export function serializeSave(save: SavedGame = savedGame): string {
    const cloned = structuredClone(save);
    Transports.forEach((t) => {

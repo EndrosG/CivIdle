@@ -69,6 +69,29 @@ const SELECTOR_ALPHA = 0.4;
 const HIGHLIGHT_ALPHA = 0.2;
 const ANIMATION_TIME = 0.2;
 
+// Copied from lmc - Adapted by Lydia
+const lmcCityMap = {
+   lastClickedTileX: -1,
+   lastClickedTileY: -1,
+   lastClickedTileNum: -1,
+   getLastClickedTileNum() {
+      return this.lastClickedTileNum;
+   },
+};
+globalThis.lmcCityMap = lmcCityMap;
+function lastClickedCityTileNum() {
+   return lmcCityMap.getLastClickedTileNum();
+}
+globalThis.lastClickedCityTileNum = lastClickedCityTileNum;
+function lastClickedCityTile() {
+   return getGameState().tiles.get(lastClickedCityTileNum());
+}
+globalThis.lastClickedCityTile = lastClickedCityTile;
+function getHQ() {
+   return findSpecialBuilding("Headquarter", getGameState());
+}
+globalThis.getHQ = getHQ;
+
 export class WorldScene extends Scene {
    private _width!: number;
    private _height!: number;
@@ -227,6 +250,10 @@ export class WorldScene extends Scene {
             break;
          }
       }
+      // Adapted from lmc by Lydia
+      lmcCityMap.lastClickedTileX = grid.x;
+      lmcCityMap.lastClickedTileY = grid.y;
+      lmcCityMap.lastClickedTileNum = pointToTile(grid);
    }
 
    copyBuilding(grid: IPointData, gs: GameState): void {
@@ -404,6 +431,13 @@ export class WorldScene extends Scene {
                }
                if (hasFeature(GameFeature.WarehouseUpgrade, gs)) {
                   this.highlightRange(grid, configBT.range ? configBT.range : 1);
+               }
+               break;
+            }
+            case "UtrechtDistrict": {
+               const effect = Math.floor((building.level * building.stack) / 10);
+               if (isFestival(building.type, gs) && effect > 0) {
+                  this.highlightRange(grid, effect);
                }
                break;
             }

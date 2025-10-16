@@ -175,6 +175,13 @@ export function canEarnGreatPeopleFromReborn(): boolean {
 
 const _chatIds = new Map<ChatChannel | "System", number>();
 
+// Added by Lydia, restoring previous behaviour of lmc
+export function addChatMessage(message: string, time: number = Date.now()): void {
+   chatMessages.push({ id: mapSafeAdd(_chatIds, "System", 1), message, name: "ChatBot", time: time, flag: "DE", color: 7, level: 5, attr: 4, channel: "de" });
+   OnChatMessage.emit(chatMessages);
+   console.log(message);
+}
+
 export function addSystemMessage(message: string): void {
    showToast(message, Number.POSITIVE_INFINITY, "command");
    console.log(message);

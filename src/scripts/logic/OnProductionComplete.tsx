@@ -1356,6 +1356,24 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       // Lydia: Dutch
+      case "UtrechtDistrict": {
+         const effect = Math.floor(buildingLevelStack / 10);
+         if (isFestival(building.type, gs) === true && effect > 0) {
+//            addMultiplier("BicycleFactory", { levelBoost: effect, storage: effect / 2 }, buildingName);
+//            addMultiplier("LocomotiveFactory", { levelBoost: effect, storage: effect / 2 }, buildingName);
+            for (const point of grid.getRange(tileToPoint(xy), effect)) {
+               const b = gs.tiles.get(pointToTile(point))?.building;
+               if (b && (b.type === "BicycleFactory" || b.type === "LocomotiveFactory" || b.type === "CheeseMaker")) {
+                  mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {
+                     output: effect,
+                     storage: effect / 2,
+                     source: buildingName,
+                  });
+               }
+            }
+         }
+         break;
+      }
       case "VanGoghMuseum": {
          // const extraLevel = getWonderExtraLevel(building.type);
          // addMultiplier("PaintersGuild", { levelBoost: (building.level + extraLevel) * building.stack, storage: 1 }, buildingName);
