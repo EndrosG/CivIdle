@@ -1359,8 +1359,8 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "UtrechtDistrict": {
          const effect = Math.floor(buildingLevelStack / 10);
          if (isFestival(building.type, gs) === true && effect > 0) {
-//            addMultiplier("BicycleFactory", { levelBoost: effect, storage: effect / 2 }, buildingName);
-//            addMultiplier("LocomotiveFactory", { levelBoost: effect, storage: effect / 2 }, buildingName);
+            // addMultiplier("BicycleFactory", { levelBoost: effect, storage: effect / 2 }, buildingName);
+            // addMultiplier("LocomotiveFactory", { levelBoost: effect, storage: effect / 2 }, buildingName);
             for (const point of grid.getRange(tileToPoint(xy), effect)) {
                const b = gs.tiles.get(pointToTile(point))?.building;
                if (b && (b.type === "BicycleFactory" || b.type === "LocomotiveFactory" || b.type === "CheeseMaker")) {
@@ -1386,8 +1386,38 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "DeltaWorks": {
-         addMultiplier("Aqueduct", { levelBoost: buildingLevelStack, storage: buildingLevelStack / 2 }, buildingName);
-         addMultiplier("HydroDam", { levelBoost: buildingLevelStack, storage: buildingLevelStack / 2 }, buildingName);
+         addMultiplier("Aqueduct", { levelBoost: 5, output: 2, storage: 2 }, buildingName);
+         addMultiplier("HydroDam", { levelBoost: 5, output: 2, storage: 2 }, buildingName);
+         break;
+      }
+
+      // Lydia: waste disposal sites
+      case "KotiRepository": {
+         Tick.next.globalMultipliers.happiness.push({
+            value: -3 * buildingLevelStack,
+            source: buildingName,
+         });
+         for (const point of grid.getRange(tileToPoint(xy), 1)) {
+            mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {
+               levelBoost: -buildingLevelStack,
+               source: buildingName,
+            });
+         }
+         break;
+      }
+      case "NuclearWasteRepository": {
+         Tick.next.globalMultipliers.happiness.push({
+            value: -3 * buildingLevelStack,
+            source: buildingName,
+         });
+         for (const point of grid.getRange(tileToPoint(xy), 1)) {
+            mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {
+               output: -buildingLevelStack,
+               storage: -2 * buildingLevelStack,
+               levelBoost: -buildingLevelStack,
+               source: buildingName,
+            });
+         }
          break;
       }
 
@@ -1688,7 +1718,14 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "EastIndiaCompany": {
          if ((building.resources.TradeValue ?? 0) > EAST_INDIA_COMPANY_BOOST_PER_EV) {
             safeAdd(building.resources, "TradeValue", -EAST_INDIA_COMPANY_BOOST_PER_EV);
-            getBuildingsByType("Caravansary", gs)?.forEach((tile, xy) => {
+            const caravans = [
+               getBuildingsByType("Caravansary", gs),
+               getBuildingsByType("Caravansary2", gs),
+               getBuildingsByType("Caravansary3", gs),
+               getBuildingsByType("Caravansary4", gs),
+            ].flat(1);
+            // getBuildingsByType("Caravansary", gs)?.forEach((tile, xy) => {
+            caravans?.forEach((tile, xy) => {
                if (!getWorkingBuilding(xy, gs)) {
                   return;
                }

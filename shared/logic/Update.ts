@@ -629,7 +629,7 @@ export function transportAndConsumeResources(
    const configBT = Config.Building[building.type];
    if (building.type.match("Caravansary")) {
       Tick.next.playerTradeBuildings.set(xy, building);
-      const range = (configBT.range ? configBT.range : 1) + GLOBAL_PARAMS.CARAVANSARIES_EXTRA_RANGE;
+      const range = (configBT.range ?? 1) + GLOBAL_PARAMS.CARAVANSARIES_EXTRA_RANGE;
       if (hasFeature(GameFeature.WarehouseExtension, gs)) {
          for (const point of getGrid(gs).getRange(tileToPoint(xy), range)) {
             const nxy = pointToTile(point);
@@ -637,7 +637,7 @@ export function transportAndConsumeResources(
             if (b) {
                if (b.type.match("Warehouse") && b.status === "completed") {
                   Tick.next.playerTradeBuildings.set(nxy, b);
-               // adapted from lmc (liliannes modded client)
+                  // adapted from lmc (liliannes modded client)
                } else if (GLOBAL_PARAMS.CARAVANSARIES_USE_EVERYTHING && !isSpecialBuilding(b.type)) {
                   Tick.next.playerTradeBuildings.set(nxy, b);
                }
@@ -650,7 +650,7 @@ export function transportAndConsumeResources(
       const ri = building as IResourceImportBuildingData;
       if (hasFlag(ri.resourceImportOptions, ResourceImportOptions.ManagedImport)) {
          const storage = getStorageFor(xy, gs);
-         const totalCapacity = getResourceImportCapacity(ri, (configBT.importCapacity ? configBT.importCapacity : 1) * totalMultiplierFor(xy, "output", 1, false, gs));
+         const totalCapacity = getResourceImportCapacity(ri, (configBT.importCapacity ?? 1) * totalMultiplierFor(xy, "output", 1, false, gs));
 
          const result = new Map<Resource, number>();
          let total = 0;
@@ -864,20 +864,31 @@ export function transportAndConsumeResources(
          useWorkers("Worker", worker.output, xy);
          deductResources(building.resources, input);
          forEach(nonTransportables, (res, amount) => {
-            if (res === "Science") {
-               const storage = Tick.current.specialBuildings.get("Headquarter")?.building.resources;
-               if (storage) {
-                  RequestFloater.emit({ xy, amount });
-                  // result.push({ xy, resource: res, amount });
-                  safeAdd(storage, res, amount);
-                  Tick.next.scienceProduced.set(xy, amount);
+            const storage = Tick.current.specialBuildings.get("Headquarter")?.building.resources;
+            switch (res) {
+               case "Science": {
+                  if (storage) {
+                     RequestFloater.emit({ xy, amount });
+                     // result.push({ xy, resource: res, amount });
+                     safeAdd(storage, res, amount);
+                     Tick.next.scienceProduced.set(xy, amount);
+                  }
+                  break;
                }
-            } else {
-               if (res === "Power") {
+               case "Pollution": {
+                  if (storage) {
+                     RequestFloater.emit({ xy, amount });
+                     safeAdd(storage, res, amount);
+                     Tick.next.pollutionProduced.set(xy, amount);
+                  }
+                  break;
+               }
+               case "Power": {
                   Tick.next.powerPlants.add(xy);
+                  break;
                }
-               mapSafeAdd(Tick.next.workersAvailable, res, amount);
             }
+            mapSafeAdd(Tick.next.workersAvailable, res, amount);
          });
          if (!isEmpty(filterTransportable(output))) {
             Tick.next.notProducingReasons.set(xy, NotProducingReason.StorageFull);
@@ -919,27 +930,39 @@ export function transportAndConsumeResources(
    ////////// Production (when storage is NOT full)
    useWorkers("Worker", worker.output, xy);
    deductResources(building.resources, input);
-   forEach(output, (res, v) => {
-      if (res === "Power") {
-         Tick.next.powerPlants.add(xy);
-      }
+   forEach(output, (res, amount) => {
       if (isTransportable(res)) {
-         result.push({ xy, resource: res, amount: v });
-         // safeAdd(building.resources, res, v);
-         RequestFloater.emit({ xy, amount: v });
+         result.push({ xy, resource: res, amount });
+         // safeAdd(building.resources, res, amount);
+         RequestFloater.emit({ xy, amount });
          return;
       }
-      if (res === "Science") {
-         const storage = Tick.current.specialBuildings.get("Headquarter")?.building.resources;
-         if (storage) {
-            // result.push({ xy, resource: res, amount: v });
-            safeAdd(storage, res, v);
-            Tick.next.scienceProduced.set(xy, v);
-            RequestFloater.emit({ xy, amount: v });
+      // Lydia: identical code as in "if (!hasEnoughStorage) {"
+      const storage = Tick.current.specialBuildings.get("Headquarter")?.building.resources;
+      switch (res) {
+         case "Science": {
+            if (storage) {
+               RequestFloater.emit({ xy, amount });
+               // result.push({ xy, resource: res, amount });
+               safeAdd(storage, res, amount);
+               Tick.next.scienceProduced.set(xy, amount);
+            }
+            break;
          }
-         return;
+         case "Pollution": {
+            if (storage) {
+               RequestFloater.emit({ xy, amount });
+               safeAdd(storage, res, amount);
+               Tick.next.pollutionProduced.set(xy, amount);
+            }
+            break;
+         }
+         case "Power": {
+            Tick.next.powerPlants.add(xy);
+            break;
+         }
       }
-      mapSafeAdd(Tick.next.workersAvailable, res, v);
+      mapSafeAdd(Tick.next.workersAvailable, res, amount);
    });
    OnBuildingProductionComplete.emit({ xy, offline });
 }
@@ -1156,7 +1179,7 @@ export function transportResource(
             const point = tileToPoint(from);
             const configBT = Config.Building[sourceBuilding.type];
             const distance = getGrid(gs).distance(point.x, point.y, targetPoint.x, targetPoint.y);
-            if (distance <= (configBT.range ? configBT.range : 1)) {
+            if (distance <= (configBT.range ?? 1)) {
                transportCapacity = Number.POSITIVE_INFINITY;
             }
          }

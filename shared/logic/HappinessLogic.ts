@@ -20,6 +20,7 @@ export const HappinessNames = {
    fromUnlockedAge: () => t(L.HappinessFromUnlockedAge),
    fromBuildingTypes: () => t(L.HappinessFromBuildingTypes),
    fromBuildings: () => t(L.HappinessFromBuilding),
+   fromPollution: () => t(L.HappinessFromPollution),
    fromWonders: () => t(L.HappinessFromWonders),
    fromHighestTierBuilding: () => t(L.HappinessFromHighestTierBuilding),
 } as const;
@@ -37,12 +38,18 @@ export function calculateHappiness(gs: GameState) {
       fromUnlockedAge = 10 * (Config.TechAge[techAge].idx + 1);
    }
    let fromBuildings = 0;
+   let fromPollution = 0;
    let fromWonders = 0;
    let fromHighestTierBuilding = 0;
 
    getXyBuildings(gs).forEach((building, xy) => {
       if (building.status !== "completed") {
          return;
+      }
+      if (building.type === "Headquarter") {
+         if (building.resources.Pollution && building.resources.Pollution > 0) {
+            fromPollution = Math.log2(building.resources.Pollution);
+         }
       }
       if (!isSpecialBuilding(building.type)) {
          if (!Tick.current.notProducingReasons.has(xy)) {
@@ -93,7 +100,7 @@ export function calculateHappiness(gs: GameState) {
       fromBuildingTypes,
       fromHighestTierBuilding,
    };
-   const negative: PartialTabulate<HappinessType> = { fromBuildings };
+   const negative: PartialTabulate<HappinessType> = { fromBuildings, fromPollution, };
    const uncapped =
       reduceOf(positive, (prev, _, value) => prev + value, 0) +
       sum(Tick.current.globalMultipliers.happiness, "value") -

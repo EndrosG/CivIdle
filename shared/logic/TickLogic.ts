@@ -44,6 +44,7 @@ interface ITickData {
    notProducingReasons: Map<Tile, NotProducingReason>;
    specialBuildings: Map<Building, Required<ITileData>>;
    scienceProduced: Map<Tile, number>;
+   pollutionProduced: Map<Tile, number>;
    powerGrid: Set<Tile>;
    powerPlants: Set<Tile>;
    powerBuildings: Set<Tile>;
@@ -80,6 +81,7 @@ export function EmptyTickData(): ITickData {
       additionalConsumptions: [],
       specialBuildings: new Map(),
       scienceProduced: new Map(),
+      pollutionProduced: new Map(),
       powerGrid: new Set(),
       powerPlants: new Set(),
       powerBuildings: new Set(),

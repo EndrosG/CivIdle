@@ -806,7 +806,7 @@ export class TechDefinitions {
       name: () => t(L.Television),
       column: 22,
       requireTech: ["Skyscraper", "NuclearReactor"],
-      unlockBuilding: ["TVStation", "CNTower"],
+      unlockBuilding: ["TVStation", "CNTower", "NuclearWasteRepository"],
    };
 
    MonetarySystem: ITechDefinition = {
@@ -916,7 +916,7 @@ export class TechDefinitions {
       name: () => t(L.Blockchain),
       column: 26,
       requireTech: ["FinancialArbitrage", "SocialNetwork"],
-      unlockBuilding: ["BitcoinMiner", "PalmJumeirah"],
+      unlockBuilding: ["BitcoinMiner", "PalmJumeirah", "KotiRepository"],
    };
    Future: ITechDefinition = {
       name: () => t(L.Future),

@@ -274,7 +274,7 @@ export function getStorageFor(xy: Tile, gs: GameState): IStorageResult {
       case "Warehouse2":
       case "Warehouse3": {
          const buildingStorageCapacity = Config.Building[building.type]?.storageCapacity;
-         base = getResourceImportCapacity(building, buildingStorageCapacity ? buildingStorageCapacity : 1) * STORAGE_TO_PRODUCTION;
+         base = getResourceImportCapacity(building, buildingStorageCapacity ?? 1) * STORAGE_TO_PRODUCTION;
          break;
       }
       case "Petra": {
@@ -837,7 +837,7 @@ export function getResourceImportIdleCapacity(xy: Tile, gs: GameState): number {
    const warehouse = building as IResourceImportBuildingData;
    const buildingImportCapacity = Config.Building[building.type]?.importCapacity;
    return (
-      getResourceImportCapacity(warehouse, (buildingImportCapacity ? buildingImportCapacity : 1) * totalMultiplierFor(xy, "output", 1, false, gs)) -
+      getResourceImportCapacity(warehouse, (buildingImportCapacity ?? 1) * totalMultiplierFor(xy, "output", 1, false, gs)) -
       reduceOf(
          warehouse.resourceImports,
          (prev, k, v) => {
@@ -1436,6 +1436,8 @@ export function getWonderGreatPerson(building: Building): GreatPerson | undefine
 const UpgradableWorldWonders = new Set<Building>([
    "VanGoghMuseum",
    "InternationalCriminalCourt",
+   "KotiRepository",
+   "NuclearWasteRepository",
    "InternationalSpaceStation",
    "MarinaBaySands",
    "PalmJumeirah",

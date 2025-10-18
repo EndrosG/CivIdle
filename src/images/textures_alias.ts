@@ -21,11 +21,15 @@ export const TextureAliases = {
     "Person_FlorisV": "Person_RabindranathTagore",
     "Person_JanVermeer": "Person_ChristopherColumbus",
     "Person_VincentVanGogh": "Person_GeorgiusAgricola",
+    "Person_MiguelIndurain": "Person_NielsBohr",
     "Building_BicycleFactory": "Building_LocomotiveFactory",
     "Building_UtrechtDistrict": "Building_Villa",
     "Building_VanGoghMuseum": "Building_Museum",
     "Building_InternationalCriminalCourt": "Building_Courthouse",
     "Building_DeltaWorks": "Building_HydroDam",
+
+    "Building_KotiRepository": "Building_WallStreet",
+    "Building_NuclearWasteRepository": "Building_GrottaAzzurra",
 }
 //    "Person_MarkusBraun": "Person_EnricoFermi",
 //    "Person_JanMarsalek": "Person_HarryMarkowitz",

@@ -80,6 +80,16 @@ export function HappinessComponent({ open }: { open: boolean }): React.ReactNode
                         );
                      })}
                      {Tick.current.globalMultipliers.happiness.map((m) => {
+                        if (m.value < 0) {
+                           return (
+                              <li className="row" key={m.source}>
+                                 <div className="f1">{m.source}</div>
+                                 <div className="text-red">
+                                    <FormatNumber value={m.value} />
+                                 </div>
+                              </li>
+                           );
+                        }
                         return (
                            <li className="row" key={m.source}>
                               <div className="f1">{m.source}</div>

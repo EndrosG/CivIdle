@@ -32,7 +32,7 @@ export class BuildingDefinitions {
    Hut: IBuildingDefinition = {
       name: () => t(L.Hut),
       input: {},
-      output: { Worker: 1 },
+      output: { Worker: 1, EVDummy: 1 },
       construction: { Wood: 1 },
    };
    House: IBuildingDefinition = {
@@ -169,14 +169,16 @@ export class BuildingDefinitions {
    CoalPowerPlant: IBuildingDefinition = {
       name: () => t(L.CoalPowerPlant),
       input: { Coal: 1 },
-      output: { Power: 1 },
+      // Lydia: added pollution
+      output: { Pollution: 3, Power: 1 },
       construction: { Lumber: 5, Brick: 4 },
    };
 
    GasPowerPlant: IBuildingDefinition = {
       name: () => t(L.GasPowerPlant),
       input: { NaturalGas: 2 },
-      output: { Power: 3 },
+      // Lydia: added pollution
+      output: { Pollution: 4, Power: 3 },
       construction: { Concrete: 2 },
    };
 
@@ -191,7 +193,8 @@ export class BuildingDefinitions {
    NuclearPowerPlant: IBuildingDefinition = {
       name: () => t(L.NuclearPowerPlant),
       input: { NuclearFuelRod: 2 },
-      output: { Power: 65 },
+      // Lydia: added waste
+      output: { NuclearWaste: 2, Power: 65 },
       construction: { ReinforcedConcrete: 16, Steel: 16 },
    };
    // #endregion /////////////////////////////////////////////////////////////////////////////////////////////
@@ -828,8 +831,8 @@ export class BuildingDefinitions {
       output: {},
       construction: { Train: 1, Engine: 1, Coal: 2, Steel: 2, Brick: 2, Horse: 3, Lumber: 3 },
       range: 1,
-      importCapacity: 2,
-      storageCapacity: 5,
+      importCapacity: 5,
+      storageCapacity: 3,
    };
    Caravansary3: IBuildingDefinition = {
       name: () => t(L.Caravansary3),
@@ -838,8 +841,8 @@ export class BuildingDefinitions {
       output: {},
       construction: { Airplane: 3, Train: 3, Car: 3, Computer: 3, ReinforcedConcrete: 10, Engine: 10, Steel: 10 },
       range: 2,
-      importCapacity: 10,
-      storageCapacity: 25,
+      importCapacity: 25,
+      storageCapacity: 10,
       power: true,
    };
    Caravansary4: IBuildingDefinition = {
@@ -849,8 +852,8 @@ export class BuildingDefinitions {
       output: {},
       construction: { Maglev: 5, Train: 10, Robocar: 2, Supercomputer: 2, ReinforcedConcrete: 20, Engine: 20, Rebar: 20 },
       range: 3,
-      importCapacity: 40,
-      storageCapacity: 100,
+      importCapacity: 100,
+      storageCapacity: 40,
       power: true,
    };
    Market: IBuildingDefinition = {
@@ -879,8 +882,8 @@ export class BuildingDefinitions {
       output: {},
       construction: { Engine: 2, Steel: 2, Brick: 5, Horse: 5, Lumber: 5 },
       range: 1,
-      importCapacity: 2,
-      storageCapacity: 50,
+      importCapacity: 5,
+      storageCapacity: 30,
    };
    Warehouse3: IBuildingDefinition = {
       name: () => t(L.Warehouse3),
@@ -889,28 +892,37 @@ export class BuildingDefinitions {
       output: {},
       construction: { Maglev: 1, Train: 1, Robocar: 1, Supercomputer: 1, ReinforcedConcrete: 10, Engine: 10, Rebar: 10 },
       range: 2,
-      importCapacity: 10,
-      storageCapacity: 250,
+      importCapacity: 25,
+      storageCapacity: 100,
       power: true,
    };
 
    DysonHabitat: IBuildingDefinition = {
       name: () => t(L.DysonHabitat),
-      input: { Maglev: 1, Internet: 5, Computer: 5, Politics: 2, Culture: 50, Philosophy: 20, Garment: 16, Wheat: 100, Water: 110, MutualFund: 1, Stock: 1, Bond: 1 },
+      // V1: before introduction of plastics from gas
+      // input: { Maglev: 1, Internet: 5, Computer: 5, Politics: 2, Culture: 50, Philosophy: 20, Garment: 16, Wheat: 100, Water: 110, MutualFund: 1, Stock: 1, Bond: 1 },
+      // V2: with new EV values due to introduction of plastics from gas
+      input: { Maglev: 1, Internet: 5, Computer: 4, Politics: 2, Culture: 50, Philosophy: 19, Garment: 6, Wheat: 110, Water: 110, MutualFund: 1, Stock: 1, Bond: 1 },
       output: { Worker: 2500000 },
       max: 12,
       power: true,
    };
    DysonHabitat2: IBuildingDefinition = {
       name: () => t(L.DysonHabitat2),
-      input: { Water: 1000, Wheat: 500, Maglev: 1, Internet: 4, Software: 1, Computer: 4, Politics: 10, Law: 10, Culture: 100, Philosophy: 60, Book: 40, Opera: 10, Faith: 20, Music: 40, Painting: 40, Garment: 8, Marble: 1, Furniture: 4, Cloth: 5, Tool: 3, Lumber: 5, Brick: 1, Wood: 5, Stone: 1, MutualFund: 1, Stock: 1, Bond: 1, Gold: 1 },
+      // V1: before introduction of plastics from gas
+      // input: { Water: 1000, Wheat: 500, Maglev: 1, Internet: 4, Software: 1, Computer: 4, Politics: 10, Law: 10, Culture: 100, Philosophy: 60, Book: 40, Opera: 10, Faith: 20, Music: 40, Painting: 40, Garment: 8, Marble: 1, Furniture: 4, Cloth: 5, Tool: 3, Lumber: 5, Brick: 1, Wood: 5, Stone: 1, MutualFund: 1, Stock: 1, Bond: 1, Gold: 1 },
+      // V2: with new EV values due to introduction of plastics from gas
+      input: { Water: 1000, Wheat: 500, Maglev: 1, Internet: 4, Software: 1, Computer: 3, Politics: 10, Law: 10, Culture: 100, Philosophy: 60, Book: 50, Opera: 10, Faith: 25, Music: 45, Painting: 45, Garment: 10, Marble: 1, Furniture: 4, Cloth: 5, Tool: 3, Lumber: 4, Brick: 1, Wood: 5, Stone: 1, MutualFund: 1, Stock: 1, Bond: 1, Gold: 1 },
       output: { Worker: 3000000 },
       max: 12,
       power: true,
    };
    WirecardAG: IBuildingDefinition = {
       name: () => t(L.WirecardAG),
-      input: { Stock: 5, Forex: 0.975, Bond: 1, MutualFund: 1, Gold: 0.333, Internet: 1, Software: 2, Computer: 5, Garment: 1 },
+      // V1: before introduction of plastics from gas
+      // input: { Stock: 5, Forex: 0.975, Bond: 1, MutualFund: 1, Gold: 0.333, Internet: 1, Software: 2, Computer: 5, Garment: 1 },
+      // V2: with new EV values due to introduction of plastics from gas
+      input: { Stock: 5.0, Forex: 0.995, Bond: 4, MutualFund: 1, Gold: 1.703, Internet: 1, Software: 2, Computer: 4, Garment: 1 },
       output: { Koti: 0.1 },
       max: 1,
       power: true,
@@ -958,7 +970,7 @@ export class BuildingDefinitions {
    BicycleFactory: IBuildingDefinition = {
       name: () => t(L.BicycleFactory),
       input: { Steel: 1, Wood: 1, Tool: 1 },
-      output: { Bicycle: 1, EVDummy: 1 },
+      output: { Bicycle: 1 },
       construction: { Brick: 2, Steel: 1, Tool: 1, Engine: 0.5 },
       // power: true,
       // Electricity comes after Railway!
@@ -966,9 +978,9 @@ export class BuildingDefinitions {
    UtrechtDistrict: IBuildingDefinition = {
       name: () => t(L.UtrechtDistrict),
       desc: () => t(L.UtrechtDistrictDesc),
-      input: { Train: 1, Water: 10, Bread: 10, Cheese: 10, Bicycle: 5, Tool: 1 },
-      output: { Worker: 3000 },
-      construction: { Steel: 2, Train: 1, Brick: 2, Lumber: 2, Water: 5, Bread: 5, Cheese: 10, Bicycle: 5, Tool: 1 },
+      input: { Water: 10, Bread: 10, Cheese: 10, Bicycle: 5, Tool: 1, Train: 1 },
+      output: { Worker: 3506 * 2.5 },
+      construction: { Steel: 2, Brick: 2, Lumber: 2, Water: 5, Bread: 5, Cheese: 10, Bicycle: 5, Tool: 1, Train: 1 },
       power: true,
       wikipedia: "Utrecht",
    };
@@ -977,7 +989,7 @@ export class BuildingDefinitions {
       desc: () => t(L.VanGoghMuseumDesc),
       input: {},
       output: {},
-      construction: { Painting: 100, Culture: 50 },
+      construction: { Painting: 0.5, Culture: 5 },
       max: 1,
       special: BuildingSpecial.WorldWonder,
       wikipedia: "Van_Gogh_Museum",
@@ -987,7 +999,7 @@ export class BuildingDefinitions {
       desc: () => t(L.InternationalCriminalCourtDesc),
       input: {},
       output: {},
-      construction: { Law: 200, Politics: 50, Diplomacy: 10 },
+      construction: { Law: 20, Politics: 20, Diplomacy: 20 },
       max: 1,
       special: BuildingSpecial.WorldWonder,
       wikipedia: "International_Criminal_Court",
@@ -1002,6 +1014,29 @@ export class BuildingDefinitions {
       special: BuildingSpecial.NaturalWonder,
       wikipedia: "Delta_Works",
    };
+
+   // Lydia: waste disposal sites
+   KotiRepository: IBuildingDefinition = {
+      name: () => t(L.KotiRepository),
+      desc: () => t(L.KotiRepositoryDesc),
+      input: {},
+      output: {},
+      construction: { Koti: 1000 },
+      max: 3,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "Deep_geological_repository",
+   };
+   NuclearWasteRepository: IBuildingDefinition = {
+      name: () => t(L.NuclearWasteRepository),
+      desc: () => t(L.NuclearWasteRepositoryDesc),
+      input: {},
+      output: {},
+      construction: { NuclearWaste: 0.1, Steel: 0.3, Concrete: 2 },
+      max: 3,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "Deep_geological_repository",
+   };
+
 
    // CivIdle Standard again
    CloneFactory: IBuildingDefinition = {

@@ -49,6 +49,19 @@ export class GreatPersonDefinitions {
       age: "IndustrialAge",
       city: "Dutch",
    });
+   MiguelIndurain: IGreatPersonDefinition = boostOf({
+      name: () => t(L.MiguelIndurain),
+      boost: {
+         multipliers: ["output", "storage"],
+         buildings: ["BicycleFactory"],
+      },
+      time: "1964 - now AD",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "InformationAge",
+      // city: "Spanish",
+      // type: GreatPersonType.Normal,
+   });
    JanMarsalek: IGreatPersonDefinition = boostOf({
       name: () => t(L.JanMarsalek),
       boost: {

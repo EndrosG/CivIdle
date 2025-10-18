@@ -45,8 +45,9 @@ export const EN = {
    NoordeindePalace: "Noordeinde Palace",
    Bicycle: "Bicycle",
    BicycleFactory: "Bicycle Factory",
-//   BicycleCulture: "Bicycle Culture: Additional bonus to Bicycle Factory and trains",
+   // BicycleCulture: "Bicycle Culture: Additional bonus to Bicycle Factory and trains",
    BicycleCulture: "Bicycle Culture: Every 10th level of Utrecht city district gives +1 Production Multiplier to Bicycle Factory, Locomotive Factory and Cheese Maker within that range.",
+   MiguelIndurain: "Miguel Indurain",
    UtrechtDistrict: "Utrecht city district",
    UtrechtDistrictDesc: "The most cycle-friendly city.",
    FlorisV: "Floris V, Count of Holland",
@@ -58,6 +59,15 @@ export const EN = {
    InternationalCriminalCourtDesc: "Improves production of courthouses. Can be upgraded.",
    DeltaWorks: "Delta Works",
    DeltaWorksDesc: "natural wonder: increases water and power supply",
+
+   // Lydia: waste disposal sites
+   KotiRepository: "Koti repository",
+   KotiRepositoryDesc: "A final storage facility for Koti (even from trades). This building can be upgraded and each level reduces Happiness by 3.",
+   NuclearWaste: "Nuclear Waste",
+   NuclearWasteRepository: "Nuclear Waste Repository",
+   NuclearWasteRepositoryDesc: "All adjacent buildings suffer negative production multipiers. This building can be upgraded and each level reduces Happiness by 3.",
+   Pollution: "Pollution",
+   HappinessFromPollution: "From Pollution",
 
    // CivIdle Standard
    About: "About CivIdle",

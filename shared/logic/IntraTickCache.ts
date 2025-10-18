@@ -109,7 +109,7 @@ export function getBuildingIO(
       }
       if ("resourceImports" in b && type === "input") {
          const configBT = Config.Building[b.type];
-         const totalCapacity = getResourceImportCapacity(b, (configBT.importCapacity ? configBT.importCapacity : 1) * totalMultiplierFor(xy, "output", 1, false, gs));
+         const totalCapacity = getResourceImportCapacity(b, (configBT.importCapacity ?? 1) * totalMultiplierFor(xy, "output", 1, false, gs));
          const rib = b as IResourceImportBuildingData;
          const totalSetCapacity = reduceOf(rib.resourceImports, (prev, k, v) => prev + v.perCycle, 0);
          const scaleFactor = clamp(totalSetCapacity > 0 ? totalCapacity / totalSetCapacity : 0, 0, 1);
@@ -152,21 +152,23 @@ export function getBuildingIO(
       }
 
       // Apply multipliers
-      forEach(resources, (k, v) => {
-         let level = 0;
-         if (hasFlag(options, IOFlags.IgnoreLevelBoost)) {
-            level += b.level;
+      // Lydia: compute level only once and not per each resource (of input or output)
+      let level = 0;
+      if (hasFlag(options, IOFlags.IgnoreLevelBoost)) {
+         level += b.level;
+      } else {
+         if (hasFlag(options, IOFlags.TheoreticalLevelBoost)) {
+            level += b.level + getElectrificationLevel(b, gs);
          } else {
-            if (hasFlag(options, IOFlags.TheoreticalLevelBoost)) {
-               level += b.level + getElectrificationLevel(b, gs);
-            } else {
-               level += b.level + (Tick.current.electrified.get(xy) ?? 0);
-            }
-            Tick.current.levelBoost.get(xy)?.forEach((lb) => {
-               level += lb.value;
-            });
+            level += b.level + (Tick.current.electrified.get(xy) ?? 0);
          }
-         let value = v * level * (GLOBAL_PARAMS.USE_STACKING ? b.stack : 1);
+         Tick.current.levelBoost.get(xy)?.forEach((lb) => {
+            level += lb.value;
+         });
+      }
+      level *= GLOBAL_PARAMS.USE_STACKING ? b.stack : 1;
+      forEach(resources, (k, v) => {
+         let value = v * level;
          if (hasFlag(options, IOFlags.Capacity)) {
             value *= b.capacity;
          }

@@ -10,6 +10,8 @@ export class ResourceDefinitions {
    Wisdom = { name: () => t(L.Wisdom) };
    Bicycle = { name: () => t(L.Bicycle) };
    EVDummy = { name: () => t(L.EVDummy) };
+   NuclearWaste = { name: () => t(L.NuclearWaste) };
+   Pollution = { name: () => t(L.Pollution) };
 
    Worker: IResourceDefinition = { name: () => t(L.Worker) };
    Power: IResourceDefinition = { name: () => t(L.Power) };
@@ -137,6 +139,7 @@ export type Resource = keyof ResourceDefinitions;
 
 export const NoPrice: PartialSet<Resource> = {
    Worker: true,
+   Pollution: true,
    Power: true,
    Science: true,
    Festival: true,
@@ -149,6 +152,7 @@ export const NoPrice: PartialSet<Resource> = {
 
 export const NoStorage: PartialSet<Resource> = {
    Worker: true,
+   Pollution: true,
    Power: true,
    Science: true,
    Warp: true,
