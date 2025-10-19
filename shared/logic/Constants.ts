@@ -54,7 +54,7 @@ export const MANAGED_IMPORT_RANGE = 2;
 export const DISABLE_PLAYER_TRADES = false;
 export const MAX_TELEPORT = 10;
 export const TELEPORT_SECONDS = 60;
-export const MAX_PETRA_SPEED_UP = 16;
+export const MAX_PETRA_SPEED_UP = 16 * 2;		// Modified by Lydia
 export const FESTIVAL_CONVERSION_RATE = 100;
 export const GOLDEN_RATIO = (1 + Math.sqrt(5)) / 2;
 export const GOOGLE_PLAY_GAMES_CLIENT_ID =
@@ -67,24 +67,25 @@ export const TRADE_TILE_ALLY_BONUS = 2;
 export const DISABLED_TEMPORARILY_DURING_BETA = true;
 
 export const GLOBAL_PARAMS = {
-  BUILDINGS_HIGH_LEVEL: 25,		// defaults: vanilla: infinite ; lmc: 32 ; lmc_lydia: 29, works better for me than 32 if I tend to upgrade to 30 only before stacking
-  CARAVANSARIES_USE_EVERYTHING: true,		// defaults: vanilla: false ; lmc: true ; lmc_lydia: true
+   BUILDINGS_HIGH_LEVEL: 25,					// defaults: vanilla: infinite ; lmc: 32 ; lmc_lydia: 29, works better for me than 32 if I tend to upgrade to 30 only before stacking
+   CARAVANSARIES_USE_EVERYTHING: true,		// defaults: vanilla: false ; lmc: true ; lmc_lydia: true
 
-  CARAVANSARIES_EXTRA_RANGE: 0,			// defaults: vanilla: 0 ; lmc: 0 ; lmc_lydia: 0
-//  CARAVANSARIES_USE_SWISSBANK: false,		// defaults: vanilla: false ; lmc: false ; lmc_lydia: false
-  DEBUG_DOWNGRADING: false,
-  SHOW_DOWNGRADING: true,		// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
-  DEBUG_STACKING: false,
-  SHOW_STACKING: true,		// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
-  USE_STACKING: true,		// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
-  WONDER_STACKING: true,	// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
-  DEBUG_HIDDEN: true,		// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
-  GP_IGNORE_PROMOTION: true,		// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
-  // ignores GP type "promote"
-  GP_AUTO_CHOICE_AFTER: 10,		// defaults: vanilla: infinite ; lmc: infinite ; lmc_lydia: 500, but 10 from UserScript
-  NAR_MULTI: 1,		// defaults: vanilla: 0, lmc: 0, lmc_lydia: 1 -- wonder only exists in lmc_lydia
-  PALM_JUMEIRAH_MULTI: 1,
-  MARINA_BAY_SANDS_MULTI: 1,
+   CARAVANSARIES_EXTRA_RANGE: 0,				// defaults: vanilla: 0 ; lmc: 0 ; lmc_lydia: 0
+   // CARAVANSARIES_USE_SWISSBANK: false,		// defaults: vanilla: false ; lmc: false ; lmc_lydia: false
+   DEBUG_DOWNGRADING: false,
+   SHOW_DOWNGRADING: true,		// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
+   DEBUG_STACKING: false,
+   SHOW_STACKING: true,			// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
+   USE_STACKING: true,			// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
+   WONDER_STACKING: true,		// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
+   DEBUG_HIDDEN: true,			// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
+   BUILDINGS_IGNORE_CITIES: true,	// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
+   GP_IGNORE_PROMOTION: true,			// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
+   // ignores GP type "promote"
+   GP_AUTO_CHOICE_AFTER: 10,	// defaults: vanilla: infinite ; lmc: infinite ; lmc_lydia: 500, but 10 from UserScript
+   NAR_MULTI: 1,					// defaults: vanilla: 0, lmc: 0, lmc_lydia: 1 -- wonder only exists in lmc_lydia
+   PALM_JUMEIRAH_MULTI: 1,
+   MARINA_BAY_SANDS_MULTI: 1,
 };
 globalThis.GLOBAL_PARAMS = GLOBAL_PARAMS;
 

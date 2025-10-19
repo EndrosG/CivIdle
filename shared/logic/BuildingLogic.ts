@@ -1434,6 +1434,8 @@ export function getWonderGreatPerson(building: Building): GreatPerson | undefine
 }
 
 const UpgradableWorldWonders = new Set<Building>([
+   "NuclearArmsRace",
+   "Retreat2",
    "VanGoghMuseum",
    "InternationalCriminalCourt",
    "KotiRepository",

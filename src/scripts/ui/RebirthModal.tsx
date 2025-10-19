@@ -462,9 +462,11 @@ export function RebirthModal(): React.ReactNode {
                      }
 
                      // Added by Lydia: The Big Retreat
+                     // only building.level, no building.stack -- dont make it too easy here!
                      let nextScience = 0;
-                     if (findSpecialBuilding("Retreat2", gs)) {
-                        nextScience = Math.floor(getScienceAmount(gs) / 1e2);
+                     const ascensionLevel = findSpecialBuilding("Retreat2", gs)?.building.level;
+                     if (ascensionLevel && ascensionLevel > 0) {
+                        nextScience = Math.floor(getScienceAmount(gs) * ascensionLevel / 1e2);
                      }
 
                      getGameOptions().rebirthInfo.push({

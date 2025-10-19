@@ -4,7 +4,7 @@ import { IsDeposit } from "../../shared/definitions/ResourceDefinitions";
 import { TimedBuildingUnlock } from "../../shared/definitions/TimedBuildingUnlock";
 import { addPetraOfflineTime, findSpecialBuilding } from "../../shared/logic/BuildingLogic";
 import { Config } from "../../shared/logic/Config";
-import { MAX_OFFLINE_PRODUCTION_SEC, calculateTierAndPrice } from "../../shared/logic/Constants";
+import { GLOBAL_PARAMS, MAX_OFFLINE_PRODUCTION_SEC, calculateTierAndPrice } from "../../shared/logic/Constants";
 import { Languages, syncLanguage, type GameState } from "../../shared/logic/GameState";
 import {
    getGameOptions,
@@ -213,12 +213,6 @@ export async function startGame(
          Singleton().sceneManager.loadScene(PlayerMapScene);
          break;
       }
-/*
-      case "conquest": {
-         Singleton().sceneManager.loadScene(ConquestScene);
-         break;
-      }
-*/
       default: {
          Singleton().sceneManager.loadScene(WorldScene);
          break;
@@ -254,12 +248,24 @@ export function setCityOverride(gameState: GameState): void {
    });
    deepFreeze(Config.Building);
 
-   forEach(city.uniqueBuildings, (building, tech) => {
-      if (!Config.Tech[tech].unlockBuilding) {
-         Config.Tech[tech].unlockBuilding = [];
-      }
-      Config.Tech[tech].unlockBuilding!.push(building);
-   });
+   // Added / Modified by Lydia
+   if (GLOBAL_PARAMS.BUILDINGS_IGNORE_CITIES) {
+      forEach(Config.City, (idx, city) => {
+         forEach(city.uniqueBuildings, (building, tech) => {
+            if (!Config.Tech[tech].unlockBuilding) {
+               Config.Tech[tech].unlockBuilding = [];
+            }
+            Config.Tech[tech].unlockBuilding!.push(building);
+         });
+      });
+   } else {
+      forEach(city.uniqueBuildings, (building, tech) => {
+         if (!Config.Tech[tech].unlockBuilding) {
+            Config.Tech[tech].unlockBuilding = [];
+         }
+         Config.Tech[tech].unlockBuilding!.push(building);
+      });
+   }
 
    forEach(city.uniqueMultipliers, (tech, multipliers) => {
       const def = Config.Tech[tech];

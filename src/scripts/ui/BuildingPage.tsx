@@ -56,6 +56,7 @@ const BuildingBodyOverride: Partial<Record<Building, FunctionComponent<IBuilding
    Warehouse2: WarehouseBuildingBody,
    Warehouse3: WarehouseBuildingBody,
    NuclearArmsRace: UpgradableWonderBuildingBody,
+   Retreat2: UpgradableWonderBuildingBody,
    VanGoghMuseum: UpgradableWonderBuildingBody,
    InternationalCriminalCourt: UpgradableWonderBuildingBody,
 

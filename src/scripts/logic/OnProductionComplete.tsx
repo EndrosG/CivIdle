@@ -264,7 +264,11 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "GrottaAzzurra": {
          forEach(Config.BuildingTier, (building, tier) => {
             if (tier === 1) {
-               addMultiplier(building, { output: 1, worker: 1, storage: 1 }, buildingName);
+               addMultiplier(building, {
+                  output: buildingLevelStack,
+                  worker: buildingLevelStack,
+                  storage: buildingLevelStack
+               }, buildingName);
             }
          });
          break;
@@ -280,9 +284,9 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "ChichenItza": {
          for (const neighbor of grid.getNeighbors(tileToPoint(xy))) {
             mapSafePush(Tick.next.tileMultipliers, pointToTile(neighbor), {
-               output: 1,
-               storage: 1,
-               worker: 1,
+               output: buildingLevelStack,
+               storage: buildingLevelStack,
+               worker: buildingLevelStack,
                source: buildingName,
             });
          }
@@ -291,7 +295,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "LighthouseOfAlexandria": {
          for (const neighbor of grid.getNeighbors(tileToPoint(xy))) {
             mapSafePush(Tick.next.tileMultipliers, pointToTile(neighbor), {
-               storage: 5,
+               storage: 5 * buildingLevelStack,
                source: buildingName,
             });
          }
@@ -303,8 +307,8 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
             const building = getWorkingBuilding(xy, gs);
             if (building?.type.match("Caravansary")) {
                mapSafePush(Tick.next.tileMultipliers, xy, {
-                  output: 5,
-                  storage: 5,
+                  output: 5 * buildingLevelStack,
+                  storage: 5 * buildingLevelStack,
                   source: buildingName,
                });
             }
@@ -316,14 +320,14 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          for (const neighbor of grid.getNeighbors(tileToPoint(xy))) {
             const building = getWorkingBuilding(pointToTile(neighbor), gs);
             if (building && !Config.Building[building.type].output.Worker) {
-               happiness++;
+               happiness += buildingLevelStack;
             }
          }
          Tick.next.globalMultipliers.happiness.push({ value: happiness, source: buildingName });
          break;
       }
       case "HagiaSophia": {
-         let happiness = 5;
+         let happiness = 5 * buildingLevelStack;
          const currentHappiness = Tick.current.happiness?.value ?? 0;
          if (Tick.current.tick <= 10 && currentHappiness < 0) {
             happiness += Math.abs(currentHappiness);
@@ -340,7 +344,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
             happiness += Config.Building.Colosseum.input.Chariot!;
          }
          Tick.next.globalMultipliers.happiness.push({
-            value: happiness,
+            value: happiness * buildingLevelStack,
             source: buildingName,
          });
          getBuildingsByType("ChariotWorkshop", gs)?.forEach((tile, xy) => {
@@ -352,7 +356,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          mapSafeAdd(Tick.next.workersAvailable, "Worker", 1000 * buildingLevelStack);
          for (const neighbor of grid.getNeighbors(tileToPoint(xy))) {
             mapSafePush(Tick.next.tileMultipliers, pointToTile(neighbor), {
-               worker: 1,
+               worker: buildingLevelStack,
                source: buildingName,
             });
          }
@@ -362,7 +366,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          getXyBuildings(gs).forEach((building, xy) => {
             if (building.level >= 10) {
                mapSafePush(Tick.next.tileMultipliers, xy, {
-                  worker: 1,
+                  worker: buildingLevelStack,
                   source: buildingName,
                });
             }
@@ -379,6 +383,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                   Config.TechAge[getBuildingUnlockAge("HangingGarden")].idx;
             }
          }
+         multiplier *= buildingLevelStack;
          Tick.next.globalMultipliers.builderCapacity.push({
             value: multiplier,
             source: buildingName,
@@ -410,7 +415,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "Stonehenge": {
          forEach(Config.Building, (b, def) => {
             if (def.input.Stone || def.output.Stone) {
-               addMultiplier(b, { output: 1 }, buildingName);
+               addMultiplier(b, { output: buildingLevelStack }, buildingName);
             }
          });
          break;
@@ -924,7 +929,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
             if (!building || isSpecialBuilding(building.type)) continue;
             let count = Math.abs(
                Config.TechAge[getCurrentAge(gs)].idx -
-                  Config.TechAge[getBuildingUnlockAge(building.type)].idx,
+               Config.TechAge[getBuildingUnlockAge(building.type)].idx,
             );
             if (isFestival("GreatWall", gs)) {
                count *= 2;
@@ -1895,8 +1900,8 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                (10_000_000 *
                   multiplier *
                   (building.level + (Tick.current.electrified.get(xy) ?? 0) + levelBoost)) *
-                  (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) /
-                  price,
+               (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) /
+               price,
                Array.from(Tick.current.playerTradeBuildings.keys()),
                gs,
             );
