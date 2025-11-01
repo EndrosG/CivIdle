@@ -56,6 +56,8 @@ export const DE = {
    MiguelIndurain: "Miguel Indurain",
    UtrechtDistrict: "Stadtteil von Utrecht",
    UtrechtDistrictDesc: "Die fahrradfreundlichste Stadt.",
+   WindMill: "Windmühle",
+   WindMillDesc: "Erhöht die Produktion benachbarter Gebäude",
    FlorisV: "Graf Floris V. von Holland",
    JanVermeer: "Jan Vermeer van Delft",
    VincentVanGogh: "Vincent Willem van Gogh",
@@ -74,6 +76,15 @@ export const DE = {
    NuclearWasteRepositoryDesc: "Im Umkreis des Atommüll-Endlagers sinkt die Produktion drastisch. Das Endlager kann ausgebaut werden und erzeugt -3 Zufriedenheit pro Stufe.",
    Pollution: "Umweltverschmutzung",
    HappinessFromPollution: "Durch Umweltverschmutzung",
+
+   // Lydia: clean technologies
+   WindTurbine: "Windkraftanlage",
+   WindTurbineDesc: "Die erste belegte windbetriebene Anlage zur Stromerzeugung errichtete 1883 der österreichische Ingenieur Josef Friedländer anlässlich der Internationalen Elektrizitätsausstellung 1883, sie stand im Eingangsbereich des Ausstellungsgeländes vor der Rotunde im Wiener Prater. Bei dem Windrad handelte es sich um eine Windturbine des Halladay-Bautyps, die in Nordamerika auf Farmen zum Pumpen von Wasser eingesetzt wurden. Josef Friedländer adaptierte die Anlage zur Erzeugung von Elektrizität. Das Windrad hatte einen Durchmesser von 6,6 Metern und trieb einen Dynamo am Boden an, der Strom in mehrere Batterien einspeiste, die wiederum Werkzeuge und Lampen sowie eine Dreschmaschine betrieben.",
+
+   // Lydia: hektische Welt - moderne Zivilisationskrankheiten
+   FastFoodBurger: "Burger-Stand",
+   FastFoodCourt: "Fastfood Plaza",
+   FastFashion: "kurzlebige Mode",
 
    // CivIdle Standard
    About: "Über CivIdle",

@@ -56,6 +56,8 @@ export const EN = {
    MiguelIndurain: "Miguel Indurain",
    UtrechtDistrict: "Utrecht city district",
    UtrechtDistrictDesc: "The most cycle-friendly city.",
+   WindMill: "Windmill",
+   WindMillDesc: "All adjacent buildings get +1 LevelBoost and +0.5 Storage Multiplier per level of the Windmill",
    FlorisV: "Floris V, Count of Holland",
    JanVermeer: "Jan Vermeer van Delft",
    VincentVanGogh: "Vincent Willem van Gogh",
@@ -74,6 +76,12 @@ export const EN = {
    NuclearWasteRepositoryDesc: "All adjacent buildings suffer negative production multipiers. This building can be upgraded and each level reduces Happiness by 3.",
    Pollution: "Pollution",
    HappinessFromPollution: "From Pollution",
+
+   // Lydia: clean technologies
+   WindTurbine: "Wind Turbine",
+   WindTurbineDesc: "The first electricity-generating wind turbine was installed by the Austrian Josef Friedländer at the Vienna International Electrical Exhibition in 1883. It was a Halladay windmill for driving a dynamo. Friedländer's 6.6 m (22 ft) diameter Halladay 'wind motor' was supplied by U.S. Wind Engine & Pump Co. of Batavia, Illinois. The 3.7 kW (5 hp) windmill drove a dynamo at ground level that fed electricity into a series of batteries. The batteries powered various electrical tools and lamps, as well as a threshing machine.",
+
+   // Lydia: fast living world
 
    // CivIdle Standard
    About: "About CivIdle",

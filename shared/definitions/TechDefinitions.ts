@@ -599,7 +599,7 @@ export class TechDefinitions {
       name: () => t(L.Electricity),
       column: 16,
       requireTech: ["Railway", "Drilling", "RapidFire"],
-      unlockBuilding: ["CoalPowerPlant", "ReinforcedConcretePlant", "Caravansary2"],
+      unlockBuilding: ["CoalPowerPlant", "ReinforcedConcretePlant", "WindTurbine", "Caravansary2"],
       additionalUpgrades: () => [t(L.ElectrificationUpgrade)],
    };
 
