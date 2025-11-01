@@ -18,6 +18,7 @@ import {
    getMarketBaseSellAmount,
    getMarketBuyAmount,
    getResourceImportCapacity,
+   totalLevelBoostFor,
    totalMultiplierFor,
 } from "./BuildingLogic";
 import { Config } from "./Config";
@@ -109,7 +110,11 @@ export function getBuildingIO(
       }
       if ("resourceImports" in b && type === "input") {
          const configBT = Config.Building[b.type];
-         const totalCapacity = getResourceImportCapacity(b, (configBT.importCapacity ?? 1) * totalMultiplierFor(xy, "output", 1, false, gs));
+         const totalCapacity = getResourceImportCapacity(
+            b,
+            totalLevelBoostFor(xy),
+            (configBT.importCapacity ?? 1) * totalMultiplierFor(xy, "output", 1, false, gs),
+         );
          const rib = b as IResourceImportBuildingData;
          const totalSetCapacity = reduceOf(rib.resourceImports, (prev, k, v) => prev + v.perCycle, 0);
          const scaleFactor = clamp(totalSetCapacity > 0 ? totalCapacity / totalSetCapacity : 0, 0, 1);
@@ -139,7 +144,7 @@ export function getBuildingIO(
                   resources[s.inputResource] = 2;
                   break;
                case "CloneLab":
-                  resources.Science = ((Config.ResourcePrice[s.inputResource] ?? 0) * 2) / SCIENCE_VALUE;
+                  resources.Science = getCloneLabScienceOutput(s);
                   break;
             }
          }
@@ -403,4 +408,8 @@ export function getGlobalMultipliers(type: MultiplierType): MultiplierWithSource
    });
    _cache.globalMultipliers.set(type, result);
    return result;
+}
+
+export function getCloneLabScienceOutput(cloneLab: ICloneBuildingData): number {
+   return ((Config.ResourcePrice[cloneLab.inputResource] ?? 0) * 2) / SCIENCE_VALUE;
 }

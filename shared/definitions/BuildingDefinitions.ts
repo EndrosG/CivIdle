@@ -1915,7 +1915,7 @@ export class BuildingDefinitions {
 
    MatrioshkaBrain: IBuildingDefinition = {
       name: () => t(L.MatrioshkaBrain),
-      desc: () => t(L.MatrioshkaBrainDescV2),
+      desc: () => t(L.MatrioshkaBrainDescV3),
       input: {},
       output: {},
       construction: { CivOasis: 100, Peace: 100, CivGPT: 100 },
@@ -2441,6 +2441,17 @@ export class BuildingDefinitions {
       wikipedia: "Bran_Castle",
    };
 
+   PortOfSingapore: IBuildingDefinition = {
+      name: () => t(L.PortOfSingapore),
+      desc: () => t(L.PortOfSingaporeDesc),
+      input: {},
+      output: {},
+      construction: { Koti: 500 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "Port_of_Singapore",
+   };
+
    // #endregion /////////////////////////////////////////////////////////////////////////////////////////////
 
    // Winery: IBuildingDefinition = {
@@ -2539,6 +2550,7 @@ export const BuildingShowLevel = new Set<Building>([
    "RedFort",
    "QutbMinar",
    "UnitedNations",
+   "PortOfSingapore",
 ] satisfies Building[]);
 
 export const BuildingIsCaravan = new Set<Building>([

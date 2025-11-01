@@ -274,7 +274,10 @@ export function getStorageFor(xy: Tile, gs: GameState): IStorageResult {
       case "Warehouse2":
       case "Warehouse3": {
          const buildingStorageCapacity = Config.Building[building.type]?.storageCapacity;
-         base = getResourceImportCapacity(building, buildingStorageCapacity ?? 1) * STORAGE_TO_PRODUCTION;
+         base =
+            getResourceImportCapacity(building, totalLevelBoostFor(xy), buildingStorageCapacity ?? 1) *
+            getResourceImportBuildingBaseStorageMultiplier(gs) *
+            STORAGE_TO_PRODUCTION;
          break;
       }
       case "Petra": {
@@ -825,8 +828,12 @@ export function isWorldOrNaturalWonder(building?: Building): boolean {
    return isNaturalWonder(building) || isWorldWonder(building);
 }
 
-export function getResourceImportCapacity(building: IHaveTypeAndLevel, multiplier: number): number {
-   return multiplier * building.level * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) * 10;
+export function getResourceImportCapacity(
+   building: IHaveTypeAndLevel,
+   levelBoost: number,
+   multiplier: number,
+): number {
+   return multiplier * (building.level + levelBoost) * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) * 10;
 }
 
 export function getResourceImportIdleCapacity(xy: Tile, gs: GameState): number {
@@ -837,7 +844,11 @@ export function getResourceImportIdleCapacity(xy: Tile, gs: GameState): number {
    const warehouse = building as IResourceImportBuildingData;
    const buildingImportCapacity = Config.Building[building.type]?.importCapacity;
    return (
-      getResourceImportCapacity(warehouse, (buildingImportCapacity ?? 1) * totalMultiplierFor(xy, "output", 1, false, gs)) -
+      getResourceImportCapacity(
+         warehouse,
+         totalLevelBoostFor(xy),
+         (buildingImportCapacity ?? 1) * totalMultiplierFor(xy, "output", 1, false, gs),
+      ) -
       reduceOf(
          warehouse.resourceImports,
          (prev, k, v) => {
@@ -1274,13 +1285,13 @@ export function generateScienceFromFaith(xy: number, buildingType: Building, gs:
 }
 
 export function getExplorerRange(gs: GameState): number {
-   if (gs.unlockedTech.Aviation) {
+   if (gs.unlockedTech.Democracy) {
       return 4;
    }
-   if (gs.unlockedTech.SteamEngine) {
+   if (gs.unlockedTech.Construction) {
       return 3;
    }
-   if (gs.unlockedTech.Geography) {
+   if (gs.unlockedTech.Writing) {
       return 2;
    }
    return 1;
@@ -1360,6 +1371,14 @@ export function isFestival(building: Building, gs: GameState): boolean {
       return true;
    }
    return city === gs.city;
+}
+
+export function totalLevelBoostFor(xy: Tile): number {
+   let result = 0;
+   Tick.current.levelBoost.get(xy)?.forEach((lb) => {
+      result += lb.value;
+   });
+   return result;
 }
 
 export function getCathedralOfBrasiliaResources(
@@ -1455,6 +1474,7 @@ const UpgradableWorldWonders = new Set<Building>([
    "UnitedNations",
    "RedFort",
    "QutbMinar",
+   "PortOfSingapore",
 ] satisfies Building[]);
 
 export function isBuildingUpgradable(building: Building): boolean {
@@ -1463,4 +1483,24 @@ export function isBuildingUpgradable(building: Building): boolean {
 
 export function getBranCastleRequiredWorkers(level: number): number {
    return getUpgradeCostFib(level);
+}
+
+export function getResourceImportBuildingBaseStorageMultiplier(gs: GameState): number {
+   let result = 1;
+   if (gs.unlockedTech.Robotics) {
+      ++result;
+   }
+   if (gs.unlockedTech.Globalization) {
+      ++result;
+   }
+   if (gs.unlockedTech.Assembly) {
+      ++result;
+   }
+   if (gs.unlockedTech.Railway) {
+      ++result;
+   }
+   if (gs.unlockedTech.Enlightenment) {
+      ++result;
+   }
+   return result;
 }

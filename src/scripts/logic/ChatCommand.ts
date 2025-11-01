@@ -13,15 +13,15 @@ import {
    type ChatChannel,
 } from "../../../shared/utilities/Database";
 import {
-   HOUR,
-   MINUTE,
-   SECOND,
    firstKeyOf,
    formatHM,
    formatNumber,
    hasFlag,
+   HOUR,
+   MINUTE,
    numberToRoman,
    safeParseInt,
+   SECOND,
    sizeOf,
    uuid4,
 } from "../../../shared/utilities/Helper";
@@ -34,6 +34,7 @@ import {
    client,
    getPlayerMap,
 } from "../rpc/RPCClient";
+import { isSteam, SteamClient } from "../rpc/SteamClient";
 import { PlayerMapScene } from "../scenes/PlayerMapScene";
 import { WorldScene } from "../scenes/WorldScene";
 import { Singleton } from "../utilities/Singleton";
@@ -148,7 +149,7 @@ export async function handleChatCommand(command: string): Promise<void> {
                MAX_TECH_AGE,
                getGameState().city,
             );
-            await resetToCity(firstKeyOf(Config.City)!);
+            await resetToCity(uuid4(), firstKeyOf(Config.City)!);
             await saveGame();
             window.location.reload();
          }
@@ -281,6 +282,9 @@ export async function handleChatCommand(command: string): Promise<void> {
                `Banned=${hasFlag(attr, UserAttributes.Banned)}`,
                `TribuneOnly=${hasFlag(attr, UserAttributes.TribuneOnly)}`,
                `NoRename=${hasFlag(attr, UserAttributes.DisableRename)}`,
+               `CheckTradeCancel=${hasFlag(attr, UserAttributes.CheckTradeCancel)}`,
+               `Suspicious=${hasFlag(attr, UserAttributes.Suspicious)}`,
+               `Desynced=${hasFlag(attr, UserAttributes.Desynced)}`,
             ].join(", "),
          );
          break;
@@ -299,6 +303,9 @@ export async function handleChatCommand(command: string): Promise<void> {
                `Banned=${hasFlag(attr, UserAttributes.Banned)}`,
                `TribuneOnly=${hasFlag(attr, UserAttributes.TribuneOnly)}`,
                `NoRename=${hasFlag(attr, UserAttributes.DisableRename)}`,
+               `CheckTradeCancel=${hasFlag(attr, UserAttributes.CheckTradeCancel)}`,
+               `Suspicious=${hasFlag(attr, UserAttributes.Suspicious)}`,
+               `Desynced=${hasFlag(attr, UserAttributes.Desynced)}`,
             ].join(", "),
          );
          break;
@@ -472,6 +479,16 @@ export async function handleChatCommand(command: string): Promise<void> {
          }
          await client.removePlayerFromMap(parts[1]);
          addSystemMessage("Player has been removed from map");
+         break;
+      }
+      case "checksum": {
+         if (isSteam()) {
+            addSystemMessage(
+               `<code>Local Checksum: ${await SteamClient.getChecksum()}\n${JSON.stringify(await client.queryChecksums(), null, 2)}</code>`,
+            );
+         } else {
+            addSystemMessage("Checksum is only available for Steam");
+         }
          break;
       }
       case "addclaim": {

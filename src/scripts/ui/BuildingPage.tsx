@@ -57,6 +57,8 @@ const BuildingBodyOverride: Partial<Record<Building, FunctionComponent<IBuilding
    Warehouse3: WarehouseBuildingBody,
    NuclearArmsRace: UpgradableWonderBuildingBody,
    Retreat2: UpgradableWonderBuildingBody,
+   TourDeFrance: UpgradableWonderBuildingBody,
+   GiroDItalia: UpgradableWonderBuildingBody,
    VanGoghMuseum: UpgradableWonderBuildingBody,
    InternationalCriminalCourt: UpgradableWonderBuildingBody,
 
@@ -100,6 +102,7 @@ const BuildingBodyOverride: Partial<Record<Building, FunctionComponent<IBuilding
    RedFort: UpgradableWonderBuildingBody,
    QutbMinar: UpgradableWonderBuildingBody,
    BranCastle: BranCastleBuildingBody,
+   PortOfSingapore: UpgradableWonderBuildingBody,
 };
 
 export function BuildingPage(props: { tile: ITileData }): React.ReactNode {

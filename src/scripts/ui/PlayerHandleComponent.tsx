@@ -3,11 +3,12 @@ import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { Config } from "../../../shared/logic/Config";
 import { SUPPORTER_PACK_URL, TRIBUNE_TRADE_VALUE_PER_MINUTE } from "../../../shared/logic/Constants";
+import { RankUpFlags } from "../../../shared/logic/GameState";
 import { getGameOptions, getGameState } from "../../../shared/logic/GameStateLogic";
 import {
    getRebirthGreatPeopleCount,
    getTribuneUpgradeMaxLevel,
-   upgradeAllPermanentGreatPeople,
+   upgradeAllUpgradeablePermanentGreatPeople,
 } from "../../../shared/logic/RebirthLogic";
 import {
    AccountLevel,
@@ -27,6 +28,7 @@ import {
    hasFlag,
    safeParseInt,
    sizeOf,
+   uuid4,
 } from "../../../shared/utilities/Helper";
 import { L, t } from "../../../shared/utilities/i18n";
 import { resetToCity, saveGame } from "../Global";
@@ -43,6 +45,7 @@ import { ChangePlayerHandleModal } from "./ChangePlayerHandleModal";
 import { ConfirmModal } from "./ConfirmModal";
 import { showModal, showToast } from "./GlobalModal";
 import { FormatNumber } from "./HelperComponents";
+import { MobileSupporterPackComponent } from "./MobileSupporterPackComponent";
 import { RenderHTML, html } from "./RenderHTMLComponent";
 import { TextWithHelp } from "./TextWithHelpComponent";
 import { AccountLevelComponent, MiscTextureComponent, PlayerFlagComponent } from "./TextureSprites";
@@ -170,6 +173,7 @@ export function PlayerHandleComponent() {
             </>
          )}
          <AccountDetails />
+         <MobileSupporterPackComponent />
       </fieldset>
    );
 }
@@ -412,10 +416,10 @@ function AccountDetails(): React.ReactNode {
                               try {
                                  await client.upgrade();
                                  playLevelUp();
-                                 await resetToCity(getGameState().city);
+                                 await resetToCity(uuid4(), getGameState().city);
                                  const options = getGameOptions();
                                  options.greatPeopleChoicesV2 = [];
-                                 upgradeAllPermanentGreatPeople(options);
+                                 upgradeAllUpgradeablePermanentGreatPeople(options);
                                  forEach(options.greatPeople, (k, v) => {
                                     const maxLevel = getTribuneUpgradeMaxLevel(Config.GreatPerson[k].age);
                                     if (v.level >= maxLevel) {
@@ -424,6 +428,7 @@ function AccountDetails(): React.ReactNode {
                                     }
                                  });
                                  options.ageWisdom = {};
+                                 options.rankUpFlags = RankUpFlags.Upgraded;
                                  await saveGame();
                                  window.location.reload();
                               } catch (error) {

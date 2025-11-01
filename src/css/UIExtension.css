@@ -244,6 +244,10 @@ fieldset .separator {
    color: #e74c3c;
 }
 
+.text-left {
+   text-align: left;
+}
+
 .text-right {
    text-align: right;
 }
@@ -362,6 +366,14 @@ fieldset .separator {
 
 .g10 {
    gap: 10px;
+}
+
+.g15 {
+   gap: 15px;
+}
+
+.g20 {
+   gap: 20px;
 }
 
 .col {
@@ -725,4 +737,39 @@ button {
 
 .app-region-none {
    app-region: none;
+}
+
+.select-comp-item,
+.select-comp-value {
+   height: 24px;
+   display: flex;
+   align-items: center;
+}
+
+.select-comp-item:hover {
+   background: #ccc;
+}
+
+.select-comp-item.selected {
+   font-weight: bold;
+}
+
+table.date-table {
+   width: 100%;
+   border-collapse: collapse;
+}
+table.date-table td,
+table.date-table th {
+   padding: 0 5px;
+}
+table.date-table td:first-child,
+table.date-table th:first-child {
+   padding-left: 0;
+}
+table.date-table td:last-child,
+table.date-table th:last-child {
+   padding-right: 0;
+}
+table.date-table tr:nth-child(even) td {
+   background: rgba(255, 255, 255, 0.1);
 }

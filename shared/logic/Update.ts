@@ -65,6 +65,7 @@ import {
    isSpecialBuilding,
    isTransportable,
    isWorldWonder,
+   totalLevelBoostFor,
    totalMultiplierFor,
    useWorkers,
 } from "./BuildingLogic";
@@ -650,7 +651,11 @@ export function transportAndConsumeResources(
       const ri = building as IResourceImportBuildingData;
       if (hasFlag(ri.resourceImportOptions, ResourceImportOptions.ManagedImport)) {
          const storage = getStorageFor(xy, gs);
-         const totalCapacity = getResourceImportCapacity(ri, (configBT.importCapacity ?? 1) * totalMultiplierFor(xy, "output", 1, false, gs));
+         const totalCapacity = getResourceImportCapacity(
+            ri,
+            totalLevelBoostFor(xy),
+            (configBT.importCapacity ?? 1) * totalMultiplierFor(xy, "output", 1, false, gs),
+         );
 
          const result = new Map<Resource, number>();
          let total = 0;

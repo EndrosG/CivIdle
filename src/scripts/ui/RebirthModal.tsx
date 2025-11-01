@@ -34,6 +34,7 @@ import {
    rejectIn,
    safeAdd,
    safeParseInt,
+   uuid4,
 } from "../../../shared/utilities/Helper";
 import { L, t } from "../../../shared/utilities/i18n";
 import { resetToCity, saveGame, useGameState } from "../Global";
@@ -422,8 +423,10 @@ export function RebirthModal(): React.ReactNode {
                         return;
                      }
 
+                     const gameId = uuid4();
+
                      try {
-                        await Promise.race([client.rebirth(), rejectIn(10)]);
+                        await Promise.race([client.rebirthV2(gameId), rejectIn(10)]);
                      } catch (error) {
                         console.error(error);
                         if (!import.meta.env.DEV && isOnlineUser()) {
@@ -483,7 +486,7 @@ export function RebirthModal(): React.ReactNode {
                      getGameOptions().showTutorial = false;
 
                      playClick();
-                     await resetToCity(nextCity);
+                     await resetToCity(gameId, nextCity);
 
                      const pompidou = getPompidou(gs);
                      if (currentCity !== nextCity && pompidou) {

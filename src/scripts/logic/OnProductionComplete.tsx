@@ -1508,12 +1508,14 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
             mapSafeAdd(Tick.next.resourceValueByTile, xy, scienceValue);
             mapSafeAdd(Tick.next.resourceValues, "Science", scienceValue);
          }
-         if (building.level + extraLevel > 1) {
+         const multiplier = building.level - 1 + extraLevel;
+         if (multiplier > 0) {
             forEach(Config.Building, (b, def) => {
                if (def.output.Science) {
-                  addMultiplier(b, { output: (building.level - 1 + extraLevel) * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) }, buildingName);
+                  addMultiplier(b, { output: multiplier * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) }, buildingName);
                }
             });
+            addMultiplier("CloneLab", { output: multiplier }, buildingName);
          }
          break;
       }
@@ -2113,7 +2115,10 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          let workers = 0;
          for (const point of grid.getRange(tileToPoint(xy), 3)) {
             const targetXy = pointToTile(point);
-            if (!Tick.current.notProducingReasons.has(targetXy)) {
+            if (
+               gs.tiles.get(targetXy)?.building?.status === "completed" &&
+               !Tick.current.notProducingReasons.has(targetXy)
+            ) {
                const output = getBuildingIO(targetXy, "output", IOFlags.Multiplier | IOFlags.Capacity, gs);
                if (output.Worker) {
                   workers += output.Worker;
@@ -2141,6 +2146,12 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
             value: 2 * level,
             source: buildingName,
          });
+         break;
+      }
+      case "PortOfSingapore": {
+         addMultiplier("Warehouse", { output: building.level, storage: building.level }, buildingName);
+         addMultiplier("Caravansary", { output: building.level, storage: building.level }, buildingName);
+         addMultiplier("Market", { output: building.level, storage: building.level }, buildingName);
          break;
       }
    }

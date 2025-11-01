@@ -1997,6 +1997,14 @@ export enum GreatPersonType {
    LevelBoost = 4,
 }
 
+export const UpgradeableGreatPersonTypes: Record<GreatPersonType, boolean> = {
+   [GreatPersonType.Normal]: true,
+   [GreatPersonType.Wildcard]: false,
+   [GreatPersonType.Promotion]: false,
+   [GreatPersonType.Adaptive]: true,
+   [GreatPersonType.LevelBoost]: true,
+};
+
 export interface IGreatPersonDefinition {
    name: () => string;
    desc: (self: IGreatPersonDefinition, level: number) => string;

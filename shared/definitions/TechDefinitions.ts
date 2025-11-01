@@ -841,7 +841,8 @@ export class TechDefinitions {
       name: () => t(L.Globalization),
       column: 23,
       requireTech: ["Television", "MonetarySystem"],
-      unlockBuilding: ["OpticalFiberPlant", "Warehouse2"],
+      unlockBuilding: ["OpticalFiberPlant", "PortOfSingapore", "Warehouse2"],
+      additionalUpgrades: () => [t(L.XBaseStorageForWarehouseAndCaravansary, { percent: formatPercent(1) })],
    };
 
    Nanotechnology: ITechDefinition = {
@@ -899,6 +900,7 @@ export class TechDefinitions {
       column: 26,
       requireTech: ["Genetics"],
       unlockBuilding: ["RobocarFactory", "SpaceCenter"],
+      additionalUpgrades: () => [t(L.XBaseStorageForWarehouseAndCaravansary, { percent: formatPercent(1) })],
    };
    ArtificialIntelligence: ITechDefinition = {
       name: () => t(L.ArtificialIntelligence),

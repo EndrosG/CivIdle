@@ -8,8 +8,10 @@ import { Tick } from "../../../shared/logic/TickLogic";
 import { MAP_MAX_X } from "../../../shared/utilities/Database";
 import {
    clamp,
+   cls,
    formatNumber,
    formatPercent,
+   mathSign,
    pointToXy,
    safeAdd,
    safeParseFloat,
@@ -19,7 +21,7 @@ import {
 import { L, t } from "../../../shared/utilities/i18n";
 import { useGameState } from "../Global";
 import { client, getUser, usePlayerMap, useTrades } from "../rpc/RPCClient";
-import { findPath, findUserOwnedTile, getOwnedTradeTile } from "../scenes/PathFinder";
+import { findPathAsync, findUserOwnedTile, getOwnedTradeTile } from "../scenes/PathFinder";
 import { playError, playKaching } from "../visuals/Sound";
 import { showToast } from "./GlobalModal";
 import { FormatNumber } from "./HelperComponents";
@@ -30,6 +32,7 @@ export function FillPlayerTradeModal({
    hideModal,
 }: { tradeId: string; hideModal: () => void }): React.ReactNode {
    const [tiles, setTiles] = useState<string[]>([]);
+   const [findingPath, setFindingPath] = useState(true);
    const map = usePlayerMap();
    const gs = useGameState();
    const trades = useTrades();
@@ -53,8 +56,9 @@ export function FillPlayerTradeModal({
             freeTiles.add(point.y * MAP_MAX_X + point.x);
          }
       });
-      requestAnimationFrame(() => {
-         const path = findPath(xyToPoint(myXy), xyToPoint(targetXy), freeTiles);
+      setFindingPath(true);
+      findPathAsync(xyToPoint(myXy), xyToPoint(targetXy), freeTiles).then((path) => {
+         setFindingPath(false);
          setTiles(path.map((x) => pointToXy(x)));
       });
    }, [trade, myXy, map]);
@@ -246,7 +250,11 @@ export function FillPlayerTradeModal({
          (!requireExtraStorage() || hasEnoughStorage(tile, getStorageRequired(amount), gs))
       );
    };
-
+   const youPay = getTotalFillAmount(fills);
+   const youGet = ((1 - totalTariff) * trade.sellAmount * getTotalFillAmount(fills)) / trade.buyAmount;
+   const evChange =
+      (Config.ResourcePrice[trade.sellResource] ?? 0) * youGet -
+      (Config.ResourcePrice[trade.buyResource] ?? 0) * youPay;
    return (
       <div className="window" style={{ width: 600, maxWidth: "75vw" }}>
          <div className="title-bar">
@@ -256,7 +264,7 @@ export function FillPlayerTradeModal({
             </div>
          </div>
          <div className="window-body">
-            {!hasValidPath() ? (
+            {!findingPath && !hasValidPath() ? (
                <>
                   <WarningComponent icon="warning">
                      {t(L.PlayerTradeNoValidRoute, { name: trade.from })}
@@ -365,7 +373,7 @@ export function FillPlayerTradeModal({
                            })}
                         </div>
                         <div>
-                           <FormatNumber value={getTotalFillAmount(fills)} />
+                           <FormatNumber value={youPay} />
                         </div>
                      </summary>
                      <ul>
@@ -385,7 +393,13 @@ export function FillPlayerTradeModal({
                   <details>
                      <summary className="row">
                         <div className="f1">{t(L.PlayerMapTariff)}</div>
-                        <div>{formatPercent(totalTariff)}</div>
+                        <div>
+                           {findingPath ? (
+                              <div className="m-icon small inline spinning">currency_exchange</div>
+                           ) : (
+                              formatPercent(totalTariff)
+                           )}
+                        </div>
                      </summary>
                      <ul className="text-small">
                         {seaTileCost > 0 ? (
@@ -425,12 +439,7 @@ export function FillPlayerTradeModal({
                            })}
                         </div>
                         <div className="text-strong">
-                           <FormatNumber
-                              value={
-                                 ((1 - totalTariff) * trade.sellAmount * getTotalFillAmount(fills)) /
-                                 trade.buyAmount
-                              }
-                           />
+                           <FormatNumber value={youGet} />
                         </div>
                      </summary>
                      <ul>
@@ -459,6 +468,13 @@ export function FillPlayerTradeModal({
                         </li>
                      </ul>
                   </details>
+               </li>
+               <li className="row">
+                  <div className="f1">{t(L.EmpireValueImpactAfterTariff)}</div>
+                  <div className={cls("text-strong", evChange >= 0 ? "text-green" : "text-red")}>
+                     {mathSign(evChange)}
+                     {formatNumber(Math.abs(evChange))}
+                  </div>
                </li>
             </ul>
             <div className="sep15"></div>
