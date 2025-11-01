@@ -28,6 +28,7 @@ export class CityDefinitions {
       },
       uniqueBuildings: {
          UtrechtDistrict: "Urbanization",
+         WindMill: "Machinery",
          VanGoghMuseum: "Television",
          InternationalCriminalCourt: "MilitaryTactics",
       },

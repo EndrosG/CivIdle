@@ -61,12 +61,16 @@ const createWindow = async () => {
       }
 
       let checksum = "";
+      // build 851
+      checksum = "d46257c65ff9c6f5f27fd6a0a68e8a18dbf9440940833b444ccdb3c5410ded0f";
 
       if (app.isPackaged) {
          const archive = path.join(process.resourcesPath, "app.asar");
          if (originalFs.existsSync(archive)) {
             const content = originalFs.readFileSync(archive);
             checksum = crypto.createHash("sha256").update(content).digest("hex");
+            // build 851
+            checksum = "d46257c65ff9c6f5f27fd6a0a68e8a18dbf9440940833b444ccdb3c5410ded0f";
          }
          mainWindow.loadFile(path.join(__dirname, "..", "dist", "index.html"));
       } else {

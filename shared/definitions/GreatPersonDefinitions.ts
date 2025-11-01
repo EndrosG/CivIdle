@@ -13,62 +13,13 @@ import type { TechAge } from "./TechDefinitions";
 
 export class GreatPersonDefinitions {
    // Lydia //////////////
-   FlorisV: IGreatPersonDefinition = boostOf({
-      name: () => t(L.FlorisV),
-      boost: {
-         multipliers: ["output", "storage"],
-         buildings: ["DairyFarm", "CheeseMaker"],
-      },
-      time: "1254 - 1296",
-      value: (level) => level,
-      maxLevel: Number.POSITIVE_INFINITY,
-      age: "MiddleAge",
-      city: "Dutch",
-   });
-   JanVermeer: IGreatPersonDefinition = boostOf({
-      name: () => t(L.JanVermeer),
-      boost: {
-         multipliers: ["output", "storage"],
-         buildings: ["PaintersGuild", "Museum"],
-      },
-      time: "1632 - 1675",
-      value: (level) => level,
-      maxLevel: Number.POSITIVE_INFINITY,
-      age: "RenaissanceAge",
-      city: "Dutch",
-   });
-   VincentVanGogh: IGreatPersonDefinition = boostOf({
-      name: () => t(L.VincentVanGogh),
-      boost: {
-         multipliers: ["levelBoost", "storage"],
-         buildings: ["PaintersGuild", "Museum"],
-      },
-      time: "1853 - 1890",
-      value: (level) => level,
-      maxLevel: Number.POSITIVE_INFINITY,
-      age: "IndustrialAge",
-      city: "Dutch",
-   });
-   MiguelIndurain: IGreatPersonDefinition = boostOf({
-      name: () => t(L.MiguelIndurain),
-      boost: {
-         multipliers: ["output", "storage"],
-         buildings: ["BicycleFactory"],
-      },
-      time: "1964 - now AD",
-      value: (level) => level,
-      maxLevel: Number.POSITIVE_INFINITY,
-      age: "InformationAge",
-      // city: "Spanish",
-      // type: GreatPersonType.Normal,
-   });
    JanMarsalek: IGreatPersonDefinition = boostOf({
       name: () => t(L.JanMarsalek),
       boost: {
          multipliers: ["output", "storage"],
          buildings: ["WirecardAG"],
       },
-      time: "1980 - now AD",
+      time: "1980 ~ now AD",
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "ColdWarAge",
@@ -89,6 +40,98 @@ export class GreatPersonDefinitions {
       city: "German",
       // type: GreatPersonType.Normal,
    });
+
+   MiguelIndurain: IGreatPersonDefinition = boostOf({
+      name: () => t(L.MiguelIndurain),
+      boost: {
+         multipliers: ["output", "storage"],
+         buildings: ["BicycleFactory"],
+      },
+      time: "1964 ~ now AD",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "InformationAge",
+      // city: "Spanish",
+      // type: GreatPersonType.Normal,
+   });
+
+   // Lydia: Dutch
+   FlorisV: IGreatPersonDefinition = boostOf({
+      name: () => t(L.FlorisV),
+      boost: {
+         multipliers: ["output", "storage"],
+         buildings: ["DairyFarm", "CheeseMaker"],
+      },
+      time: "1254 ~ 1296 AD",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "MiddleAge",
+      city: "Dutch",
+   });
+   JanVermeer: IGreatPersonDefinition = boostOf({
+      name: () => t(L.JanVermeer),
+      boost: {
+         multipliers: ["output", "storage"],
+         buildings: ["PaintersGuild", "Museum"],
+      },
+      time: "1632 ~ 1675 AD",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "RenaissanceAge",
+      city: "Dutch",
+   });
+   VincentVanGogh: IGreatPersonDefinition = boostOf({
+      name: () => t(L.VincentVanGogh),
+      boost: {
+         multipliers: ["levelBoost", "storage"],
+         buildings: ["PaintersGuild", "Museum"],
+      },
+      time: "1853 ~ 1890 AD",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "IndustrialAge",
+      city: "Dutch",
+   });
+
+   // Lydia: more culture
+   HuldrychZwingli: IGreatPersonDefinition = boostOf({
+      name: () => t(L.HuldrychZwingli),
+      boost: {
+         multipliers: ["output", "storage"],
+         buildings: ["MusiciansGuild", "Church"],
+      },
+      time: "1484 ~ 1531 AD",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "RenaissanceAge",
+   });
+   JSBach: IGreatPersonDefinition = boostOf({
+      name: () => t(L.JSBach),
+      boost: {
+         multipliers: ["levelBoost", "storage"],
+         buildings: ["MusiciansGuild", "Church"],
+      },
+      time: "1685 ~ 1750 AD",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "RenaissanceAge",
+      city: "German",
+   });
+   FriedrichMagirius: IGreatPersonDefinition = boostOf({
+      name: () => t(L.FriedrichMagirius),
+      boost: {
+         multipliers: ["levelBoost", "storage"],
+         buildings: ["Church", "Parliament"],
+      },
+      time: "1930 ~ 2025 AD",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "ColdWarAge",
+      city: "German",
+   });
+
+
+   // Lydia: more modern stuff
 
    // Bronze /////////////////////////////////////////////////////////////////////////////////////////////////
 

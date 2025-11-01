@@ -1009,6 +1009,16 @@ export class BuildingDefinitions {
       power: true,
       wikipedia: "Utrecht",
    };
+   WindMill: IBuildingDefinition = {
+      name: () => t(L.WindMill),
+      desc: () => t(L.WindMillDesc),
+      input: { Water: 5, Bread: 5, Cheese: 5, Tool: 5 },
+      output: {},
+      construction: { Lumber: 50, Stone: 5, Tool: 10 },
+      max: 10,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "Windmill",
+   };
    VanGoghMuseum: IBuildingDefinition = {
       name: () => t(L.VanGoghMuseum),
       desc: () => t(L.VanGoghMuseumDesc),
@@ -1062,6 +1072,31 @@ export class BuildingDefinitions {
       wikipedia: "Deep_geological_repository",
    };
 
+   // Lydia: clean energy
+   WindTurbine: IBuildingDefinition = {
+      name: () => t(L.WindTurbine),
+      desc: () => t(L.WindTurbineDesc),
+      input: {},
+      output: { Power: 1 },
+      construction: { Steel: 10, Concrete: 5, Cable: 1, Engine: 1, Tool: 1 },
+      wikipedia: "Wind_turbine",
+   };
+   WindPark: IBuildingDefinition = {
+      name: () => t(L.WindPark),
+      input: {},
+      output: { Power: 5 },
+      construction: { Rebar: 50, ReinforcedConcrete: 30, Plastics: 20, Cable: 10, Engine: 5, Tool: 5 },
+      wikipedia: "Wind_farm",
+   };
+
+   // Lydia: fast living world
+   SmartphoneFactory: IBuildingDefinition = {
+      name: () => t(L.SmartphoneFactory),
+      input: { Semiconductor: 10, Software: 5, Plastics: 5, Aluminum: 2, Glass: 2, Lens: 2, Internet: 1 },
+      output: { Smartphone: 1 },
+      // construction: { Rebar: 50, ReinforcedConcrete: 30, Plastics: 20, Cable: 10, Engine: 5, Tool: 5 },
+      power: true,
+   };
 
    // CivIdle Standard again
    CloneFactory: IBuildingDefinition = {

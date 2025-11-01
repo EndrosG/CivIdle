@@ -1383,6 +1383,13 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          });
          break;
       }
+      case "TourDeFrance":
+      case "GiroDItalia": {
+         addMultiplier("BicycleFactory", OWSmulti, buildingName);
+         addMultiplier("Stadium", OWSmulti, buildingName);
+         break;
+      }
+
       // Lydia: Dutch
       case "UtrechtDistrict": {
          const effect = Math.floor(buildingLevelStack / 10);
@@ -1399,6 +1406,16 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                   });
                }
             }
+         }
+         break;
+      }
+      case "WindMill": {
+         for (const neighbor of grid.getNeighbors(tileToPoint(xy))) {
+            mapSafePush(Tick.next.tileMultipliers, pointToTile(neighbor), {
+               levelBoost: buildingLevelStack,
+               storage: buildingLevelStack / 2,
+               source: buildingName,
+            });
          }
          break;
       }

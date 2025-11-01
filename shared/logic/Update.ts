@@ -797,6 +797,15 @@ export function transportAndConsumeResources(
          result.push({ xy, resource: buyResource, amount: buyAmount });
          // safeAdd(building.resources, buyResource, buyAmount);
          totalBought += buyAmount;
+
+         // Backport / Re-Added by Lydia -- either FishPond removed it or it was part of LMC
+         const eic = Tick.current.specialBuildings.get("EastIndiaCompany");
+         if (eic) {
+            const value = (Config.ResourcePrice[sellResource] ?? 0) * sellAmount;
+            if (value > 0) {
+               safeAdd(eic.building.resources, "TradeValue", value);
+            }
+         }
       });
       if (totalBought > 0) {
          RequestFloater.emit({ xy, amount: totalBought });

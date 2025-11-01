@@ -599,7 +599,7 @@ export class TechDefinitions {
       name: () => t(L.Electricity),
       column: 16,
       requireTech: ["Railway", "Drilling", "RapidFire"],
-      unlockBuilding: ["CoalPowerPlant", "ReinforcedConcretePlant", "Caravansary2"],
+      unlockBuilding: ["CoalPowerPlant", "ReinforcedConcretePlant", "WindTurbine", "Caravansary2"],
       additionalUpgrades: () => [t(L.ElectrificationUpgrade)],
    };
 
@@ -837,6 +837,21 @@ export class TechDefinitions {
       unlockBuilding: ["ComputerFactory", "ComputerLab"],
    };
 
+   // Added by Lydia
+   EnvironmentalMovement: ITechDefinition = {
+      name: () => t(L.EnvironmentalMovement),
+      column: 23,
+      requireTech: ["Television"],
+      unlockBuilding: ["WindPark"],
+      buildingMultiplier: {
+         BicycleFactory: { output: 2 },
+         LocomotiveFactory: { output: 1 },
+         CarFactory: { output: -1 },
+         AirplaneFactory: { output: -1 },
+         Parliament: { output: 1 },
+      },
+   };
+
    Globalization: ITechDefinition = {
       name: () => t(L.Globalization),
       column: 23,
@@ -860,7 +875,7 @@ export class TechDefinitions {
    WorldWideWeb: ITechDefinition = {
       name: () => t(L.WorldWideWeb),
       column: 24,
-      requireTech: ["Globalization", "Computer"],
+      requireTech: ["Computer", "EnvironmentalMovement", "Globalization"],
       unlockBuilding: ["InternetServiceProvider", "Caravansary3"],
    };
    FinancialLeverage: ITechDefinition = {
@@ -880,7 +895,7 @@ export class TechDefinitions {
       name: () => t(L.CloudComputing),
       column: 25,
       requireTech: ["Software", "WorldWideWeb"],
-      unlockBuilding: ["SupercomputerLab"],
+      unlockBuilding: ["SupercomputerLab", "SmartphoneFactory"],
    };
    SocialNetwork: ITechDefinition = {
       name: () => t(L.SocialNetwork),

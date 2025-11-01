@@ -18,9 +18,9 @@ export const TextureAliases = {
 
     // Dutch:
     "Building_Headquarter_Dutch": "Building_Hermitage",
-    "Person_FlorisV": "Person_RabindranathTagore",
+    // "Person_FlorisV": "Person_RabindranathTagore",
     "Person_JanVermeer": "Person_ChristopherColumbus",
-    "Person_VincentVanGogh": "Person_GeorgiusAgricola",
+    // "Person_VincentVanGogh": "Person_GeorgiusAgricola",
     "Person_MiguelIndurain": "Person_NielsBohr",
     // "Building_BicycleFactory": "Building_LocomotiveFactory",
     "Building_UtrechtDistrict": "Building_Villa",

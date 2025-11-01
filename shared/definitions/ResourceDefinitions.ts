@@ -12,6 +12,7 @@ export class ResourceDefinitions {
    EVDummy = { name: () => t(L.EVDummy) };
    NuclearWaste = { name: () => t(L.NuclearWaste) };
    Pollution = { name: () => t(L.Pollution) };
+   Smartphone = { name: () => t(L.Smartphone) };
 
    Worker: IResourceDefinition = { name: () => t(L.Worker) };
    Power: IResourceDefinition = { name: () => t(L.Power) };
