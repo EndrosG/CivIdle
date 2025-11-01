@@ -111,6 +111,7 @@ export function makeGreatPeopleFromThisRunPermanent(): void {
    const gs = getGameState();
    forEach(gs.greatPeople, (k, v) => {
       addPermanentGreatPerson(k, v);
+      v = 0;
    });
 }
 

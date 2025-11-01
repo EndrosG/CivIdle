@@ -16,7 +16,7 @@ export function UpgradableWonderBuildingBody({ gameState, xy }: IBuildingCompone
       <div className="window-body">
          <SpaceshipIdleComponent gameState={gameState} type={building.type} />
          <BuildingDescriptionComponent gameState={gameState} xy={xy} />
-         <BuildingUpgradeComponent gameState={gameState} xy={xy} />
+         <BuildingUpgradeComponent gameState={gameState} xy={xy} key={xy} />
          <UpgradeableWonderComponent gameState={gameState} xy={xy} />
          <BuildingValueComponent gameState={gameState} xy={xy} />
          <BuildingWikipediaComponent gameState={gameState} xy={xy} />

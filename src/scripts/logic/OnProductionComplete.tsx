@@ -1,4 +1,4 @@
-import type { Building } from "../../../shared/definitions/BuildingDefinitions";
+import { BuildingIsCaravan, type Building } from "../../../shared/definitions/BuildingDefinitions";
 import { GreatPersonTickFlag, type GreatPerson } from "../../../shared/definitions/GreatPersonDefinitions";
 import {
    IOFlags,
@@ -124,7 +124,14 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
    const buildingsByType = getTypeBuildings(gs);
    const grid = getGrid(gs);
    const buildingName = Config.Building[building.type].name();
+
+   // Added by Lydia, makes code below easier to read etc.
    const buildingLevelStack = building.level * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1);
+   const OWSmulti = { output: buildingLevelStack, worker: buildingLevelStack, storage: buildingLevelStack };
+   const OSmulti = { output: buildingLevelStack, storage: buildingLevelStack };
+   // HAPPImulti: decides for wonders which provide happiness whether this grows per level or not
+   // exceptions: Alderson Disk is upgradable by default / by purpose, as well as Koti Repository and Nuclear Waste Repository
+   const HAPPImulti = GLOBAL_PARAMS.WONDER_LEVEL_HAPPINESS ? buildingLevelStack : 1;
 
    switch (building.type) {
       case "Headquarter": {
@@ -150,6 +157,14 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
             }
          } else {
             gs.festival = false;
+         }
+
+         // Lydia: reduce pollution by a fixed value
+         const reducePollution = 10;
+         // Lydia: alternatively reduce pollution by current age (with InfoAge = 10)
+         // const reducePollution = Config.TechAge[getCurrentAge(gs)].idx;
+         if (building.resources.Pollution && building.resources.Pollution > reducePollution) {
+            building.resources.Pollution -= reducePollution;
          }
 
          populateTileBuildings();
@@ -228,7 +243,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                }
                if (adjacentWaterTiles > 0) {
                   mapSafePush(Tick.next.tileMultipliers, tile.tile, {
-                     output: adjacentWaterTiles,
+                     output: buildingLevelStack * adjacentWaterTiles,
                      source: buildingName,
                   });
                }
@@ -237,13 +252,14 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "CircusMaximus": {
-         addMultiplier("MusiciansGuild", { output: 1, storage: 1 }, buildingName);
-         addMultiplier("PaintersGuild", { output: 1, storage: 1 }, buildingName);
-         addMultiplier("WritersGuild", { output: 1, storage: 1 }, buildingName);
-         Tick.next.globalMultipliers.happiness.push({ value: 5, source: buildingName });
+         addMultiplier("MusiciansGuild", OSmulti, buildingName);
+         addMultiplier("PaintersGuild", OSmulti, buildingName);
+         addMultiplier("WritersGuild", OSmulti, buildingName);
+         Tick.next.globalMultipliers.happiness.push({ value: 5 * HAPPImulti, source: buildingName });
          break;
       }
       case "Alps": {
+         // natural wonder: cannot be upgraded
          getXyBuildings(gs).forEach((building, xy) => {
             const mul = Math.floor(building.level / 10);
             if (mul > 0) {
@@ -262,12 +278,13 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "GrottaAzzurra": {
+         // natural wonder: cannot be upgraded
          forEach(Config.BuildingTier, (building, tier) => {
             if (tier === 1) {
                addMultiplier(building, {
-                  output: buildingLevelStack,
-                  worker: buildingLevelStack,
-                  storage: buildingLevelStack
+                  output: 1,
+                  worker: 1,
+                  storage: 1
                }, buildingName);
             }
          });
@@ -276,6 +293,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "PyramidOfGiza": {
          forEach(Config.Building, (building2, def) => {
             if (def.output.Worker) {
+               // Modified by Lydia
                addMultiplier(building2, { output: buildingLevelStack, levelBoost: buildingLevelStack }, buildingName);
             }
          });
@@ -320,14 +338,14 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          for (const neighbor of grid.getNeighbors(tileToPoint(xy))) {
             const building = getWorkingBuilding(pointToTile(neighbor), gs);
             if (building && !Config.Building[building.type].output.Worker) {
-               happiness += buildingLevelStack;
+               happiness += HAPPImulti;
             }
          }
          Tick.next.globalMultipliers.happiness.push({ value: happiness, source: buildingName });
          break;
       }
       case "HagiaSophia": {
-         let happiness = 5 * buildingLevelStack;
+         let happiness = 5 * HAPPImulti;
          const currentHappiness = Tick.current.happiness?.value ?? 0;
          if (Tick.current.tick <= 10 && currentHappiness < 0) {
             happiness += Math.abs(currentHappiness);
@@ -344,7 +362,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
             happiness += Config.Building.Colosseum.input.Chariot!;
          }
          Tick.next.globalMultipliers.happiness.push({
-            value: happiness * buildingLevelStack,
+            value: happiness * HAPPImulti,
             source: buildingName,
          });
          getBuildingsByType("ChariotWorkshop", gs)?.forEach((tile, xy) => {
@@ -402,8 +420,8 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "Parthenon": {
-         addMultiplier("MusiciansGuild", { output: 1, worker: 1, storage: 1 }, buildingName);
-         addMultiplier("PaintersGuild", { output: 1, worker: 1, storage: 1 }, buildingName);
+         addMultiplier("MusiciansGuild", OWSmulti, buildingName);
+         addMultiplier("PaintersGuild", OWSmulti, buildingName);
          getBuildingsByType("MusiciansGuild", gs)?.forEach((tile, xy) => {
             Tick.next.happinessExemptions.add(xy);
          });
@@ -421,15 +439,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "TerracottaArmy": {
-         addMultiplier(
-            "IronMiningCamp",
-            {
-               output: 1,
-               worker: 1,
-               storage: 1,
-            },
-            buildingName,
-         );
+         addMultiplier("IronMiningCamp", OWSmulti, buildingName);
          buildingsByType.get("IronForge")?.forEach((tile, xy) => {
             if (tile.building) {
                let adjacentIronMiningCamps = 0;
@@ -445,7 +455,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                }
                if (adjacentIronMiningCamps > 0) {
                   mapSafePush(Tick.next.tileMultipliers, tile.tile, {
-                     output: adjacentIronMiningCamps,
+                     output: adjacentIronMiningCamps * buildingLevelStack,
                      source: buildingName,
                   });
                }
@@ -454,9 +464,9 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "Persepolis": {
-         addMultiplier("StoneQuarry", { output: 1, worker: 1, storage: 1 }, buildingName);
-         addMultiplier("LoggingCamp", { output: 1, worker: 1, storage: 1 }, buildingName);
-         addMultiplier("CopperMiningCamp", { output: 1, worker: 1, storage: 1 }, buildingName);
+         addMultiplier("StoneQuarry", OWSmulti, buildingName);
+         addMultiplier("LoggingCamp", OWSmulti, buildingName);
+         addMultiplier("CopperMiningCamp", OWSmulti, buildingName);
          break;
       }
       case "OxfordUniversity": {
@@ -477,9 +487,9 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "ForbiddenCity": {
-         addMultiplier("PaperMaker", { output: 1, worker: 1, storage: 1 }, buildingName);
-         addMultiplier("WritersGuild", { output: 1, worker: 1, storage: 1 }, buildingName);
-         addMultiplier("PrintingHouse", { output: 1, worker: 1, storage: 1 }, buildingName);
+         addMultiplier("PaperMaker", OWSmulti, buildingName);
+         addMultiplier("WritersGuild", OWSmulti, buildingName);
+         addMultiplier("PrintingHouse", OWSmulti, buildingName);
          break;
       }
       case "Statistics": {
@@ -489,15 +499,15 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "HimejiCastle": {
-         addMultiplier("CaravelBuilder", { output: 1, worker: 1, storage: 1 }, buildingName);
-         addMultiplier("GalleonBuilder", { output: 1, worker: 1, storage: 1 }, buildingName);
-         addMultiplier("FrigateBuilder", { output: 1, worker: 1, storage: 1 }, buildingName);
+         addMultiplier("CaravelBuilder", OWSmulti, buildingName);
+         addMultiplier("GalleonBuilder", OWSmulti, buildingName);
+         addMultiplier("FrigateBuilder", OWSmulti, buildingName);
          break;
       }
       case "TajMahal": {
          getXyBuildings(gs).forEach((building, xy) => {
             if (building.level >= 20 && building.status !== "completed") {
-               mapSafePush(Tick.next.tileMultipliers, xy, { worker: 5, source: buildingName });
+               mapSafePush(Tick.next.tileMultipliers, xy, { worker: 5 * buildingLevelStack, source: buildingName });
             }
          });
          break;
@@ -508,9 +518,9 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
             const building = getWorkingBuilding(neighborXy, gs);
             if (building && Config.BuildingTier[building.type] === 1) {
                mapSafePush(Tick.next.tileMultipliers, neighborXy, {
-                  output: 1,
-                  worker: 1,
-                  storage: 1,
+                  output: buildingLevelStack,
+                  worker: buildingLevelStack,
+                  storage: buildingLevelStack,
                   source: buildingName,
                });
             }
@@ -518,6 +528,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "Aphrodite": {
+         // natural wonder: cannot be upgraded
          getXyBuildings(gs).forEach((building, xy) => {
             if (building.level >= 20 && building.status !== "completed") {
                mapSafePush(Tick.next.tileMultipliers, xy, {
@@ -537,6 +548,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "Poseidon": {
+         // natural wonder: cannot be upgraded
          for (const neighbor of grid.getNeighbors(tileToPoint(xy))) {
             const neighborXy = pointToTile(neighbor);
             const building = getWorkingBuilding(neighborXy, gs);
@@ -566,8 +578,8 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
             const building = gs.tiles.get(neighborXy)?.building;
             if (building && Config.BuildingTier[building.type] === 1) {
                mapSafePush(Tick.next.tileMultipliers, neighborXy, {
-                  output: 5,
-                  storage: 5,
+                  output: 5 * buildingLevelStack,
+                  storage: 5 * buildingLevelStack,
                   source: buildingName,
                });
             }
@@ -575,8 +587,8 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "TempleOfArtemis": {
-         addMultiplier("SwordForge", { worker: 1, storage: 1, output: 1 }, buildingName);
-         addMultiplier("Armory", { worker: 1, storage: 1, output: 1 }, buildingName);
+         addMultiplier("SwordForge", OWSmulti, buildingName);
+         addMultiplier("Armory", OWSmulti, buildingName);
          break;
       }
       case "EiffelTower": {
@@ -591,9 +603,9 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          }
          for (const xy of neighborXys) {
             mapSafePush(Tick.next.tileMultipliers, xy, {
-               worker: count,
-               storage: count,
-               output: count,
+               worker: count * buildingLevelStack,
+               storage: count * buildingLevelStack,
+               output: count * buildingLevelStack,
                source: buildingName,
             });
          }
@@ -602,16 +614,16 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "Rijksmuseum": {
          forEach(Config.Building, (b, def) => {
             if (def.input.Culture || def.output.Culture) {
-               addMultiplier(b, { output: 1, worker: 1, storage: 1 }, buildingName);
+               addMultiplier(b, OWSmulti, buildingName);
             }
          });
-         Tick.next.globalMultipliers.happiness.push({ value: 5, source: buildingName });
+         Tick.next.globalMultipliers.happiness.push({ value: 5 * HAPPImulti, source: buildingName });
          break;
       }
       case "SummerPalace": {
          forEach(Config.Building, (b, def) => {
             if (def.input.Gunpowder || def.output.Gunpowder) {
-               addMultiplier(b, { output: 1, worker: 1, storage: 1 }, buildingName);
+               addMultiplier(b, OWSmulti, buildingName);
             }
          });
          for (const neighbor of grid.getNeighbors(tileToPoint(xy))) {
@@ -661,9 +673,9 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                   }
                }
                mapSafePush(Tick.next.tileMultipliers, neighborXy, {
-                  worker: count,
-                  storage: count,
-                  output: count,
+                  worker: count * buildingLevelStack,
+                  storage: count * buildingLevelStack,
+                  output: count * buildingLevelStack,
                   source: buildingName,
                });
             }
@@ -681,19 +693,20 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                }
                if (adjacentOilTiles > 0) {
                   mapSafePush(Tick.next.tileMultipliers, tile.tile, {
-                     output: adjacentOilTiles,
-                     storage: adjacentOilTiles,
-                     worker: adjacentOilTiles,
+                     output: adjacentOilTiles * buildingLevelStack,
+                     storage: adjacentOilTiles * buildingLevelStack,
+                     worker: adjacentOilTiles * buildingLevelStack,
                      source: buildingName,
                   });
                }
             }
          });
-         addMultiplier("OilWell", { output: 1, worker: 1, storage: 1 }, buildingName);
-         addMultiplier("CoalMine", { output: 1, worker: 1, storage: 1 }, buildingName);
+         addMultiplier("OilWell", OWSmulti, buildingName);
+         addMultiplier("CoalMine", OWSmulti, buildingName);
          break;
       }
       case "MountSinai": {
+         // natural wonder: cannot be upgraded
          forEach(Config.Building, (building, def) => {
             if (def.output.Faith) {
                addMultiplier(building, { storage: 5 }, buildingName);
@@ -702,6 +715,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "NileRiver": {
+         // natural wonder: cannot be upgraded
          addMultiplier("WheatFarm", { output: 1, storage: 1 }, buildingName);
          for (const neighbor of grid.getNeighbors(tileToPoint(xy))) {
             const neighborXy = pointToTile(neighbor);
@@ -733,7 +747,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                ++count;
             }
          }
-         Tick.next.globalMultipliers.happiness.push({ value: count, source: buildingName });
+         Tick.next.globalMultipliers.happiness.push({ value: count * HAPPImulti, source: buildingName });
          const total = getGreatPersonTotalLevel("RamessesII", gs);
          if (total > 0) {
             Tick.next.globalMultipliers.builderCapacity.push({
@@ -756,12 +770,12 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                   }
                }
                mapSafePush(Tick.next.tileMultipliers, tileXy, {
-                  output: count,
+                  output: count * buildingLevelStack,
                   source: buildingName,
                });
                if (isFestival("GreatSphinx", gs)) {
                   mapSafePush(Tick.next.levelBoost, tileXy, {
-                     value: count,
+                     value: count * buildingLevelStack,
                      source: t(L.NaturalWonderName, { name: buildingName }),
                   });
                }
@@ -791,7 +805,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                addMultiplier(b, { output: buildingLevelStack }, buildingName);
             }
          });
-         for (const point of grid.getRange(tileToPoint(xy), 2 * buildingLevelStack)) {
+         for (const point of grid.getRange(tileToPoint(xy), Math.floor(2 * buildingLevelStack))) {
             Tick.next.powerPlants.add(pointToTile(point));
          }
          break;
@@ -831,9 +845,9 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "YellowCraneTower": {
          for (const point of grid.getRange(tileToPoint(xy), getYellowCraneTowerRange(xy, gs))) {
             mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {
-               output: 1,
-               storage: 1,
-               worker: 1,
+               output: buildingLevelStack,
+               storage: buildingLevelStack,
+               worker: buildingLevelStack,
                source: buildingName,
             });
          }
@@ -871,9 +885,10 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "MountTai": {
+         // natural wonder: cannot be upgraded
          forEach(Config.Building, (b, def) => {
             if (!isSpecialBuilding(b) && def.output.Science) {
-               addMultiplier(b, { output: buildingLevelStack }, buildingName);
+               addMultiplier(b, { output: 1 }, buildingName);
             }
          });
          const total = getGreatPersonTotalLevel("Confucius", gs);
@@ -905,7 +920,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
             }
             if (adjacentUraniumMines > 0) {
                mapSafePush(Tick.next.tileMultipliers, xy, {
-                  output: adjacentUraniumMines,
+                  output: adjacentUraniumMines * buildingLevelStack,
                   source: buildingName,
                });
             }
@@ -934,6 +949,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
             if (isFestival("GreatWall", gs)) {
                count *= 2;
             }
+            count *= buildingLevelStack;
             mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {
                output: count,
                storage: count,
@@ -944,10 +960,11 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "YangtzeRiver": {
+         // natural wonder: cannot be upgraded
          const level = getGameOptions().greatPeople.WuZetian?.level ?? 0;
          forEach(Config.Building, (b, def) => {
             if (def.input.Water) {
-               addMultiplier(b, { output: 1, worker: 1, storage: 1 + level }, buildingName);
+               addMultiplier(b, { output: buildingLevelStack, worker: buildingLevelStack, storage: buildingLevelStack + level }, buildingName);
             } else if (level > 0) {
                addMultiplier(b, { storage: level }, buildingName);
             }
@@ -964,7 +981,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "PorcelainTower": {
-         Tick.next.globalMultipliers.happiness.push({ value: 5, source: buildingName });
+         Tick.next.globalMultipliers.happiness.push({ value: 5 * HAPPImulti, source: buildingName });
          if (isFestival("PorcelainTower", gs)) {
             forEach(gs.greatPeople, (gp, level) => {
                if (level > 0) {
@@ -1025,7 +1042,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "ApolloProgram": {
-         addMultiplier("RocketFactory", { output: 2, worker: 2, storage: 2 }, buildingName);
+         addMultiplier("RocketFactory", { output: 2 * buildingLevelStack, worker: 2 * buildingLevelStack, storage: 2 * buildingLevelStack}, buildingName);
          const tick = (tile: Required<ITileData>, xy: Tile) => {
             if (!tile.building) return;
             let adjacent = 0;
@@ -1036,7 +1053,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                }
             }
             if (adjacent > 0) {
-               mapSafePush(Tick.next.tileMultipliers, xy, { output: adjacent, source: buildingName });
+               mapSafePush(Tick.next.tileMultipliers, xy, { output: adjacent * buildingLevelStack, source: buildingName });
             }
          };
          buildingsByType.get("SatelliteFactory")?.forEach(tick);
@@ -1117,9 +1134,9 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          }
          for (const point of grid.getRange(tileToPoint(xy), 2)) {
             mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {
-               output: 1,
-               worker: 1,
-               storage: 1,
+               output: buildingLevelStack,
+               worker: buildingLevelStack,
+               storage: buildingLevelStack,
                source: buildingName,
             });
          }
@@ -1156,6 +1173,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                   if (isFestival("WallStreet", gs)) {
                      multiplier *= 2;
                   }
+                  multiplier *= buildingLevelStack;
                   mapSafePush(Tick.next.tileMultipliers, t, {
                      unstable: true,
                      output: multiplier,
@@ -1166,7 +1184,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          }
 
          if (isFestival("WallStreet", gs)) {
-            addMultiplier("ResearchFund", { output: 5 }, buildingName);
+            addMultiplier("ResearchFund", { output: 5 * buildingLevelStack }, buildingName);
          }
 
          const total = getGreatPersonTotalLevel("JohnDRockefeller", gs, options);
@@ -1181,6 +1199,8 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "Shenandoah": {
+         // renamed to Grand Canyon
+         // natural wonder: cannot be upgraded
          const currentAge = getCurrentAge(gs);
          forEach(Config.BuildingTechAge, (building, age) => {
             if (age === currentAge) {
@@ -1199,6 +1219,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "NiagaraFalls": {
+         // natural wonder: cannot be upgraded
          const currentAge = getCurrentAge(gs);
          const count = Config.TechAge[currentAge].idx + 1;
          addMultiplier("Warehouse", { storage: count }, buildingName);
@@ -1218,7 +1239,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "StPetersBasilica": {
-         addMultiplier("Church", { storage: 5 }, buildingName);
+         addMultiplier("Church", { storage: 5 * buildingLevelStack }, buildingName);
          generateScienceFromFaith(xy, "Church", gs);
          break;
       }
@@ -1243,8 +1264,8 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          for (const point of grid.getRange(tileToPoint(xy), 2)) {
             const tileXy = pointToTile(point);
             mapSafePush(Tick.next.tileMultipliers, tileXy, {
-               worker: 1,
-               storage: 1,
+               worker: buildingLevelStack,
+               storage: buildingLevelStack,
                source: buildingName,
             });
          }
@@ -1281,7 +1302,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
             }
          }
          buildings.forEach((b) => {
-            addMultiplier(b, { output: 2, unstable: true }, buildingName);
+            addMultiplier(b, { output: 2 * buildingLevelStack, unstable: true }, buildingName);
          });
          break;
       }
@@ -1294,6 +1315,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "ZagrosMountains": {
+         // natural wonder: cannot be upgraded
          for (const point of grid.getRange(tileToPoint(xy), 1)) {
             const tileXy = pointToTile(point);
             // Include base multiplier (1)
@@ -1328,6 +1350,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "EuphratesRiver": {
+         // natural wonder: cannot be upgraded
          const stat = getTransportStat(gs);
          const productionWorkers = (Tick.current.workersUsed.get("Worker") ?? 0) - stat.totalFuel;
          const totalWorkers =
@@ -1391,6 +1414,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "DeltaWorks": {
+         // natural wonder: cannot be upgraded
          addMultiplier("Aqueduct", { levelBoost: 5, output: 2, storage: 2 }, buildingName);
          addMultiplier("HydroDam", { levelBoost: 5, output: 2, storage: 2 }, buildingName);
          break;
@@ -1509,6 +1533,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "Kanagawa": {
+         // natural wonder: cannot be upgraded
          const currentAge = getCurrentAge(gs);
          forEach(Config.GreatPerson, (p, def) => {
             if (def.age === currentAge) {
@@ -1518,6 +1543,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "MountFuji": {
+         // natural wonder: cannot be upgraded
          const interval = Math.min(fujiTick, (Date.now() - lastFujiGeneratedAt) / 1000);
          if (interval >= 60) {
             fujiTick = 0;
@@ -1559,7 +1585,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                });
             });
             mapSafePush(Tick.next.tileMultipliers, tile, {
-               output: multiplier,
+               output: multiplier * buildingLevelStack,
                unstable: true,
                source: buildingName,
             });
@@ -1567,6 +1593,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "RhineGorge": {
+         // natural wonder: cannot be upgraded
          let count = 0;
          for (const point of grid.getRange(tileToPoint(xy), 2)) {
             const targetXy = pointToTile(point);
@@ -1602,7 +1629,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                }
             }
             mapSafePush(Tick.next.tileMultipliers, xy, {
-               output: count,
+               output: count * buildingLevelStack,
                source: buildingName,
             });
          }
@@ -1621,6 +1648,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "BlackForest": {
+         // natural wonder: cannot be upgraded
          forEach(Config.Building, (b, def) => {
             if (!isSpecialBuilding(b) && (def.input.Wood || def.input.Lumber)) {
                addMultiplier(b, { output: 5 }, buildingName);
@@ -1629,6 +1657,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "Zugspitze": {
+         // natural wonder: cannot be upgraded
          const zug = building as IZugspitzeBuildingData;
          const gps = new Map<GreatPerson, number>();
          const currentAge = getCurrentAge(gs);
@@ -1649,6 +1678,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "Lapland": {
+         // natural wonder: cannot be upgraded
          const multiplier = Config.TechAge[getCurrentAge(gs)].idx + 1;
          for (const neighbor of grid.getRange(tileToPoint(xy), 2)) {
             mapSafePush(Tick.next.tileMultipliers, pointToTile(neighbor), {
@@ -1659,6 +1689,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "RockefellerCenterChristmasTree": {
+         // natural wonder: cannot be upgraded
          const multiplier = Config.TechAge[getCurrentAge(gs)].idx + 1;
          Tick.next.globalMultipliers.happiness.push({ value: multiplier * 3, source: buildingName });
          break;
@@ -1723,29 +1754,25 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "EastIndiaCompany": {
          if ((building.resources.TradeValue ?? 0) > EAST_INDIA_COMPANY_BOOST_PER_EV) {
             safeAdd(building.resources, "TradeValue", -EAST_INDIA_COMPANY_BOOST_PER_EV);
-            const caravans = [
-               getBuildingsByType("Caravansary", gs),
-               getBuildingsByType("Caravansary2", gs),
-               getBuildingsByType("Caravansary3", gs),
-               getBuildingsByType("Caravansary4", gs),
-            ].flat(1);
-            // getBuildingsByType("Caravansary", gs)?.forEach((tile, xy) => {
-            caravans?.forEach((tile, xy) => {
-               if (!getWorkingBuilding(xy, gs)) {
-                  return;
-               }
-               grid.getNeighbors(tileToPoint(xy)).forEach((p) => {
-                  mapSafePush(Tick.next.tileMultipliers, pointToTile(p), {
-                     output: isFestival("EastIndiaCompany", gs) ? building.level : 0.5 * building.level,
-                     source: buildingName,
-                     unstable: true,
+            for (const cara of BuildingIsCaravan) {
+               getBuildingsByType(cara, gs)?.forEach((tile, xy) => {
+                  if (!getWorkingBuilding(xy, gs)) {
+                     return;
+                  }
+                  grid.getNeighbors(tileToPoint(xy)).forEach((p) => {
+                     mapSafePush(Tick.next.tileMultipliers, pointToTile(p), {
+                        output: isFestival("EastIndiaCompany", gs) ? building.level : 0.5 * building.level,
+                        source: buildingName,
+                        unstable: true,
+                     });
                   });
                });
-            });
+            }
          }
          break;
       }
       case "DuneOfPilat": {
+         // natural wonder: cannot be upgraded
          const age = getCurrentAge(gs);
          const previousAge = firstKeyOf(
             filterOf(Config.TechAge, (k, v) => v.idx === Config.TechAge[age].idx - 1),
@@ -1830,9 +1857,9 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       }
       case "BlueMosque": {
          const hagiaSophia = Tick.current.specialBuildings.get("HagiaSophia");
-         let multiplier = 1;
+         let multiplier = buildingLevelStack;
          if (hagiaSophia && grid.distanceTile(hagiaSophia.tile, xy) <= 1) {
-            multiplier += 1;
+            multiplier += hagiaSophia.building.level;
          }
          Tick.current.specialBuildings.forEach((data, building) => {
             if (isWorldWonder(building)) {
@@ -1849,6 +1876,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "MountArarat": {
+         // natural wonder: cannot be upgraded
          const level = isFestival("MountArarat", gs)
             ? Math.floor(Math.sqrt(getPermanentGreatPeopleLevel(options)))
             : Math.floor(Math.cbrt(getPermanentGreatPeopleLevel(options)));
@@ -1863,6 +1891,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "Cappadocia": {
+         // natural wonder: cannot be upgraded
          for (const point of grid.getRange(tileToPoint(xy), 3)) {
             const building = gs.tiles.get(pointToTile(point))?.building;
             const factor = isFestival("Cappadocia", gs) ? 2 : 1;
@@ -1880,7 +1909,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "TopkapiPalace": {
          for (const point of grid.getRange(tileToPoint(xy), 2)) {
             const tile = pointToTile(point);
-            const pm = totalMultiplierFor(tile, "output", 1, true, gs);
+            const pm = buildingLevelStack * totalMultiplierFor(tile, "output", 1, true, gs);
             mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {
                storage: pm / 2,
                source: buildingName,
@@ -1947,6 +1976,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       }
       case "Capybara":
       case "GiantOtter": {
+         // natural wonder: cannot be upgraded
          let emptyTiles = 0;
          const range = isFestival(building.type, gs) ? 3 : 2;
          for (const point of grid.getRange(tileToPoint(xy), range)) {
@@ -1967,6 +1997,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       }
       case "Hoatzin":
       case "RoyalFlycatcher": {
+         // natural wonder: cannot be upgraded
          let emptyTiles = 0;
          const range = isFestival(building.type, gs) ? 3 : 2;
          for (const point of grid.getRange(tileToPoint(xy), range)) {
@@ -1987,6 +2018,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       }
       case "GlassFrog":
       case "PygmyMarmoset": {
+         // natural wonder: cannot be upgraded
          let emptyTiles = 0;
          for (const point of grid.getRange(tileToPoint(xy), 3)) {
             const t = pointToTile(point);
@@ -2035,6 +2067,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "GangesRiver": {
+         // natural wonder: cannot be upgraded
          const buildings = new Set<Building>();
          for (const point of grid.getRange(tileToPoint(xy), isFestival("GangesRiver", gs) ? 2 : 1)) {
             const tile = pointToTile(point);
@@ -2062,6 +2095,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "Sundarbans": {
+         // natural wonder: cannot be upgraded
          forEach(options.ageWisdom, (age, level) => {
             getGreatPeopleForWisdom(age).forEach((gp) => {
                const greatPerson = Config.GreatPerson[gp];

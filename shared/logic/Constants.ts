@@ -78,6 +78,7 @@ export const GLOBAL_PARAMS = {
    SHOW_STACKING: true,			// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
    USE_STACKING: true,			// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
    WONDER_STACKING: true,		// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
+   WONDER_LEVEL_HAPPINESS: false,   // defaults: vanilla: false ; lmc: false ; lmc_lydia: false -- it's too strong
    DEBUG_HIDDEN: true,			// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
    BUILDINGS_IGNORE_CITIES: true,	// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
    GP_IGNORE_PROMOTION: true,			// defaults: vanilla: false ; lmc: false ; lmc_lydia: true

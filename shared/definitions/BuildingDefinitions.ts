@@ -966,7 +966,7 @@ export class BuildingDefinitions {
       power: true,
    };
 
-   // Lydia: Dutch
+   // Lydia: Bicycles
    BicycleFactory: IBuildingDefinition = {
       name: () => t(L.BicycleFactory),
       input: { Steel: 1, Wood: 1, Tool: 1 },
@@ -975,6 +975,31 @@ export class BuildingDefinitions {
       // power: true,
       // Electricity comes after Railway!
    };
+   TourDeFrance: IBuildingDefinition = {
+      // timed: july
+      name: () => t(L.TourDeFrance),
+      desc: () => t(L.TourDeFranceDesc),
+      input: {},
+      output: {},
+      // construction: { TV: 10, Radio: 2, Newspaper: 0.5, Bicycle: 0.1 },
+      construction: { Newspaper: 20, Magazine: 10, Bicycle: 5 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "Tour_de_France",
+   };
+   GiroDItalia: IBuildingDefinition = {
+      // timed: may
+      name: () => t(L.GiroDItalia),
+      desc: () => t(L.GiroDItaliaDesc),
+      input: {},
+      output: {},
+      construction: { Newspaper: 20, Magazine: 10, Bicycle: 5 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "Giro_d'Italia",
+   };
+
+   // Lydia: Dutch
    UtrechtDistrict: IBuildingDefinition = {
       name: () => t(L.UtrechtDistrict),
       desc: () => t(L.UtrechtDistrictDesc),
@@ -2514,4 +2539,11 @@ export const BuildingShowLevel = new Set<Building>([
    "RedFort",
    "QutbMinar",
    "UnitedNations",
+] satisfies Building[]);
+
+export const BuildingIsCaravan = new Set<Building>([
+   "Caravansary",
+   "Caravansary2",
+   "Caravansary3",
+   "Caravansary4",
 ] satisfies Building[]);

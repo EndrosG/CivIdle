@@ -75,30 +75,30 @@ export function BuildingUpgradeComponent({ gameState, xy }: IBuildingComponentPr
    useShortcut("BuildingPageUpgrade4", () => upgradeTo(levels[3]), [xy]);
    useShortcut("BuildingPageUpgrade5", () => upgradeTo(levels[4]), [xy]);
    const downgradeTo = (targetLevel: number) => {
-      selected.forEach((xy2) => {
-         const b2 = gameState.tiles.get(xy2)?.building;
-         if (!b2)
+      selected.forEach((xy) => {
+         const b = gameState.tiles.get(xy)?.building;
+         if (!b)
             return;
-         const target = targetLevel < 0 ? b2.level + targetLevel : targetLevel;
-         if ((!isSpecialBuilding(b2.type) || (GLOBAL_PARAMS.WONDER_STACKING && Config.Building[b2.type].special === 1)) && target < b2.level) {
-            b2.desiredLevel = target;
-            b2.status = "downgrading";
-	   }
+         const target = targetLevel < 0 ? b.level + targetLevel : targetLevel;
+         if ((!isSpecialBuilding(b.type) || (GLOBAL_PARAMS.WONDER_STACKING && Config.Building[b.type].special === 1)) && target < b.level) {
+            b.desiredLevel = target;
+            b.status = "downgrading";
+         }
       });
       setSelected(/* @__PURE__ */ new Set([xy]));
       Singleton().sceneManager.getCurrent(WorldScene)?.drawSelection(null, Array.from(selected));
       notifyGameStateUpdate();
    };
    const stackTo = (targetStack: number) => {
-      selected.forEach((xy2) => {
-         const b2 = gameState.tiles.get(xy2)?.building;
-         if (!b2)
+      selected.forEach((xy) => {
+         const b = gameState.tiles.get(xy)?.building;
+         if (!b)
             return;
-         const target = targetStack < 0 ? b2.stack + Math.abs(targetStack) : targetStack;
-         if ((!isSpecialBuilding(b2.type) || (GLOBAL_PARAMS.WONDER_STACKING && Config.Building[b2.type].special === 1)) && target > b2.stack) {
-            b2.desiredStack = target;
-            b2.status = "stacking";
-	   }
+         const target = targetStack < 0 ? b.stack + Math.abs(targetStack) : targetStack;
+         if ((!isSpecialBuilding(b.type) || (GLOBAL_PARAMS.WONDER_STACKING && Config.Building[b.type].special === 1)) && target > b.stack) {
+            b.desiredStack = target;
+            b.status = "stacking";
+         }
       });
       setSelected(/* @__PURE__ */ new Set([xy]));
       Singleton().sceneManager.getCurrent(WorldScene)?.drawSelection(null, Array.from(selected));
@@ -174,7 +174,7 @@ export function BuildingUpgradeComponent({ gameState, xy }: IBuildingComponentPr
    const downgradeHint = (idx: number, level: number) => {
       return (
          <span>
-         {idx === 0 ? `${t(L.Downgrade)} -1: ` : `${t(L.DowngradeTo, { level })}: `}
+            {idx === 0 ? `${t(L.Downgrade)} -1: ` : `${t(L.DowngradeTo, { level })}: `}
          </span>
       );
    };
@@ -305,28 +305,28 @@ export function BuildingUpgradeComponent({ gameState, xy }: IBuildingComponentPr
                   <div className="text-small text-desc">{t(L.Level)}</div>
                </div>
                {GLOBAL_PARAMS.SHOW_STACKING && building.stack > 1 ? (
-               <div className="f1 text-center">
-                  <div className="text-strong text-large">{building.stack}</div>
-                  <div className="text-small text-desc">{t(L.Stack)}</div>
-               </div>
-               ) : null}
-               {Config.BuildingTier[building.type]? (
-               <div className="f1 text-center">
-                  <div className="text-strong text-large">
-                     {numberToRoman(Config.BuildingTier[building.type]!)}
+                  <div className="f1 text-center">
+                     <div className="text-strong text-large">{building.stack}</div>
+                     <div className="text-small text-desc">{t(L.Stack)}</div>
                   </div>
-                  <div className="text-small text-desc">{t(L.BuildingTier)}</div>
-               </div>
                ) : null}
-               {Config.TechAge[age]? (
-               <Tippy content={Config.TechAge[age].name()}>
+               {Config.BuildingTier[building.type] ? (
                   <div className="f1 text-center">
                      <div className="text-strong text-large">
-                        {numberToRoman(Config.TechAge[age].idx + 1)}
+                        {numberToRoman(Config.BuildingTier[building.type]!)}
                      </div>
-                     <div className="text-small text-desc">{t(L.TechAge)}</div>
+                     <div className="text-small text-desc">{t(L.BuildingTier)}</div>
                   </div>
-               </Tippy>
+               ) : null}
+               {Config.TechAge[age] ? (
+                  <Tippy content={Config.TechAge[age].name()}>
+                     <div className="f1 text-center">
+                        <div className="text-strong text-large">
+                           {numberToRoman(Config.TechAge[age].idx + 1)}
+                        </div>
+                        <div className="text-small text-desc">{t(L.TechAge)}</div>
+                     </div>
+                  </Tippy>
                ) : null}
             </div>
             <div className="separator" />
@@ -379,32 +379,32 @@ export function BuildingUpgradeComponent({ gameState, xy }: IBuildingComponentPr
                ))}
             </div>
 
-               {GLOBAL_PARAMS.SHOW_DOWNGRADING ? (
-            <div className="row">
-               {levelsDown.map((level, idx) => (
-                  <Tippy key={idx} content={downgradeHint(idx, level)}>
-                     <button className="f1" onClick={() => downgradeTo(idx === 0 ? -1 : level)}>
-                        {idx === 0 ? "-1" : `${level}`}
-                     </button>
-                  </Tippy>
-               ))}
-            </div>
-               ) : null}
+            {GLOBAL_PARAMS.SHOW_DOWNGRADING ? (
+               <div className="row">
+                  {levelsDown.map((level, idx) => (
+                     <Tippy key={idx} content={downgradeHint(idx, level)}>
+                        <button className="f1" onClick={() => downgradeTo(idx === 0 ? -1 : level)}>
+                           {idx === 0 ? "-1" : `${level}`}
+                        </button>
+                     </Tippy>
+                  ))}
+               </div>
+            ) : null}
 
-               {GLOBAL_PARAMS.SHOW_STACKING && GLOBAL_PARAMS.USE_STACKING ? (
-            <div className="separator" />
-               ) : null}
-               {GLOBAL_PARAMS.SHOW_STACKING && GLOBAL_PARAMS.USE_STACKING ? (
-            <div className="row">
-               {stacks.map((stack, idx) => (
-                  <Tippy key={idx} content={stackCost(idx, stack)}>
-                     <button className="f1" onClick={() => stackTo(idx === 0 ? -1 : stack)}>
-                        {idx === 0 ? "+1" : `${stack}`}
-                     </button>
-                  </Tippy>
-               ))}
-            </div>
-               ) : null}
+            {GLOBAL_PARAMS.SHOW_STACKING && GLOBAL_PARAMS.USE_STACKING ? (
+               <div className="separator" />
+            ) : null}
+            {GLOBAL_PARAMS.SHOW_STACKING && GLOBAL_PARAMS.USE_STACKING ? (
+               <div className="row">
+                  {stacks.map((stack, idx) => (
+                     <Tippy key={idx} content={stackCost(idx, stack)}>
+                        <button className="f1" onClick={() => stackTo(idx === 0 ? -1 : stack)}>
+                           {idx === 0 ? "+1" : `${stack}`}
+                        </button>
+                     </Tippy>
+                  ))}
+               </div>
+            ) : null}
 
             {theMet ? (
                <button

@@ -40,11 +40,17 @@ export const DE = {
    ZPM: "Nullpunkt-Energie",
    ZPMLab: "Nullpunkt-Energie-Labor",
 
+   // Lydia: Fahrräder
+   Bicycle: "Fahrrad",
+   BicycleFactory: "Fahrrad-Fabrik",
+   TourDeFrance: "Tour de France",
+   TourDeFranceDesc: "Die Tour de France gilt vielen nach Olympischen Spielen und Fußball-Weltmeisterschaften als das drittgrößte Sportereignis der Welt und größtes jährlich stattfindendes Sportereignis. Seit 1903 wird die Tour de France alljährlich im Juli ausgetragen und führt dabei in wechselnder Streckenführung quer durch Frankreich und das nahe Ausland. Während des Ersten Weltkriegs fiel das Rennen von 1915 bis 1918 aus, der Zweite Weltkrieg bedingte eine Unterbrechung von 1940 bis 1946. Beim Bau und bei jedem Ausbau wird eine (thematisch passende) herausragende Persönlichkeit geboren.",
+   GiroDItalia: "Giro d’Italia",
+   GiroDItaliaDesc: "Der Giro d’Italia ist eines der bedeutendsten Etappenrennen im Straßenradsport der Männer. Es gehört mit der Tour de France und der Vuelta a España zu den Grand Tours. Seit 1909 wird der Giro d’Italia alljährlich im Mai ausgetragen und führt dabei in wechselnder Streckenführung durch Italien und das nahe Ausland. Während des Ersten Weltkriegs fiel das Rennen von 1915 bis 1918 aus, der Zweite Weltkrieg bedingte eine Unterbrechung von 1941 bis 1945. Beim Bau und bei jedem Ausbau wird eine (thematisch passende) herausragende Persönlichkeit geboren.",
+
    // Lydia: Niederlande
    Dutch: "Niederländisch",
    NoordeindePalace: "Palais Noordeinde",
-   Bicycle: "Fahrrad",
-   BicycleFactory: "Fahrrad-Fabrik",
    // BicycleCulture: "Fahrradkultur: Zusätzliche Produktions-Boni für Fahrrad-Fabrik und Eisenbahn",
    BicycleCulture: "Bicycle Culture: Jede 10. Stufe eines Stadtteils von Utrecht erhöht den Produktionsmultiplikator um +1 bei allen Fahrrad-Fabriken, Lokomotiv-Fabriken und Käsereien innerhalb der Reichweite.",
    MiguelIndurain: "Miguel Indurain",

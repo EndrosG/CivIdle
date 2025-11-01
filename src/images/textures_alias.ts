@@ -22,7 +22,7 @@ export const TextureAliases = {
     "Person_JanVermeer": "Person_ChristopherColumbus",
     "Person_VincentVanGogh": "Person_GeorgiusAgricola",
     "Person_MiguelIndurain": "Person_NielsBohr",
-    "Building_BicycleFactory": "Building_LocomotiveFactory",
+    // "Building_BicycleFactory": "Building_LocomotiveFactory",
     "Building_UtrechtDistrict": "Building_Villa",
     "Building_VanGoghMuseum": "Building_Museum",
     "Building_InternationalCriminalCourt": "Building_Courthouse",

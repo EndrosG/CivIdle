@@ -227,7 +227,8 @@ export async function startGame(
 
 // This method is called after server time is synced!
 export function setTimedOverride(gs: GameState): void {
-   const now = getServerNow();
+   // Lydia: modified for DEV environment
+   const now = getServerNow() ?? Date.now();
    if (now === null) {
       return;
    }

@@ -27,6 +27,8 @@ export const TimedBuildingUnlock: Partial<Record<Building, ITimedBuildingUnlock>
       tech: "PrivateOwnership",
       condition: (now) => now.getMonth() === 3 || IGNORE_TIMING,
    },
+   TourDeFrance: { tech: "Olympics", condition: (now) => now.getMonth() === 6 || IGNORE_TIMING },
+   GiroDItalia: { tech: "Olympics", condition: (now) => now.getMonth() === 4 || IGNORE_TIMING },
 };
 
 export function isHalloween(now: Date): boolean {

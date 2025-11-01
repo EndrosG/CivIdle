@@ -40,11 +40,17 @@ export const EN = {
    ZPM: "Zero Point Energy",
    ZPMLab: "Zero Point Energy Lab",
 
+   // Lydia: Bicycles
+   Bicycle: "Bicycle",
+   BicycleFactory: "Bicycle Factory",
+   TourDeFrance: "Tour de France",
+   TourDeFranceDesc: "The race was first organized in 1903 to increase sales for the newspaper L'Auto (which was an ancestor of L'Équipe) and has been held annually since, except when it was not held from 1915 to 1918 and 1940 to 1946 due to the two World Wars. As the Tour gained prominence and popularity, the race was lengthened and gained more international participation. When completed or upgraded, a (themed) great person is born.",
+   GiroDItalia: "Giro d'Italia",
+   GiroDItaliaDesc: "The Giro d'Italia, also known simply as the Giro, is an annual multiple-stage road cycling race primarily held in Italy. The first race was organized in 1909 to increase sales of the newspaper La Gazzetta dello Sport, and the race is still run by a subsidiary of that paper's owner. The race has been held annually since its first edition in 1909, except during the two world wars. When completed or upgraded, a (themed) great person is born.",
+
    // Lydia: Netherlands
    Dutch: "Dutch",
    NoordeindePalace: "Noordeinde Palace",
-   Bicycle: "Bicycle",
-   BicycleFactory: "Bicycle Factory",
    // BicycleCulture: "Bicycle Culture: Additional bonus to Bicycle Factory and trains",
    BicycleCulture: "Bicycle Culture: Every 10th level of Utrecht city district gives +1 Production Multiplier to Bicycle Factory, Locomotive Factory and Cheese Maker within that range.",
    MiguelIndurain: "Miguel Indurain",
