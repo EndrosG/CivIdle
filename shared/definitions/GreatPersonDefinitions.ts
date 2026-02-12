@@ -19,7 +19,7 @@ export class GreatPersonDefinitions {
          multipliers: ["output", "storage"],
          buildings: ["WirecardAG"],
       },
-      time: "1980 ~ now AD",
+      time: "1980 AD ~ now",
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "ColdWarAge",
@@ -33,7 +33,7 @@ export class GreatPersonDefinitions {
          multipliers: ["levelBoost", "storage"],
          buildings: ["WirecardAG"]
       },
-      time: "1969 ~ now AD",
+      time: "1969 AD ~ now",
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "ColdWarAge",
@@ -47,7 +47,7 @@ export class GreatPersonDefinitions {
          multipliers: ["output", "storage"],
          buildings: ["BicycleFactory"],
       },
-      time: "1964 ~ now AD",
+      time: "1964 AD ~ now",
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "InformationAge",
@@ -132,6 +132,131 @@ export class GreatPersonDefinitions {
 
 
    // Lydia: more modern stuff
+   HappyFamily: IGreatPersonDefinition = {
+      name: () => t(L.HappyFamily),
+      desc: (self, level) => t(L.HappyFamilyDesc, { value: formatNumber(self.value(level)) }),
+      time: "2017 AD ~ now",
+      value: (level) => level * 7,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "FutureAge",
+      tick: (self, level, source) => {
+         Tick.next.globalMultipliers.happiness.push({
+            value: Config.GreatPerson[self].value(level),
+            source,
+         });
+      },
+      type: GreatPersonType.Normal,
+   };
+   Lydia2017: IGreatPersonDefinition = boostOf({
+      name: () => t(L.Lydia2017),
+      boost: {
+         multipliers: ["output", "storage"],
+         buildings: ["InternetServiceProvider", "SoftwareCompany"],
+      },
+      time: "1979 AD ~ now",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "FutureAge",
+   });
+   Beatrice2022: IGreatPersonDefinition = boostOf({
+      name: () => t(L.Beatrice2022),
+      boost: {
+         multipliers: ["output", "storage"],
+         buildings: ["Church", "MusiciansGuild"],
+      },
+      time: "2013 AD ~ now",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "FutureAge",
+   });
+   SevenOfNine: IGreatPersonDefinition = boostOf({
+      name: () => t(L.SevenOfNine),
+      boost: {
+         multipliers: ["levelBoost", "output", "storage"],
+         buildings: ["InternetServiceProvider", "CivTok", "HedgeFund", "SupercomputerLab"],
+      },
+      time: "2344 ~ 24xx AD",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "FutureAge",
+   });
+   BorgQueen: IGreatPersonDefinition = {
+      name: () => t(L.BorgQueen),
+      desc: (self, level) => t(L.BorgQueenDesc, { value: formatNumber(self.value(level)) }),
+      time: "unknown",
+      value: (level) => level * 7,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "FutureAge",
+      tick: (self, level, source) => {
+         Tick.next.globalMultipliers.builderCapacity.push({
+            value: Config.GreatPerson[self].value(level),
+            source,
+         });
+      },
+      type: GreatPersonType.Normal,
+   };
+
+   OmaDesala: IGreatPersonDefinition = boostOf({
+      name: () => t(L.OmaDesala),
+      boost: {
+         multipliers: ["levelBoost", "storage"],
+         buildings: ["Retreat1", "WheatFarm", "Church"],
+      },
+      time: "unknown",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "AscensionAge",
+   });
+   MorganLeFay: IGreatPersonDefinition = boostOf({
+      name: () => t(L.MorganLeFay),
+      boost: {
+         multipliers: ["output", "storage"],
+         buildings: ["Retreat1", "WheatFarm", "KnightCamp"],
+      },
+      time: "unknown",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "AscensionAge",
+   });
+   Merlin: IGreatPersonDefinition = {
+      name: () => t(L.Merlin),
+      desc: (self, level) => t(L.MerlinDesc, { value: formatNumber(self.value(level)) }),
+      time: "unknown",
+      value: (level) => level * 8,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "AscensionAge",
+      tick: (self, level, source) => {
+         Tick.next.globalMultipliers.builderCapacity.push({
+            value: Config.GreatPerson[self].value(level),
+            source,
+         });
+      },
+      type: GreatPersonType.Normal,
+   };
+   LyaNox: IGreatPersonDefinition = boostOf({
+      name: () => t(L.LyaNox),
+      boost: {
+         multipliers: ["levelBoost", "storage"],
+         buildings: ["Embassy", "Peacekeeper"],
+      },
+      time: "unknown",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "AscensionAge",
+   });
+   Asgard: IGreatPersonDefinition = boostOf({
+      name: () => t(L.Asgard),
+      boost: {
+         multipliers: ["levelBoost", "storage"],
+         buildings: ["ComputerFactory", "SupercomputerLab", "CloneFactory"],
+      },
+      time: "unknown",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "AscensionAge",
+   });
+
+
 
    // Bronze /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -495,7 +620,7 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "ClassicalAge",
-      tick: (self, level, source) => {},
+      tick: (self, level, source) => { },
       type: GreatPersonType.LevelBoost,
    };
 
@@ -506,7 +631,7 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "ClassicalAge",
-      tick: (self, level, source) => {},
+      tick: (self, level, source) => { },
       type: GreatPersonType.Wildcard,
    };
 
@@ -517,7 +642,7 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "ClassicalAge",
-      tick: (self, level, source) => {},
+      tick: (self, level, source) => { },
       type: GreatPersonType.Promotion,
    };
 
@@ -662,7 +787,7 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "MiddleAge",
-      tick: (self, level, source) => {},
+      tick: (self, level, source) => { },
       type: GreatPersonType.Wildcard,
    };
 
@@ -673,7 +798,7 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "MiddleAge",
-      tick: (self, level, source) => {},
+      tick: (self, level, source) => { },
       type: GreatPersonType.Promotion,
    };
 
@@ -852,7 +977,7 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "RenaissanceAge",
-      tick: (self, level, source) => {},
+      tick: (self, level, source) => { },
       type: GreatPersonType.Wildcard,
    };
 
@@ -863,7 +988,7 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "RenaissanceAge",
-      tick: (self, level, source) => {},
+      tick: (self, level, source) => { },
       type: GreatPersonType.Promotion,
    };
 
@@ -1090,7 +1215,7 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "IndustrialAge",
-      tick: (self, level, source) => {},
+      tick: (self, level, source) => { },
       type: GreatPersonType.LevelBoost,
       city: "Indian",
    };
@@ -1102,7 +1227,7 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "IndustrialAge",
-      tick: (self, level, source) => {},
+      tick: (self, level, source) => { },
       type: GreatPersonType.Wildcard,
    };
 
@@ -1113,7 +1238,7 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "IndustrialAge",
-      tick: (self, level, source) => {},
+      tick: (self, level, source) => { },
       type: GreatPersonType.Promotion,
    };
 
@@ -1143,7 +1268,7 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "IndustrialAge",
-      tick: (self, level, source) => {},
+      tick: (self, level, source) => { },
       type: GreatPersonType.LevelBoost,
       city: "German",
    };
@@ -1159,7 +1284,7 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "IndustrialAge",
-      tick: (self, level, source) => {},
+      tick: (self, level, source) => { },
       type: GreatPersonType.LevelBoost,
       city: "Russian",
    };
@@ -1359,7 +1484,7 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "WorldWarAge",
-      tick: (self, level, source) => {},
+      tick: (self, level, source) => { },
       type: GreatPersonType.Wildcard,
    };
 
@@ -1370,7 +1495,7 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "WorldWarAge",
-      tick: (self, level, source) => {},
+      tick: (self, level, source) => { },
       type: GreatPersonType.Promotion,
    };
 
@@ -1474,7 +1599,7 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "WorldWarAge",
-      tick: (self, level, source) => {},
+      tick: (self, level, source) => { },
       type: GreatPersonType.LevelBoost,
       city: "Australian",
    };
@@ -1746,7 +1871,7 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "ColdWarAge",
-      tick: (self, level, source) => {},
+      tick: (self, level, source) => { },
       type: GreatPersonType.Wildcard,
    };
 
@@ -1757,7 +1882,7 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "ColdWarAge",
-      tick: (self, level, source) => {},
+      tick: (self, level, source) => { },
       type: GreatPersonType.Promotion,
    };
 
@@ -1787,7 +1912,7 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "ColdWarAge",
-      tick: (self, level, source) => {},
+      tick: (self, level, source) => { },
       type: GreatPersonType.LevelBoost,
       city: "Brazilian",
    };
@@ -1922,7 +2047,7 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "InformationAge",
-      tick: (self, level, source) => {},
+      tick: (self, level, source) => { },
       type: GreatPersonType.Wildcard,
    };
 
@@ -2016,7 +2141,7 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "InformationAge",
-      tick: (self, level, source) => {},
+      tick: (self, level, source) => { },
       type: GreatPersonType.LevelBoost,
    };
 
@@ -2031,7 +2156,7 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "InformationAge",
-      tick: (self, level, source) => {},
+      tick: (self, level, source) => { },
       type: GreatPersonType.LevelBoost,
    };
 
@@ -2046,7 +2171,7 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "InformationAge",
-      tick: (self, level, source) => {},
+      tick: (self, level, source) => { },
       type: GreatPersonType.LevelBoost,
    };
 
@@ -2061,7 +2186,7 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "InformationAge",
-      tick: (self, level, source) => {},
+      tick: (self, level, source) => { },
       type: GreatPersonType.LevelBoost,
    };
 
@@ -2076,7 +2201,7 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "InformationAge",
-      tick: (self, level, source) => {},
+      tick: (self, level, source) => { },
       type: GreatPersonType.LevelBoost,
    };
 
@@ -2091,7 +2216,7 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "InformationAge",
-      tick: (self, level, source) => {},
+      tick: (self, level, source) => { },
       type: GreatPersonType.LevelBoost,
    };
 
@@ -2106,7 +2231,7 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "InformationAge",
-      tick: (self, level, source) => {},
+      tick: (self, level, source) => { },
       type: GreatPersonType.LevelBoost,
       city: "Canadian",
    };

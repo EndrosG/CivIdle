@@ -95,6 +95,29 @@ export const EN = {
    Smartphone: "Smartphone",
    SmartphoneFactory: "Smartphone Factory",
 
+   // Lydia: Future GP
+   Beatrice2022: "Beatrice Troeger",
+   HappyFamily: "We are family!",
+   Lydia2017: "Lydia Troeger",
+   // Beatrice2022Desc: "A cute soft toy",
+   HappyFamilyDesc: "+%{value} Happiness",
+   // Lydia2017Desc: "A female IT nerd",
+
+   Merlin: "Merlin",
+   MorganLeFay: "Morgan Le Fay",
+   OmaDesala: "Oma Desala",
+   LyaNox: "Lya (Nox)",
+   SevenOfNine: "Seven of Nine",
+   BorgQueen: "Borg Queen",
+   Asgard: "Asgard",
+
+   BorgQueenDesc: "+%{value} Builder Capacity Multiplier",
+   MerlinDesc: "+%{value} Builder Capacity Multiplier",
+   // MorganLeFayDesc: "Morgan Le Fay from Stargate",
+   // OmaDesalaDesc: "Oma Desala from Stargate",
+   // LyaNoxDesc: "Lya, a Nox from Stargate",
+   // SevenOfNineDesc: "Seven of Nine from Star Trek",
+
    // CivIdle Standard
    About: "About CivIdle",
    AbuSimbel: "Abu Simbel",

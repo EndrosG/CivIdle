@@ -95,6 +95,29 @@ export const DE = {
    Smartphone: "Smartphone",
    SmartphoneFactory: "Smartphone Fabrik",
 
+   // Lydia: Future GP
+   Beatrice2022: "Beatrice Tröger",
+   HappyFamily: "Bären-Familie",
+   Lydia2017: "Lydia Tröger",
+   // Beatrice2022Desc: "A cute soft toy",
+   HappyFamilyDesc: "+%{value} Zufriedenheit",
+   // Lydia2017Desc: "A female IT nerd",
+
+   Merlin: "Merlin",
+   MorganLeFay: "Morgan Le Fay",
+   OmaDesala: "Oma Desala",
+   LyaNox: "Lya (Nox)",
+   SevenOfNine: "Seven of Nine",
+   BorgQueen: "Borg-Königin",
+   Asgard: "Asgard",
+
+   BorgQueenDesc: "+%{value} Multiplikator der Bauarbeiterkapazität",
+   MerlinDesc: "+%{value} Multiplikator der Bauarbeiterkapazität",
+   // MorganLeFayDesc: "Morgan Le Fay from Stargate",
+   // OmaDesalaDesc: "Oma Desala from Stargate",
+   // LyaNoxDesc: "Lya, a Nox from Stargate",
+   // SevenOfNineDesc: "Seven of Nine from Star Trek",
+
    // CivIdle Standard
    About: "Über CivIdle",
    AbuSimbelDesc: "Verdoppelt den Effekt von Ramsses II. Alle angrenzenden Wunder generieren +1 Zufriedenheit",

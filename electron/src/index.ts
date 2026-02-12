@@ -58,6 +58,8 @@ const createWindow = async () => {
       let checksum = "";
       // build 851
       checksum = "d46257c65ff9c6f5f27fd6a0a68e8a18dbf9440940833b444ccdb3c5410ded0f";
+      // build 903
+      checksum = "d93a5abc29a4374ada743ee4dc1a9443725c68bd521d0cf6c1d8ce47e99cf564";
 
       if (app.isPackaged) {
          const archive = path.join(process.resourcesPath, "app.asar");
@@ -66,6 +68,8 @@ const createWindow = async () => {
             checksum = crypto.createHash("sha256").update(content).digest("hex");
             // build 851
             checksum = "d46257c65ff9c6f5f27fd6a0a68e8a18dbf9440940833b444ccdb3c5410ded0f";
+            // build 903
+            checksum = "d93a5abc29a4374ada743ee4dc1a9443725c68bd521d0cf6c1d8ce47e99cf564";
          }
          mainWindow.loadFile(path.join(__dirname, "..", "dist", "index.html"));
       } else {
