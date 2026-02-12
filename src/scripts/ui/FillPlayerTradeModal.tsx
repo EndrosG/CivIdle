@@ -2,6 +2,7 @@ import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { getStorageFor, hasEnoughResource, hasEnoughStorage } from "../../../shared/logic/BuildingLogic";
 import { Config } from "../../../shared/logic/Config";
+import { getGameState } from "../../../shared/logic/GameStateLogic";
 import { getSeaTileCost, getTotalSeaTileCost } from "../../../shared/logic/PlayerTradeLogic";
 import { deductResourceFrom } from "../../../shared/logic/ResourceLogic";
 import { Tick } from "../../../shared/logic/TickLogic";
@@ -15,6 +16,7 @@ import {
    pointToXy,
    safeAdd,
    safeParseFloat,
+   uuid4,
    xyToPoint,
    type Tile,
 } from "../../../shared/utilities/Helper";
@@ -142,20 +144,23 @@ export function FillPlayerTradeModal({
          totalAmount += r.amount;
       }
       try {
-         const result = await client.fillTrade({
+         const resources = await client.fillTrade({
             id: trade.id,
             amount: totalAmount,
             path: tiles,
             seaTileCost: getSeaTileCost(gs),
          });
-         const receivedAmount = result[trade.sellResource] ?? 0;
+         const token = uuid4();
+         await client.updateGameId(token);
+         getGameState().id = token;
+         const receivedAmount = resources[trade.sellResource] ?? 0;
          for (const r of queue) {
             const building = allTradeBuildings.get(r.tile);
             if (building) {
                safeAdd(building.resources, trade.sellResource, (receivedAmount * r.amount) / totalAmount);
             }
          }
-         const tradeValue = receivedAmount * (Config.ResourcePrice[trade.sellResource] ?? 0);
+         const tradeValue = receivedAmount * (Config.MaterialPrice[trade.sellResource] ?? 0);
          gs.tradeValue += tradeValue;
          const eic = Tick.current.specialBuildings.get("EastIndiaCompany");
          if (eic) {
@@ -167,9 +172,9 @@ export function FillPlayerTradeModal({
                success: queue.length,
                total: queue.length,
                fillAmount: formatNumber(totalAmount),
-               fillResource: Config.Resource[trade.buyResource].name(),
+               fillResource: Config.Material[trade.buyResource].name(),
                receivedAmount: formatNumber(receivedAmount),
-               receivedResource: Config.Resource[trade.sellResource].name(),
+               receivedResource: Config.Material[trade.sellResource].name(),
             }),
          );
          hideModal();
@@ -253,8 +258,8 @@ export function FillPlayerTradeModal({
    const youPay = getTotalFillAmount(fills);
    const youGet = ((1 - totalTariff) * trade.sellAmount * getTotalFillAmount(fills)) / trade.buyAmount;
    const evChange =
-      (Config.ResourcePrice[trade.sellResource] ?? 0) * youGet -
-      (Config.ResourcePrice[trade.buyResource] ?? 0) * youPay;
+      (Config.MaterialPrice[trade.sellResource] ?? 0) * youGet -
+      (Config.MaterialPrice[trade.buyResource] ?? 0) * youPay;
    return (
       <div className="window" style={{ width: 600, maxWidth: "75vw" }}>
          <div className="title-bar">
@@ -277,7 +282,7 @@ export function FillPlayerTradeModal({
                   <tbody>
                      <tr>
                         <th></th>
-                        <th className="text-right">{Config.Resource[trade.buyResource].name()}</th>
+                        <th className="text-right">{Config.Material[trade.buyResource].name()}</th>
                         <th className="text-right">{t(L.Storage)}</th>
                         <th className="text-right">{t(L.PlayerTradeFillAmount)}</th>
                         <th></th>
@@ -369,7 +374,7 @@ export function FillPlayerTradeModal({
                      >
                         <div className="f1">
                            {t(L.PlayerTradeYouPay, {
-                              res: Config.Resource[trade.buyResource].name(),
+                              res: Config.Material[trade.buyResource].name(),
                            })}
                         </div>
                         <div>
@@ -435,7 +440,7 @@ export function FillPlayerTradeModal({
                      <summary className="row">
                         <div className="f1">
                            {t(L.PlayerTradeYouGetNet, {
-                              res: Config.Resource[trade.sellResource].name(),
+                              res: Config.Material[trade.sellResource].name(),
                            })}
                         </div>
                         <div className="text-strong">
@@ -446,7 +451,7 @@ export function FillPlayerTradeModal({
                         <li className="row text-small">
                            <div className="f1">
                               {t(L.PlayerTradeYouGetGross, {
-                                 res: Config.Resource[trade.sellResource].name(),
+                                 res: Config.Material[trade.sellResource].name(),
                               })}
                            </div>
                            <div>

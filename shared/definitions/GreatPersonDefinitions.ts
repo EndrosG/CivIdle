@@ -1148,6 +1148,22 @@ export class GreatPersonDefinitions {
       city: "German",
    };
 
+   Tchaikovsky: IGreatPersonDefinition = {
+      name: () => t(L.Tchaikovsky),
+      desc: (self, level) =>
+         t(L.PlusXLevelToXBuilding, {
+            value: formatNumber(self.value(level)),
+            building: Config.Building.Hermitage.name(),
+         }),
+      time: "1840 ~ 1893 AD",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "IndustrialAge",
+      tick: (self, level, source) => {},
+      type: GreatPersonType.LevelBoost,
+      city: "Russian",
+   };
+
    // World Wars /////////////////////////////////////////////////////////////////////////////////////////////
 
    JohnDRockefeller: IGreatPersonDefinition = boostOf({
@@ -1447,6 +1463,22 @@ export class GreatPersonDefinitions {
       type: GreatPersonType.Adaptive,
    };
 
+   JohnBradfield: IGreatPersonDefinition = {
+      name: () => t(L.JohnBradfield),
+      desc: (self, level) =>
+         t(L.PlusXLevelToXBuilding, {
+            value: formatNumber(self.value(level)),
+            building: Config.Building.SydneyHarbourBridge.name(),
+         }),
+      time: "1867 ~ 1943 AD",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "WorldWarAge",
+      tick: (self, level, source) => {},
+      type: GreatPersonType.LevelBoost,
+      city: "Australian",
+   };
+
    // Cold Wars /////////////////////////////////////////////////////////////////////////////////////////////
 
    JRobertOppenheimer: IGreatPersonDefinition = boostOf({
@@ -1533,6 +1565,19 @@ export class GreatPersonDefinitions {
       age: "ColdWarAge",
    });
 
+   TerryFox: IGreatPersonDefinition = boostOf({
+      name: () => t(L.TerryFox),
+      boost: {
+         multipliers: ["output", "storage"],
+         buildings: ["TVStation"],
+      },
+      time: "1958 ~ 1981 AD",
+      value: (level) => level * 2,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "ColdWarAge",
+      city: "Canadian",
+   });
+
    SergeiKorolev: IGreatPersonDefinition = boostOf({
       name: () => t(L.SergeiKorolev),
       boost: {
@@ -1579,6 +1624,19 @@ export class GreatPersonDefinitions {
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "ColdWarAge",
+   });
+
+   AndreyKolmogorov: IGreatPersonDefinition = boostOf({
+      name: () => t(L.AndreyKolmogorov),
+      boost: {
+         multipliers: ["output", "storage"],
+         buildings: ["SatelliteFactory", "Cosmodrome"],
+      },
+      time: "1903 ~ 1987 AD",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "ColdWarAge",
+      city: "Russian",
    });
 
    PaulSamuelson: IGreatPersonDefinition = {
@@ -1844,6 +1902,19 @@ export class GreatPersonDefinitions {
       age: "InformationAge",
    });
 
+   BrianSchmidt: IGreatPersonDefinition = boostOf({
+      name: () => t(L.BrianSchmidt),
+      boost: {
+         multipliers: ["output", "storage"],
+         buildings: ["FusionFuelPlant", "FusionPowerPlant"],
+      },
+      time: "1967 ~ ",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "InformationAge",
+      city: "Australian",
+   });
+
    StephenHawking: IGreatPersonDefinition = {
       name: () => t(L.StephenHawking),
       desc: (self, level) => t(L.WildCardGreatPersonDescV2),
@@ -2022,6 +2093,22 @@ export class GreatPersonDefinitions {
       age: "InformationAge",
       tick: (self, level, source) => {},
       type: GreatPersonType.LevelBoost,
+   };
+
+   GeoffreyHinton: IGreatPersonDefinition = {
+      name: () => t(L.GeoffreyHinton),
+      desc: (self, level) =>
+         t(L.PlusXLevelToXBuilding, {
+            value: formatNumber(self.value(level)),
+            building: Config.Building.Habitat67.name(),
+         }),
+      time: "1947 ~ ",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "InformationAge",
+      tick: (self, level, source) => {},
+      type: GreatPersonType.LevelBoost,
+      city: "Canadian",
    };
 }
 

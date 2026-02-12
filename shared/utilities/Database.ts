@@ -1,7 +1,8 @@
 import type { Building } from "../definitions/BuildingDefinitions";
 import type { City } from "../definitions/CityDefinitions";
-import type { Resource } from "../definitions/ResourceDefinitions";
+import type { Material } from "../definitions/MaterialDefinitions";
 import type { TechAge } from "../definitions/TechDefinitions";
+import type { GameOptionServer } from "../logic/GameState";
 import type { IHeartbeatData } from "../logic/GameStateLogic";
 import { HOUR } from "./Helper";
 import { L, t } from "./i18n";
@@ -93,9 +94,9 @@ export interface IPendingClaimMessage extends IMessage {
 }
 
 export interface IAddTradeRequest {
-   buyResource: Resource;
+   buyResource: Material;
    buyAmount: number;
-   sellResource: Resource;
+   sellResource: Material;
    sellAmount: number;
 }
 
@@ -106,7 +107,7 @@ export enum PendingClaimFlag {
 
 export interface IPendingClaim {
    id: string;
-   resource: Resource;
+   resource: Material;
    amount: number;
    fillBy: string;
    flag: PendingClaimFlag;
@@ -134,13 +135,6 @@ export type AllMessageTypes =
    | IMapMessage
    | IPendingClaimMessage;
 
-export interface IEmpireValue {
-   value: number;
-   time: number;
-   tick: number;
-   totalGreatPeopleLevel?: number;
-}
-
 export interface ITradeValue {
    value: number;
    time: number;
@@ -157,10 +151,13 @@ export enum UserAttributes {
    Banned = 1 << 6,
    TribuneOnly = 1 << 7,
    DisableRename = 1 << 8,
-   CheckTradeCancel = 1 << 9,
+   SuspendTrade = 1 << 9,
    Suspicious = 1 << 10,
    Desynced = 1 << 11,
+   OverrideRankUp = 1 << 12,
 }
+
+export const UserAttributeKeys = Object.keys(UserAttributes).filter((key) => Number.isNaN(Number(key)));
 
 export enum UserColors {
    Default = 0,
@@ -230,7 +227,6 @@ export interface IUser {
    lastGameTick: number;
    totalPlayTime: number;
    color: UserColors;
-   empireValues: IEmpireValue[];
    tradeValues: ITradeValue[];
    level: AccountLevel;
    flag: string;
@@ -240,8 +236,9 @@ export interface IUser {
    connectionRequest?: IConnectionRequest;
    saveOwner?: string;
    lastCheckInAt?: number;
-   lastRecoveredAt?: number;
+   lastTradedAt: number;
    heartbeatData?: IHeartbeatData;
+   gameOptions?: GameOptionServer;
 }
 
 export interface IConnectionRequest {
@@ -290,6 +287,7 @@ export interface IGetVotedBoostResponse {
 
 export enum VotedBoostType {
    Multipliers = 0,
+   TradeTileBonus = 1,
 }
 
 export interface IVotedBoostOption {
@@ -308,6 +306,7 @@ export const DB: {
    slowList: Record<string, ISlowModeConfig>;
    greatPeopleRecovery: Record<string, number>;
    votedBoosts: Record<number, IVotedBoost>;
+   tradeTileBonusVotes: Record<number, IVotedBoost>;
    buildHash: Record<string, string>;
 } = {
    chat: [],
@@ -321,6 +320,7 @@ export const DB: {
    greatPeopleRecovery: {},
    votedBoosts: {},
    buildHash: {},
+   tradeTileBonusVotes: {},
 };
 
 export const MoveTileCooldown = 12 * HOUR;

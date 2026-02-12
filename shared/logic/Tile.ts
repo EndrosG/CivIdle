@@ -2,8 +2,8 @@ import type { Building } from "../definitions/BuildingDefinitions";
 import type { City } from "../definitions/CityDefinitions";
 import type { GreatPerson } from "../definitions/GreatPersonDefinitions";
 import type { Ideology } from "../definitions/IdeologyDefinitions";
+import type { Deposit, Material } from "../definitions/MaterialDefinitions";
 import type { Religion } from "../definitions/ReligionDefinitions";
-import type { Deposit, Resource } from "../definitions/ResourceDefinitions";
 import type { TechAge } from "../definitions/TechDefinitions";
 import type { Tradition } from "../definitions/TraditionDefinitions";
 import { clamp, isNullOrUndefined, type Tile } from "../utilities/Helper";
@@ -55,7 +55,7 @@ export interface IBuildingData {
    desiredLevel: number;
    stack: number;
    desiredStack: number;
-   resources: PartialTabulate<Resource>;
+   resources: PartialTabulate<Material>;
    status: BuildingStatus;
    capacity: number;
 
@@ -69,7 +69,7 @@ export interface IBuildingData {
 
    options: BuildingOptions;
 
-   suspendedInput: Map<Resource, SuspendedInput>;
+   suspendedInput: Map<Material, SuspendedInput>;
 
    inputMode: BuildingInputMode;
    maxInputDistance: number;
@@ -81,8 +81,8 @@ export enum MarketOptions {
 }
 
 export interface IMarketBuildingData extends IBuildingData {
-   sellResources: PartialSet<Resource>;
-   availableResources: Partial<Record<Resource, Resource>>;
+   sellResources: PartialSet<Material>;
+   availableResources: Partial<Record<Material, Material>>;
    marketOptions: MarketOptions;
 }
 
@@ -93,7 +93,7 @@ export interface IResourceImport {
 }
 
 export interface ICloneBuildingData extends IBuildingData {
-   inputResource: Resource;
+   inputResource: Material;
    transportedAmount: number;
 }
 
@@ -111,7 +111,7 @@ export enum SwissBankFlags {
 
 export interface IResourceImportBuildingData extends IBuildingData {
    resourceImportOptions: ResourceImportOptions;
-   resourceImports: Partial<Record<Resource, IResourceImport>>;
+   resourceImports: Partial<Record<Material, IResourceImport>>;
 }
 
 export enum WarehouseOptions {
@@ -158,7 +158,7 @@ export interface ICentrePompidouBuildingData extends IBuildingData {
 }
 
 export interface ISwissBankBuildingData extends IBuildingData {
-   resource: Resource | null;
+   resource: Material | null;
    flags: SwissBankFlags;
 }
 
@@ -166,6 +166,17 @@ export interface IItaipuDamBuildingData extends IBuildingData {
    productionMultiplier: number;
 }
 
+export interface IAuroraBorealisBuildingData extends IBuildingData {
+   startTick: number;
+}
+
+export interface IChateauFrontenacBuildingData extends IBuildingData {
+   buildings: Record<number, { selected: Building | undefined; options: Building[] }>;
+}
+
+export interface IDinosaurProvincialParkBuildingData extends IBuildingData {
+   used: boolean;
+}
 export type IHaveTypeAndLevel = Pick<IBuildingData, "type" | "level" | "stack">;
 
 export const STOCKPILE_CAPACITY_MIN = 0;

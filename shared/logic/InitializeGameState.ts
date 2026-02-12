@@ -1,4 +1,6 @@
-import { forEach, keysOf, pointToTile } from "../utilities/Helper";
+import type { Building } from "../definitions/BuildingDefinitions";
+import { isChristmas } from "../definitions/TimedBuildingUnlock";
+import { forEach, keysOf, pointToTile, shuffle } from "../utilities/Helper";
 import { getServerNow } from "../utilities/ServerNow";
 import { applyBuildingDefaults, getRandomEmptyTiles } from "./BuildingLogic";
 import { Config } from "./Config";
@@ -103,9 +105,24 @@ export function initializeGameState(gameState: GameState, options: GameOptions) 
    const naturalWonders = keysOf(Config.City[gameState.city].naturalWonders);
 
    const now = getServerNow();
-   if (now && new Date(now).getMonth() === 11) {
+   if (now && isChristmas(new Date(now))) {
       naturalWonders.push("Lapland");
       naturalWonders.push("RockefellerCenterChristmasTree");
+   }
+
+   if (gameState.city === "Australian") {
+      const candidates: Building[] = [];
+      forEach(Config.City, (city, def) => {
+         if (city !== "Australian") {
+            forEach(def.naturalWonders, (nw) => {
+               candidates.push(nw);
+            });
+         }
+      });
+      if (candidates.length > 0) {
+         const result = shuffle(candidates)[0];
+         naturalWonders.push(result);
+      }
    }
 
    getRandomEmptyTiles(naturalWonders.length, gameState).forEach((xy, i) => {

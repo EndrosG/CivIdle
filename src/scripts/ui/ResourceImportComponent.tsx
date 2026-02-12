@@ -1,7 +1,7 @@
 import Tippy from "@tippyjs/react";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
-import { NoPrice, NoStorage, type Resource } from "../../../shared/definitions/ResourceDefinitions";
+import { NoPrice, NoStorage, type Material } from "../../../shared/definitions/MaterialDefinitions";
 import {
    getMultipliersFor,
    getResourceImportCapacity,
@@ -22,6 +22,7 @@ import {
 import {
    copyFlag,
    forEach,
+   formatNumber,
    hasFlag,
    isNullOrUndefined,
    keysOf,
@@ -45,11 +46,11 @@ const resourceImportSortingState = { column: 1, asc: true };
 
 export function ResourceImportComponent({ gameState, xy }: IBuildingComponentProps): React.ReactNode {
    const building = gameState.tiles.get(xy)?.building as IResourceImportBuildingData;
-   const [selected, setSelected] = useState(new Set<Resource>());
+   const [selected, setSelected] = useState(new Set<Material>());
    const options = useGameOptions();
    useEffect(() => {
       if (options.warehouseQuickMode) {
-         const newSelected = new Set<Resource>();
+         const newSelected = new Set<Material>();
          forEach(building.resourceImports, (res, v) => {
             if (v.perCycle > 0 || v.cap > 0) {
                newSelected.add(res);
@@ -112,7 +113,7 @@ export function ResourceImportComponent({ gameState, xy }: IBuildingComponentPro
                   case 4:
                      return (building.resourceImports[a]?.cap ?? 0) - (building.resourceImports[b]?.cap ?? 0);
                   default:
-                     return Config.Resource[a].name().localeCompare(Config.Resource[b].name());
+                     return Config.Material[a].name().localeCompare(Config.Material[b].name());
                }
             }}
             renderRow={(res) => {
@@ -148,7 +149,7 @@ export function ResourceImportComponent({ gameState, xy }: IBuildingComponentPro
                         )}
                      </td>
                      <td className="row">
-                        <div>{Config.Resource[res].name()}</div>
+                        <div>{Config.Material[res].name()}</div>
                         {isNullOrUndefined(ri?.inputMode) ? null : (
                            <Tippy
                               content={t(L.TechResourceTransportPreferenceOverrideTooltip, {
@@ -203,7 +204,7 @@ export function ResourceImportComponent({ gameState, xy }: IBuildingComponentPro
                   <div
                      className="text-link mr10"
                      onClick={() => {
-                        const newSet = new Set<Resource>();
+                        const newSet = new Set<Material>();
                         resources.forEach((r) => {
                            if (!selected.has(r)) {
                               newSet.add(r);
@@ -340,7 +341,7 @@ export function ResourceImportComponent({ gameState, xy }: IBuildingComponentPro
                            return (
                               <li key={idx} className="row">
                                  <div className="f1">{m.source}</div>
-                                 <div>{m.output}</div>
+                                 <div>{formatNumber(m.output)}</div>
                               </li>
                            );
                         })}

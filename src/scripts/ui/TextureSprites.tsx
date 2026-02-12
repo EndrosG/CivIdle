@@ -1,13 +1,13 @@
 import React from "react";
 import type { Building } from "../../../shared/definitions/BuildingDefinitions";
-import type { Deposit } from "../../../shared/definitions/ResourceDefinitions";
+import type { Deposit } from "../../../shared/definitions/MaterialDefinitions";
 import type { TileTexture } from "../../../shared/logic/GameState";
 import { AccountLevel } from "../../../shared/utilities/Database";
 import building from "../../images/textures_building.png";
 import flags from "../../images/textures_flag.png";
 import misc from "../../images/textures_misc.png";
 import tile from "../../images/textures_tile.png";
-import { Singleton } from "../utilities/Singleton";
+import { isSingletonReady, Singleton } from "../utilities/Singleton";
 
 export const PlayerFlagComponent = React.forwardRef<
    HTMLDivElement,
@@ -81,6 +81,9 @@ const TextureSprite = React.forwardRef<
 >((props, ref) => {
    const { name, style, url } = props;
    let scale = props.scale ?? 1;
+   if (!isSingletonReady()) {
+      return null;
+   }
    const texture = Singleton().textures[name];
    if (!texture) {
       return null;

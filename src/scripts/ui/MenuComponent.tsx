@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import type { PropsWithChildren } from "react";
 import { useEffect, useRef, useState } from "react";
-import { isHalloween } from "../../../shared/definitions/TimedBuildingUnlock";
+import { isChristmas, isHalloween } from "../../../shared/definitions/TimedBuildingUnlock";
 import { DISCORD_URL, SUPPORTER_PACK_URL } from "../../../shared/logic/Constants";
 import { Tick } from "../../../shared/logic/TickLogic";
 import { isSaveOwner } from "../../../shared/utilities/DatabaseShared";
@@ -9,6 +9,14 @@ import { isNullOrUndefined, sizeOf } from "../../../shared/utilities/Helper";
 import { L, t } from "../../../shared/utilities/i18n";
 import Bat from "../../images/Bat.svg";
 import SpiderWeb from "../../images/SpiderWeb.svg";
+import Xmas1 from "../../images/Xmas1.png";
+import Xmas2 from "../../images/Xmas2.png";
+import Xmas3 from "../../images/Xmas3.png";
+import Xmas4 from "../../images/Xmas4.png";
+import Xmas5 from "../../images/Xmas5.png";
+import Xmas6 from "../../images/Xmas6.png";
+import Xmas7 from "../../images/Xmas7.png";
+import Xmas8 from "../../images/Xmas8.png";
 import { compressSave, saveGame, useFloatingMode } from "../Global";
 import { client, usePlatformInfo, useUser } from "../rpc/RPCClient";
 import { SteamClient, isSteam } from "../rpc/SteamClient";
@@ -65,6 +73,9 @@ function MenuItem({ check, children }: PropsWithChildren<{ check: boolean }>): R
       </>
    );
 }
+
+const XmasImages = [Xmas1, Xmas2, Xmas3, Xmas4, Xmas5, Xmas6, Xmas7, Xmas8];
+const XmasImage = XmasImages[Math.floor(Math.random() * XmasImages.length)];
 
 export function MenuComponent(): React.ReactNode {
    const [active, setActive] = useState<MenuItemOptions>(null);
@@ -168,7 +179,7 @@ export function MenuComponent(): React.ReactNode {
                   <div
                      className="menu-popover-item"
                      onPointerDown={(e) => {
-                        showModal(<ManagePermanentGreatPersonModal />);
+                        showModal(<ManagePermanentGreatPersonModal adaptiveOnly={false} />);
                         setActive(null);
                      }}
                   >
@@ -315,7 +326,16 @@ export function MenuComponent(): React.ReactNode {
                   >
                      <MenuItem check={false}>{t(L.EmailDeveloper)}</MenuItem>
                   </div>
-                  {isSteam() ? (
+                  <div
+                     className="menu-popover-item"
+                     onPointerDown={() => {
+                        playClick();
+                        openUrl(SUPPORTER_PACK_URL);
+                     }}
+                  >
+                     <MenuItem check={false}>{t(L.SupporterPack)}</MenuItem>
+                  </div>
+                  {isSteam() && (
                      <div
                         className="menu-popover-item"
                         onPointerDown={() => {
@@ -329,7 +349,7 @@ export function MenuComponent(): React.ReactNode {
                      >
                         <MenuItem check={false}>{t(L.SaveAndExit)}</MenuItem>
                      </div>
-                  ) : null}
+                  )}
                   {isSteam() &&
                   user &&
                   !isNullOrUndefined(platformInfo?.connectedUserId) &&
@@ -350,15 +370,6 @@ export function MenuComponent(): React.ReactNode {
                         <MenuItem check={false}>{t(L.CheckInAndExit)}</MenuItem>
                      </div>
                   ) : null}
-                  <div
-                     className="menu-popover-item"
-                     onPointerDown={() => {
-                        playClick();
-                        openUrl(SUPPORTER_PACK_URL);
-                     }}
-                  >
-                     <MenuItem check={false}>{t(L.SupporterPack)}</MenuItem>
-                  </div>
                   <div
                      className="menu-popover-item"
                      onPointerDown={() => {
@@ -391,6 +402,19 @@ export function MenuComponent(): React.ReactNode {
                      right: 200,
                      zIndex: 1,
                      pointerEvents: "none",
+                  }}
+               />
+            ) : null}
+            {isChristmas(now) ? (
+               <img
+                  src={XmasImage}
+                  style={{
+                     position: "absolute",
+                     top: -20,
+                     right: 80,
+                     zIndex: 1,
+                     pointerEvents: "none",
+                     height: 50,
                   }}
                />
             ) : null}

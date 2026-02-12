@@ -1,4 +1,4 @@
-import type { Resource } from "../../../shared/definitions/ResourceDefinitions";
+import type { Material } from "../../../shared/definitions/MaterialDefinitions";
 import { MAX_TECH_AGE } from "../../../shared/definitions/TechDefinitions";
 import { Config } from "../../../shared/logic/Config";
 import { getGameOptions, getGameState, savedGame } from "../../../shared/logic/GameStateLogic";
@@ -8,11 +8,14 @@ import {
 } from "../../../shared/logic/RebirthLogic";
 import {
    ChatChannels,
+   UserAttributeKeys,
    UserAttributes,
    type AccountLevel,
    type ChatChannel,
 } from "../../../shared/utilities/Database";
 import {
+   clamp,
+   clearFlag,
    firstKeyOf,
    formatHM,
    formatNumber,
@@ -22,6 +25,7 @@ import {
    numberToRoman,
    safeParseInt,
    SECOND,
+   setFlag,
    sizeOf,
    uuid4,
 } from "../../../shared/utilities/Helper";
@@ -29,7 +33,6 @@ import { compressSave, decompressSave, overwriteSaveGame, resetToCity, saveGame 
 import {
    addChatMessage,
    addSystemMessage,
-   canEarnGreatPeopleFromReborn,
    clearSystemMessages,
    client,
    getPlayerMap,
@@ -40,19 +43,13 @@ import { WorldScene } from "../scenes/WorldScene";
 import { Singleton } from "../utilities/Singleton";
 import { randomizeBuildingAndResourceColor } from "./ThemeColor";
 
-function requireOfflineRun(): void {
-   if (canEarnGreatPeopleFromReborn()) {
-      throw new Error("Command is only available for trial run");
-   }
-}
-
 function requireDevelopment(): void {
    if (!import.meta.env.DEV) {
       throw new Error("Command is only available for development");
    }
 }
 
-function eval2(arg) {
+function eval2(arg: string) {
    return (0, eval)(arg);
 }
 
@@ -144,12 +141,12 @@ export async function handleChatCommand(command: string): Promise<void> {
             getGameOptions().greatPeople = {};
             getGameOptions().greatPeopleChoicesV2 = rollPermanentGreatPeople(
                number,
-               Math.floor(number / sizeOf(Config.GreatPerson)),
+               clamp(Math.floor(number / sizeOf(Config.GreatPerson)), 1, Number.POSITIVE_INFINITY),
                DEFAULT_GREAT_PEOPLE_CHOICE_COUNT,
                MAX_TECH_AGE,
                getGameState().city,
             );
-            await resetToCity(uuid4(), firstKeyOf(Config.City)!);
+            await resetToCity(uuid4(), firstKeyOf(Config.City)!, 0);
             await saveGame();
             window.location.reload();
          }
@@ -240,9 +237,14 @@ export async function handleChatCommand(command: string): Promise<void> {
          addSystemMessage(JSON.stringify(resp));
          break;
       }
-      case "clearVotedBoost": {
-         await client.clearVotedBoost();
-         addSystemMessage("Voted boosts have been cleared");
+      case "rerollun": {
+         await client.rerollBoostVotes();
+         addSystemMessage("UN votes have been rerolled");
+         break;
+      }
+      case "rerollwto": {
+         await client.rerollTradeTileVotes();
+         addSystemMessage("WTO votes have been rerolled");
          break;
       }
       case "queryplayer": {
@@ -250,7 +252,51 @@ export async function handleChatCommand(command: string): Promise<void> {
             throw new Error("Invalid command format");
          }
          const user = await client.queryPlayer(parts[1]);
-         addSystemMessage(JSON.stringify(user));
+         addSystemMessage(
+            [
+               JSON.stringify(user),
+               "\nRelated:",
+               ...(await client.queryRelatedPlayers(parts[1])).map((u) => JSON.stringify(u)),
+            ].join("\n"),
+         );
+         break;
+      }
+      case "lssp": {
+         const result = await client.listSpecialPlayers();
+         const json = JSON.stringify(result);
+         navigator.clipboard.writeText(json);
+         const rows = result.map((user) => {
+            const ev = user.heartbeatData?.empireValue ?? 0;
+            const gp = user.heartbeatData?.greatPeopleLevel ?? 0;
+            const clientTick = user.heartbeatData?.clientTick ?? 0;
+            return [
+               user.handle.padEnd(16),
+               (hasFlag(user.attr, UserAttributes.DLC1) ? "*" : " ").padEnd(2),
+               (numberToRoman(user.level + 1) ?? "").padEnd(6),
+               (hasFlag(user.attr, UserAttributes.Suspicious) ? "S" : " ").padEnd(2),
+               (hasFlag(user.attr, UserAttributes.Desynced) ? "D" : " ").padEnd(2),
+               formatNumber(ev).padStart(10),
+               formatNumber(ev / clientTick).padStart(10),
+               formatNumber(gp).padStart(10),
+               formatNumber(gp / (user.totalPlayTime / 3600)).padStart(10),
+               `${Math.floor(user.totalPlayTime / 3600)}h`.padStart(10),
+            ].join("");
+         });
+         rows.unshift(
+            [
+               "".padEnd(16),
+               "".padEnd(2),
+               "".padEnd(6),
+               "".padEnd(2),
+               "".padEnd(2),
+               "EV".padStart(10),
+               "EV/t".padStart(10),
+               "GP".padStart(10),
+               "GP/h".padStart(10),
+               "Time".padStart(10),
+            ].join(""),
+         );
+         addSystemMessage(`<code>${rows.join("\n")}<code>`);
          break;
       }
       case "playersave": {
@@ -274,39 +320,30 @@ export async function handleChatCommand(command: string): Promise<void> {
          }
          const attr = await client.getPlayerAttr(parts[1]);
          addSystemMessage(
-            [
-               `Flag=${attr.toString(2)}`,
-               `Mod=${hasFlag(attr, UserAttributes.Mod)}`,
-               `DLC1=${hasFlag(attr, UserAttributes.DLC1)}`,
-               `DLC2=${hasFlag(attr, UserAttributes.DLC2)}`,
-               `Banned=${hasFlag(attr, UserAttributes.Banned)}`,
-               `TribuneOnly=${hasFlag(attr, UserAttributes.TribuneOnly)}`,
-               `NoRename=${hasFlag(attr, UserAttributes.DisableRename)}`,
-               `CheckTradeCancel=${hasFlag(attr, UserAttributes.CheckTradeCancel)}`,
-               `Suspicious=${hasFlag(attr, UserAttributes.Suspicious)}`,
-               `Desynced=${hasFlag(attr, UserAttributes.Desynced)}`,
-            ].join(", "),
+            `${parts[1]}:\n${UserAttributeKeys.filter((key) =>
+               hasFlag(attr, UserAttributes[key as keyof typeof UserAttributes]),
+            ).join(", ")}`,
          );
          break;
       }
-      case "setplayerattr": {
+      case "toggleplayerattr": {
          if (!parts[1] || !parts[2]) {
             throw new Error("Invalid command format");
          }
-         const attr = await client.setPlayerAttr(parts[1], Number.parseInt(parts[2], 2));
+         const oldAttr = await client.getPlayerAttr(parts[1]);
+         const flag = UserAttributes[parts[2] as keyof typeof UserAttributes];
+         if (!flag) {
+            addSystemMessage(`Unknown attribute: ${parts[2]}`);
+            break;
+         }
+         const newAttr = hasFlag(oldAttr, flag) ? clearFlag(oldAttr, flag) : setFlag(oldAttr, flag);
+         const result = await client.setPlayerAttr(parts[1], newAttr);
          addSystemMessage(
-            [
-               `Flag=${attr.toString(2)}`,
-               `Mod=${hasFlag(attr, UserAttributes.Mod)}`,
-               `DLC1=${hasFlag(attr, UserAttributes.DLC1)}`,
-               `DLC2=${hasFlag(attr, UserAttributes.DLC2)}`,
-               `Banned=${hasFlag(attr, UserAttributes.Banned)}`,
-               `TribuneOnly=${hasFlag(attr, UserAttributes.TribuneOnly)}`,
-               `NoRename=${hasFlag(attr, UserAttributes.DisableRename)}`,
-               `CheckTradeCancel=${hasFlag(attr, UserAttributes.CheckTradeCancel)}`,
-               `Suspicious=${hasFlag(attr, UserAttributes.Suspicious)}`,
-               `Desynced=${hasFlag(attr, UserAttributes.Desynced)}`,
-            ].join(", "),
+            `${parts[1]}:\nOld = ${UserAttributeKeys.filter((key) =>
+               hasFlag(oldAttr, UserAttributes[key as keyof typeof UserAttributes]),
+            ).join(", ")}\nNew = ${UserAttributeKeys.filter((key) =>
+               hasFlag(result, UserAttributes[key as keyof typeof UserAttributes]),
+            ).join(", ")}`,
          );
          break;
       }
@@ -335,21 +372,28 @@ export async function handleChatCommand(command: string): Promise<void> {
          const result = await client.getGreatPeopleLevelRank(safeParseInt(parts[1], 10));
          const json = JSON.stringify(result);
          navigator.clipboard.writeText(json);
-         addSystemMessage(
-            `<code>${result
-               .map((user) => {
-                  const gp = user.heartbeatData?.greatPeopleLevel ?? 0;
-                  return [
-                     user.handle.padEnd(16),
-                     (hasFlag(user.attr, UserAttributes.DLC1) ? "*" : " ").padEnd(2),
-                     (numberToRoman(user.level + 1) ?? "").padEnd(6),
-                     formatNumber(gp / (user.totalPlayTime / 3600)).padStart(10),
-                     gp.toString().padStart(10),
-                     `${Math.floor(user.totalPlayTime / 3600)}h`.padStart(10),
-                  ].join("");
-               })
-               .join("\n")}<code>`,
+         const rows = result.map((user) => {
+            const gp = user.heartbeatData?.greatPeopleLevel ?? 0;
+            return [
+               user.handle.padEnd(16),
+               (hasFlag(user.attr, UserAttributes.DLC1) ? "*" : " ").padEnd(2),
+               (numberToRoman(user.level + 1) ?? "").padEnd(6),
+               formatNumber(gp / (user.totalPlayTime / 3600)).padStart(10),
+               gp.toString().padStart(10),
+               `${Math.floor(user.totalPlayTime / 3600)}h`.padStart(10),
+            ].join("");
+         });
+         rows.unshift(
+            [
+               "".padEnd(16),
+               "".padEnd(2),
+               "".padEnd(6),
+               "GP/h".padStart(10),
+               "GP".padStart(10),
+               "Time".padStart(10),
+            ].join(""),
          );
+         addSystemMessage(`<code>${rows.join("\n")}<code>`);
          break;
       }
       case "evrank": {
@@ -359,24 +403,32 @@ export async function handleChatCommand(command: string): Promise<void> {
          const result = await client.getEmpireValueRank(safeParseInt(parts[1], 10));
          const json = JSON.stringify(result);
          navigator.clipboard.writeText(json);
-         addSystemMessage(
-            `<code>${result
-               .map((user) => {
-                  const ev = user.heartbeatData?.empireValue ?? 0;
-                  return [
-                     user.handle.padEnd(16),
-                     (hasFlag(user.attr, UserAttributes.DLC1) ? "*" : " ").padEnd(2),
-                     (numberToRoman(user.level + 1) ?? "").padEnd(6),
-                     formatNumber(ev).padStart(10),
-                     formatNumber(ev / user.heartbeatData!.clientTick).padStart(10),
-                     formatNumber(
-                        ev / user.heartbeatData!.clientTick / (user.heartbeatData?.greatPeopleLevel ?? 1),
-                     ).padStart(10),
-                     `${Math.floor(user.totalPlayTime / 3600)}h`.padStart(10),
-                  ].join("");
-               })
-               .join("\n")}<code>`,
+         const rows = result.map((user) => {
+            const ev = user.heartbeatData?.empireValue ?? 0;
+            return [
+               user.handle.padEnd(16),
+               (hasFlag(user.attr, UserAttributes.DLC1) ? "*" : " ").padEnd(2),
+               (numberToRoman(user.level + 1) ?? "").padEnd(6),
+               formatNumber(ev).padStart(10),
+               formatNumber(ev / user.heartbeatData!.clientTick).padStart(10),
+               formatNumber(
+                  ev / user.heartbeatData!.clientTick / (user.heartbeatData?.greatPeopleLevel ?? 1),
+               ).padStart(10),
+               `${Math.floor(user.totalPlayTime / 3600)}h`.padStart(10),
+            ].join("");
+         });
+         rows.unshift(
+            [
+               "".padEnd(16),
+               "".padEnd(2),
+               "".padEnd(6),
+               "EV".padStart(10),
+               "EV/t".padStart(10),
+               "EV/t/GP".padStart(10),
+               "Time".padStart(10),
+            ].join(""),
          );
+         addSystemMessage(`<code>${rows.join("\n")}<code>`);
          break;
       }
       case "modlist": {
@@ -495,10 +547,10 @@ export async function handleChatCommand(command: string): Promise<void> {
          if (!parts[1] || !parts[2] || !parts[3]) {
             throw new Error("Invalid command format");
          }
-         if (!(parts[2] in Config.Resource)) {
+         if (!(parts[2] in Config.Material)) {
             throw new Error("Invalid resource");
          }
-         await client.addPendingClaim(parts[1], parts[2] as Resource, safeParseInt(parts[3], 10));
+         await client.addPendingClaim(parts[1], parts[2] as Material, safeParseInt(parts[3], 10));
          addSystemMessage("Pending claim has been added");
          break;
       }

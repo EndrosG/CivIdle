@@ -11,6 +11,7 @@ import {
    getTechUnlockCost,
 } from "../../../shared/logic/TechLogic";
 import { Tick } from "../../../shared/logic/TickLogic";
+import type { IAuroraBorealisBuildingData } from "../../../shared/logic/Tile";
 import {
    forEach,
    isEmpty,
@@ -46,8 +47,12 @@ export function onTileExplored(xy: Tile): void {
             break;
          }
          case "MountSinai": {
-            const age = getCurrentAge(gs);
+            let age = getCurrentAge(gs);
             if (!age) return;
+            // We don't have Stone Age great people, so we default to Bronze Age
+            if (age === "StoneAge") {
+               age = "BronzeAge";
+            }
             const candidates = rollGreatPeopleThisRun(new Set([age]), gs.city, getGreatPeopleChoiceCount(gs));
             if (candidates) {
                gs.greatPeopleChoicesV2.push(candidates);
@@ -114,6 +119,11 @@ export function onTileExplored(xy: Tile): void {
                }
             });
             playUpgrade();
+            break;
+         }
+         case "AuroraBorealis": {
+            const auroraBorealis = building as IAuroraBorealisBuildingData;
+            auroraBorealis.startTick = gs.tick;
             break;
          }
       }

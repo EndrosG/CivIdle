@@ -64,10 +64,6 @@ export function PlayerTilePage({ xy }: { xy: string }): React.ReactNode {
                   <div className="text-strong">{new Date(tile.createdAt).toLocaleDateString()}</div>
                </div>
                <div className="row mv5">
-                  <div className="f1">{t(L.PlayerMapLastSeenAt)}</div>
-                  <div className="text-strong">{new Date(tile.lastSeenAt).toLocaleDateString()}</div>
-               </div>
-               <div className="row mv5">
                   <div className="f1">{t(L.Civilization)}</div>
                   <div className="text-strong">{tile.city ? Config.City[tile.city].name() : null}</div>
                </div>
@@ -94,11 +90,11 @@ export function PlayerTilePage({ xy }: { xy: string }): React.ReactNode {
                               return (
                                  <tr key={trade.id}>
                                     <td>
-                                       {Config.Resource[trade.buyResource].name()} x{" "}
+                                       {Config.Material[trade.buyResource].name()} x{" "}
                                        <FormatNumber value={trade.buyAmount} />
                                     </td>
                                     <td>
-                                       {Config.Resource[trade.sellResource].name()} x{" "}
+                                       {Config.Material[trade.sellResource].name()} x{" "}
                                        <FormatNumber value={trade.sellAmount} />
                                     </td>
                                     <td>

@@ -1,6 +1,6 @@
 import type { Building } from "../definitions/BuildingDefinitions";
 import type { IUnlockable } from "../definitions/ITechDefinition";
-import { NoPrice, NoStorage, type Resource } from "../definitions/ResourceDefinitions";
+import { NoPrice, NoStorage, type Material } from "../definitions/MaterialDefinitions";
 import type { Tech } from "../definitions/TechDefinitions";
 import type { AccountLevel } from "../utilities/Database";
 import type { IGrid } from "../utilities/Grid";
@@ -150,7 +150,7 @@ export function tickTransports(gs: GameState): void {
    });
 }
 
-export function completeTransport(targetBuilding: IBuildingData, resource: Resource, amount: number) {
+export function completeTransport(targetBuilding: IBuildingData, resource: Material, amount: number) {
    safeAdd(targetBuilding.resources, resource, amount);
    if (targetBuilding.type === "CloneFactory") {
       const clone = targetBuilding as ICloneBuildingData;
@@ -216,7 +216,7 @@ export function getSortedTiles(gs: GameState): [Tile, IBuildingData][] {
    });
 }
 
-const resourceSet = new Set<Resource>();
+const resourceSet = new Set<Material>();
 
 export function transportAndConsumeResources(
    xy: Tile,
@@ -376,7 +376,7 @@ export function transportAndConsumeResources(
          : getTotalBuildingCost(building, building.level, building.desiredLevel);
       */
       const { total } = getBuilderCapacity(building, xy, gs);
-      const remainingAmount = new Map<Resource, number>();
+      const remainingAmount = new Map<Material, number>();
       let completed = true;
       let maxCompleted = true;
       forEach(cost, function checkConstructionUpgradeResources(res, amount) {
@@ -657,7 +657,7 @@ export function transportAndConsumeResources(
             (configBT.importCapacity ?? 1) * totalMultiplierFor(xy, "output", 1, false, gs),
          );
 
-         const result = new Map<Resource, number>();
+         const result = new Map<Material, number>();
          let total = 0;
          for (const point of getGrid(gs).getRange(tileToPoint(xy), MANAGED_IMPORT_RANGE)) {
             const nxy = pointToTile(point);
@@ -801,7 +801,7 @@ export function transportAndConsumeResources(
          // Backport / Re-Added by Lydia -- either FishPond removed it or it was part of LMC
          const eic = Tick.current.specialBuildings.get("EastIndiaCompany");
          if (eic) {
-            const value = (Config.ResourcePrice[sellResource] ?? 0) * sellAmount;
+            const value = (Config.MaterialPrice[sellResource] ?? 0) * sellAmount;
             if (value > 0) {
                safeAdd(eic.building.resources, "TradeValue", value);
             }
@@ -1009,7 +1009,7 @@ function tickWarehouseAutopilot(
       return;
    }
 
-   const resourceFilter = new Set<Resource>();
+   const resourceFilter = new Set<Material>();
    if (hasFlag(warehouse.warehouseOptions, WarehouseOptions.AutopilotRespectCap)) {
       forEach(warehouse.resourceImports, (res, ri) => {
          if ((warehouse.resources[res] ?? 0) < ri.cap) {
@@ -1062,8 +1062,8 @@ function tickWarehouseAutopilot(
 
 export type TileAndRes = number;
 
-export function hashTileAndRes(xy: Tile, res: Resource): TileAndRes {
-   return (tileToHash(xy) << 12) | Config.ResourceHash[res]!;
+export function hashTileAndRes(xy: Tile, res: Material): TileAndRes {
+   return (tileToHash(xy) << 12) | Config.MaterialHash[res]!;
 }
 
 const _transportSourceCache = new Map<TileAndRes, Tile[]>();
@@ -1073,7 +1073,7 @@ export function clearTransportSourceCache(): void {
 }
 
 export function transportResource(
-   res: Resource,
+   res: Material,
    amount: number,
    workerCapacity: number,
    targetXy: Tile,
@@ -1256,13 +1256,19 @@ export function transportResource(
    return amountLeft;
 }
 
-export function addMultiplier(k: Building, multiplier: MultiplierWithStability, source: string) {
+export function addMultiplier(k: Building, multiplier: MultiplierWithStability, source: string): void {
    let m = Tick.next.buildingMultipliers.get(k);
    if (m == null) {
       m = [];
    }
    m.push({ ...multiplier, source });
    Tick.next.buildingMultipliers.set(k, m);
+}
+
+export function addLevelBoost(building: Building, value: number, source: string, gs: GameState): void {
+   getBuildingsByType(building, gs)?.forEach((_, xy) => {
+      mapSafePush(Tick.next.levelBoost, xy, { value, source });
+   });
 }
 
 function getPriceId() {
@@ -1319,6 +1325,6 @@ export function tickPrice(gs: GameState) {
 
 export interface IProduceResource {
    xy: Tile;
-   resource: Resource;
+   resource: Material;
    amount: number;
 }

@@ -7,6 +7,7 @@ import {
    getMultipliersDescription,
    getPompidou,
    getRandomEmptyTiles,
+   hasNotUsedDinosaurProvincialPark,
 } from "../../../shared/logic/BuildingLogic";
 import { Config } from "../../../shared/logic/Config";
 import { SUPPORTER_PACK_URL } from "../../../shared/logic/Constants";
@@ -25,6 +26,7 @@ import { Tick } from "../../../shared/logic/TickLogic";
 import { UserAttributes } from "../../../shared/utilities/Database";
 import {
    clamp,
+   entriesOf,
    formatPercent,
    hasFlag,
    isEmpty,
@@ -40,14 +42,14 @@ import { L, t } from "../../../shared/utilities/i18n";
 import { resetToCity, saveGame, useGameState } from "../Global";
 import { checkRebirthAchievements } from "../logic/Achievement";
 import { clientHeartbeat } from "../logic/Heartbeat";
-import { canEarnGreatPeopleFromReborn, client, isOnlineUser, useTrades, useUser } from "../rpc/RPCClient";
+import { client, isOnlineUser, useTrades, useUser } from "../rpc/RPCClient";
 import { jsxMapOf } from "../utilities/Helper";
 import { openUrl } from "../utilities/Platform";
 import { GreatPersonImage } from "../visuals/GreatPersonVisual";
 import { playClick, playError } from "../visuals/Sound";
 import { hideModal, showToast } from "./GlobalModal";
 import { FormatNumber } from "./HelperComponents";
-import { RenderHTML } from "./RenderHTMLComponent";
+import { html, RenderHTML } from "./RenderHTMLComponent";
 import { TextWithHelp } from "./TextWithHelpComponent";
 import { BuildingSpriteComponent, DepositTextureComponent, MiscTextureComponent } from "./TextureSprites";
 import { WarningComponent } from "./WarningComponent";
@@ -91,6 +93,10 @@ export function RebirthModal(): React.ReactNode {
       Tick.current.specialBuildings.has("CentrePompidou") &&
       (getCurrentAge(gs) !== "InformationAge" || gs.city === nextCity);
 
+   const extraTileForNextRebirth = Tick.current.specialBuildings.get("SydneyOperaHouse")?.building.level ?? 0;
+
+   const uniqueEffects = Config.City[nextCity].uniqueEffects();
+   const citySize = Config.City[nextCity].size;
    return (
       <div className="window" style={{ width: "700px" }}>
          <div className="title-bar">
@@ -108,50 +114,6 @@ export function RebirthModal(): React.ReactNode {
                      <RenderHTML html={t(L.RebornModalDescV3)} />
                   </WarningComponent>
                ) : null}
-               {canEarnGreatPeopleFromReborn() ? (
-                  <ul className="tree-view">
-                     <li className="row">
-                        <div className="f1">{t(L.GreatPeopleThisRun)}</div>
-                        <div className="text-strong">
-                           {reduceOf(
-                              gs.greatPeople,
-                              (prev, k, v) => {
-                                 return prev + v;
-                              },
-                              0,
-                           )}
-                        </div>
-                     </li>
-                     <li className="row">
-                        <div className="f1">{t(L.TotalEmpireValue)}</div>
-                        <div className="text-strong">
-                           <FormatNumber value={Tick.current.totalValue} />
-                        </div>
-                     </li>
-                     <li className="row">
-                        <div className="f1">{t(L.ExtraGreatPeopleAtReborn)}</div>
-                        <div className="text-strong">
-                           <TextWithHelp
-                              content={t(L.ClaimedGreatPeopleTooltip, {
-                                 total: greatPeopleAtRebirthCount,
-                                 claimed: gs.claimedGreatPeople,
-                              })}
-                           >
-                              {clamp(
-                                 greatPeopleAtRebirthCount - gs.claimedGreatPeople,
-                                 0,
-                                 Number.POSITIVE_INFINITY,
-                              )}
-                           </TextWithHelp>
-                        </div>
-                     </li>
-                  </ul>
-               ) : (
-                  <WarningComponent icon="warning">
-                     {t(L.CannotEarnPermanentGreatPeopleDesc)}
-                  </WarningComponent>
-               )}
-               <div className="sep10" />
                {hasFlag(user?.attr ?? UserAttributes.None, UserAttributes.DLC1) ? null : (
                   <WarningComponent icon="info" className="text-small mb10">
                      <RenderHTML
@@ -170,6 +132,49 @@ export function RebirthModal(): React.ReactNode {
                      />
                   </WarningComponent>
                ) : null}
+               {hasNotUsedDinosaurProvincialPark() ? (
+                  <WarningComponent icon="info" className="text-small mb10">
+                     {html(t(L.DinosaurProvincialParkNotUsedWarningHTML))}
+                  </WarningComponent>
+               ) : null}
+               <ul className="tree-view">
+                  <li className="row">
+                     <div className="f1">{t(L.GreatPeopleThisRun)}</div>
+                     <div className="text-strong">
+                        {reduceOf(
+                           gs.greatPeople,
+                           (prev, k, v) => {
+                              return prev + v;
+                           },
+                           0,
+                        )}
+                     </div>
+                  </li>
+                  <li className="row">
+                     <div className="f1">{t(L.TotalEmpireValue)}</div>
+                     <div className="text-strong">
+                        <FormatNumber value={Tick.current.totalValue} />
+                     </div>
+                  </li>
+                  <li className="row">
+                     <div className="f1">{t(L.ExtraGreatPeopleAtReborn)}</div>
+                     <div className="text-strong">
+                        <TextWithHelp
+                           content={t(L.ClaimedGreatPeopleTooltip, {
+                              total: greatPeopleAtRebirthCount,
+                              claimed: gs.claimedGreatPeople,
+                           })}
+                        >
+                           {clamp(
+                              greatPeopleAtRebirthCount - gs.claimedGreatPeople,
+                              0,
+                              Number.POSITIVE_INFINITY,
+                           )}
+                        </TextWithHelp>
+                     </div>
+                  </li>
+               </ul>
+               <div className="sep10" />
                <fieldset>
                   <div className="row">
                      <div className="f1 row">
@@ -260,8 +265,13 @@ export function RebirthModal(): React.ReactNode {
                <div className="row mb5">
                   <div className="text-strong">{t(L.Deposit)}</div>
                   <div className="text-desc ml5">
-                     ({Config.City[nextCity].size}x{Config.City[nextCity].size})
+                     ({citySize + extraTileForNextRebirth}x{citySize + extraTileForNextRebirth})
                   </div>
+                  {extraTileForNextRebirth > 0 && (
+                     <Tippy content={t(L.ExtraTileForNextRebirthTooltip, { count: extraTileForNextRebirth })}>
+                        <div className="m-icon small ml5 text-green">info</div>
+                     </Tippy>
+                  )}
                </div>
                <div
                   className="inset-shallow white p5"
@@ -275,12 +285,30 @@ export function RebirthModal(): React.ReactNode {
                               scale={0.25}
                               style={{ filter: "invert(0.75)", margin: "0 10px 0 0" }}
                            />
-                           <div className="f1">{Config.Resource[dep].name()}</div>
+                           <div className="f1">{Config.Material[dep].name()}</div>
                            <div className="text-strong">{formatPercent(value)}</div>
                         </div>
                      );
                   })}
                </div>
+               {uniqueEffects.length <= 0 ? null : (
+                  <>
+                     <div className="text-strong mt5 mb5">{t(L.UniqueEffects)}</div>
+                     <div className="inset-shallow white">
+                        {uniqueEffects.map((effect, i) => {
+                           return (
+                              <div
+                                 key={i}
+                                 className="row p5"
+                                 style={{ backgroundColor: i % 2 === 0 ? "#fff" : "#efefef" }}
+                              >
+                                 {html(effect)}
+                              </div>
+                           );
+                        })}
+                     </div>
+                  </>
+               )}
                <div className="text-strong mt5 mb5">{t(L.UniqueBuildings)}</div>
                <div className="inset-shallow white">
                   {jsxMapOf(Config.City[nextCity].uniqueBuildings, (building, tech, i) => {
@@ -355,8 +383,9 @@ export function RebirthModal(): React.ReactNode {
                )}
                <div className="text-strong mt5 mb5">{t(L.GreatPeople)}</div>
                <div className="inset-shallow white">
-                  {jsxMapOf(Config.GreatPerson, (person, def, i) => {
-                     if (def.city === nextCity) {
+                  {entriesOf(Config.GreatPerson)
+                     .filter(([_, def]) => def.city === nextCity)
+                     .map(([person, def], i) => {
                         return (
                            <div
                               key={person}
@@ -376,9 +405,7 @@ export function RebirthModal(): React.ReactNode {
                               </div>
                            </div>
                         );
-                     }
-                     return null;
-                  })}
+                     })}
                </div>
                <div className="text-strong mt5 mb5">{t(L.Festival)}</div>
                <div className="inset-shallow white">
@@ -426,7 +453,13 @@ export function RebirthModal(): React.ReactNode {
                      const gameId = uuid4();
 
                      try {
-                        await Promise.race([client.rebirthV2(gameId), rejectIn(10)]);
+                        await Promise.race([
+                           client.rebirthV3(gameId, {
+                              ageWisdom: options.ageWisdom,
+                              greatPeople: options.greatPeople,
+                           }),
+                           rejectIn(10),
+                        ]);
                      } catch (error) {
                         console.error(error);
                         if (!import.meta.env.DEV && isOnlineUser()) {
@@ -443,7 +476,7 @@ export function RebirthModal(): React.ReactNode {
                      );
                      const currentCity = gs.city;
 
-                     if (!gs.rebirthed && canEarnGreatPeopleFromReborn()) {
+                     if (!gs.rebirthed) {
                         rollPermanentGreatPeople(
                            greatPeopleCount,
                            pickPerRoll,
@@ -486,7 +519,7 @@ export function RebirthModal(): React.ReactNode {
                      getGameOptions().showTutorial = false;
 
                      playClick();
-                     await resetToCity(gameId, nextCity);
+                     await resetToCity(gameId, nextCity, extraTileForNextRebirth);
 
                      const pompidou = getPompidou(gs);
                      if (currentCity !== nextCity && pompidou) {

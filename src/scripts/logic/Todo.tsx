@@ -14,11 +14,14 @@ import { getResourceAmount } from "../../../shared/logic/ResourceLogic";
 import { getScienceAmount, getTechUnlockCost, unlockableTechs } from "../../../shared/logic/TechLogic";
 import { NotProducingReason, Tick } from "../../../shared/logic/TickLogic";
 import {
+   cls,
    entriesOf,
    formatHMS,
    formatNumber,
    HOUR,
+   keysOf,
    mapCount,
+   mathSign,
    tileToPoint,
 } from "../../../shared/utilities/Helper";
 import { L, t } from "../../../shared/utilities/i18n";
@@ -333,7 +336,7 @@ export const _Todos = {
                inv.amount >= getGreatPersonUpgradeCost(gp, inv.level + 1),
          ),
       onClick: (gs, options) => {
-         showModal(<ManagePermanentGreatPersonModal />);
+         showModal(<ManagePermanentGreatPersonModal adaptiveOnly={false} />);
       },
    },
    I3: {
@@ -421,6 +424,7 @@ export const _Todos = {
                   <thead>
                      <tr>
                         <th className="text-left">{t(L.Resource)}</th>
+                        <th className="text-right">{t(L.ResourceAmount)}</th>
                         <th className="text-right">{t(L.Produced)}</th>
                         <th className="text-right">{t(L.Consumed)}</th>
                         <th className="text-right">{t(L.Surplus)}</th>
@@ -439,10 +443,14 @@ export const _Todos = {
                         );
                         return (
                            <tr key={res}>
-                              <td>{Config.Resource[res].name()}</td>
+                              <td>{Config.Material[res].name()}</td>
+                              <td className="text-right">{formatNumber(getResourceAmount(res))}</td>
                               <td className="text-right">{formatNumber(produced)}</td>
                               <td className="text-right">{formatNumber(consumed)}</td>
-                              <td className="text-right">{formatNumber(surplus)}</td>
+                              <td className={cls("text-right", surplus >= 0 ? "text-lime" : "text-red")}>
+                                 {mathSign(surplus)}
+                                 {formatNumber(Math.abs(surplus))}
+                              </td>
                               <td className="text-right">{runOutIn}</td>
                            </tr>
                         );
@@ -462,6 +470,36 @@ export const _Todos = {
                .sceneManager.getCurrent(WorldScene)
                ?.selectGrid(tileToPoint(s.tile), { tab: "resources" });
          }
+      },
+   },
+   I8: {
+      name: () => t(L.SelectAdaptiveGreatPeopleBoost),
+      icon: "checklist_rtl",
+      className: "text-green",
+      desc: (gs, options) => t(L.YouHaveAdaptiveGreatPeopleWithBoostToSelect),
+      condition: (gs, options) => {
+         for (const [gp, amount] of entriesOf(gs.greatPeople)) {
+            if (
+               Config.GreatPerson[gp].type === GreatPersonType.Adaptive &&
+               amount > 0 &&
+               !gs.adaptiveGreatPeople.has(gp)
+            ) {
+               return true;
+            }
+         }
+         for (const [gp, inv] of entriesOf(options.greatPeople)) {
+            if (
+               Config.GreatPerson[gp].type === GreatPersonType.Adaptive &&
+               inv.amount > 0 &&
+               !gs.adaptiveGreatPeople.has(gp)
+            ) {
+               return true;
+            }
+         }
+         return false;
+      },
+      onClick: (gs, options) => {
+         showModal(<ManagePermanentGreatPersonModal adaptiveOnly={true} />);
       },
    },
    S1: {
@@ -491,3 +529,5 @@ export const _Todos = {
 
 export type Todo = keyof typeof _Todos;
 export const Todo: Record<Todo, ITodo> = _Todos;
+
+export const TodoList = keysOf(Todo);

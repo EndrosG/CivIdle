@@ -1,8 +1,8 @@
 import type { Advisor } from "../definitions/AdvisorDefinitions";
 import type { Building } from "../definitions/BuildingDefinitions";
-import type { City } from "../definitions/CityDefinitions";
+import { ROME_CITY_SIZE, type City } from "../definitions/CityDefinitions";
 import type { GreatPerson } from "../definitions/GreatPersonDefinitions";
-import type { Resource } from "../definitions/ResourceDefinitions";
+import type { Material } from "../definitions/MaterialDefinitions";
 import type { Tech, TechAge } from "../definitions/TechDefinitions";
 import type { Upgrade } from "../definitions/UpgradeDefinitions";
 import { CZ } from "../languages/cz";
@@ -51,7 +51,6 @@ export class GameState {
    tick = 0;
    seconds = 0;
    greatPeople: PartialTabulate<GreatPerson> = {};
-   // greatPeopleChoices: GreatPeopleChoice[] = [];
    greatPeopleChoicesV2: GreatPeopleChoiceV2[] = [];
    transportId = 0;
    lastPriceUpdated = 0;
@@ -68,7 +67,8 @@ export class GameState {
    flags = GameStateFlags.None;
    lastClientTickAt = 0;
    clientOfflineSec = 0;
-   watchedResources: Set<Resource> = new Set();
+   watchedResources: Set<Material> = new Set();
+   mapSize = ROME_CITY_SIZE;
 }
 
 export type GreatPeopleChoice = GreatPerson[];
@@ -93,6 +93,34 @@ const DefaultThemeColors = {
    BuildingStatusIconAlpha: 1,
    SpinnerAlpha: 0.5,
 };
+
+export const ResourcePanelSections = [
+   "Happiness",
+   "Festival",
+   "Workers",
+   "Electricity",
+   "Science",
+   "Deficit",
+   "EmpireValue",
+   "GreatPeople",
+   "PlayerTrade",
+   "TimeWarp",
+] as const;
+
+export const ResourcePanelSectionLabels: Record<ResourcePanelSection, () => string> = {
+   Happiness: () => t(L.Happiness),
+   Festival: () => t(L.Festival),
+   Workers: () => t(L.Workers),
+   Electricity: () => t(L.Electricity),
+   Science: () => t(L.Science),
+   Deficit: () => t(L.StatisticsResourcesDeficit),
+   EmpireValue: () => t(L.EmpireValue),
+   GreatPeople: () => t(L.GreatPeople),
+   PlayerTrade: () => t(L.PlayerTrade),
+   TimeWarp: () => t(L.TimeWarp),
+};
+
+export type ResourcePanelSection = (typeof ResourcePanelSections)[number];
 
 export function resetThemeColor() {
    getGameOptions().themeColors = { ...DefaultThemeColors };
@@ -223,7 +251,7 @@ export class GameOptions {
    showTransportArrow = true;
    scrollSensitivity = 1;
    buildingColors: Partial<Record<Building, string>> = {};
-   resourceColors: Partial<Record<Resource, string>> = {};
+   resourceColors: Partial<Record<Material, string>> = {};
    themeColors = { ...DefaultThemeColors };
    tileTexture: TileTexture = "Tile1";
    spinnerTexture: SpinnerTexture | null = "Spinner1";
@@ -262,6 +290,7 @@ export class GameOptions {
    useScientificFormat = false;
    showTutorial = true;
    disabledTodos = new Set<string>();
+   pinnedTodos = new Set<string>();
    showWonderPopup = true;
    rankUpFlags = RankUpFlags.NotUpgraded;
    showNaturalWonderPopup = true;
@@ -269,12 +298,16 @@ export class GameOptions {
    supporterPackPurchased = false;
    warehouseQuickMode = true;
    migrationFlags = MigrationFlags.None;
+   hideResourcePanelSections = new Set<ResourcePanelSection>();
+   useMirrorServer = false;
 }
+
+export type GameOptionServer = Pick<GameOptions, "ageWisdom" | "greatPeople">;
 
 export enum RankUpFlags {
    Unset = 0,
-   NotUpgraded = 1 << 0,
-   Upgraded = 1 << 1,
+   NotUpgraded = 1,
+   Upgraded = 2,
 }
 
 export enum MigrationFlags {

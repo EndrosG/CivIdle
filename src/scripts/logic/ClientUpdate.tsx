@@ -70,10 +70,7 @@ export function tickEveryFrame(gs: GameState, dt: number) {
    timeSinceLastTick = Math.min(timeSinceLastTick + dt, 1);
    const worldScene = Singleton().sceneManager.getCurrent(WorldScene);
    if (worldScene) {
-      for (const xy of gs.tiles.keys()) {
-         worldScene.updateTile(xy, dt);
-      }
-      worldScene.updateTransportVisual(gs, timeSinceLastTick);
+      worldScene.update(dt, timeSinceLastTick);
    }
 
    const playerMapScene = Singleton().sceneManager.getCurrent(PlayerMapScene);
@@ -238,7 +235,7 @@ function postTickTiles(gs: GameState, offline: boolean) {
       }
       if (gs.tick % (heartbeatFreq * speed) === 0) {
          clientHeartbeat();
-         client.queryRankUp().then((newRank) => {
+         client.queryRankUp().then((newRank:AccountLevel) => {
             const user = getUser();
             if (user && newRank > user.level) {
                eligibleRank = newRank;

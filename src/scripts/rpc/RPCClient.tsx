@@ -8,6 +8,7 @@ import { Config } from "../../../shared/logic/Config";
 import { GOOGLE_PLAY_GAMES_CLIENT_ID } from "../../../shared/logic/Constants";
 import { PremiumTileTextures, RankUpFlags } from "../../../shared/logic/GameState";
 import { checksum, getGameOptions, getGameState } from "../../../shared/logic/GameStateLogic";
+import { Tick } from "../../../shared/logic/TickLogic";
 import { RpcError, removeTrailingUndefs, rpcClient } from "../../../shared/thirdparty/TRPCClient";
 import type {
    AllMessageTypes,
@@ -31,7 +32,7 @@ import {
    UserAttributes,
    type ChatChannel,
 } from "../../../shared/utilities/Database";
-import { vacuumChat } from "../../../shared/utilities/DatabaseShared";
+import { isSaveOwner, vacuumChat } from "../../../shared/utilities/DatabaseShared";
 import {
    SECOND,
    WEEK,
@@ -87,7 +88,7 @@ let chatMessages: LocalChat[] = [];
 const trades: Map<string, IClientTrade> = new Map();
 const playerMap: Map<string, IClientMapEntry> = new Map();
 
-export function getPlayerMap() {
+export function getPlayerMap(): Map<string, IClientMapEntry> {
    return playerMap;
 }
 
@@ -121,12 +122,15 @@ function getServerAddress(): string {
       const url = new URLSearchParams(window.location.search);
       return url.get("server") ?? "ws://localhost:8000";
    }
+   if (getGameOptions().useMirrorServer) {
+      return "wss://us.cividle.com";
+   }
    return "wss://de.cividle.com";
 }
 
 export function getTrades(): IClientTrade[] {
    return Array.from(trades.values()).filter((trade) => {
-      if (Config.Resource[trade.buyResource] && Config.Resource[trade.sellResource]) {
+      if (Config.Material[trade.buyResource] && Config.Material[trade.sellResource]) {
          return true;
       }
       return false;
@@ -160,16 +164,6 @@ export function isOnlineUser(): boolean {
 
 export function getUserLevel(): AccountLevel {
    return user?.level ?? AccountLevel.Tribune;
-}
-
-// TODO: Need to properly implement this after supporting offline run
-export function canEarnGreatPeopleFromReborn(): boolean {
-   if (isOnlineUser()) {
-      getGameState().isOffline = false;
-   } else {
-      getGameState().isOffline = true;
-   }
-   return true;
 }
 
 const _chatIds = new Map<ChatChannel | "System", number>();
@@ -350,21 +344,26 @@ export async function connectWebSocket(): Promise<IWelcomeMessage> {
             if (hasFlag(user.attr, UserAttributes.DLC1) && !options.supporterPackPurchased) {
                showModal(<SupporterPackModal />);
             }
-            switch (options.rankUpFlags) {
-               case RankUpFlags.Unset:
-                  if (user.level <= AccountLevel.Tribune) {
-                     options.rankUpFlags = RankUpFlags.NotUpgraded;
-                  } else {
-                     options.rankUpFlags = RankUpFlags.Upgraded;
-                  }
-                  break;
-               case RankUpFlags.NotUpgraded:
-                  if (user.level > AccountLevel.Tribune) {
-                     client.resetRank();
-                  }
-                  break;
-               case RankUpFlags.Upgraded:
-                  break;
+            if (isSaveOwner(w.platformInfo, w.user)) {
+               switch (options.rankUpFlags) {
+                  case RankUpFlags.Unset:
+                     if (user.level <= AccountLevel.Tribune) {
+                        options.rankUpFlags = RankUpFlags.NotUpgraded;
+                     } else {
+                        options.rankUpFlags = RankUpFlags.Upgraded;
+                     }
+                     break;
+                  case RankUpFlags.NotUpgraded:
+                     if (
+                        !hasFlag(user.attr, UserAttributes.OverrideRankUp) &&
+                        user.level > AccountLevel.Tribune
+                     ) {
+                        client.resetRank();
+                     }
+                     break;
+                  case RankUpFlags.Upgraded:
+                     break;
+               }
             }
             saveGame().catch(console.error);
             OnUserChanged.emit(user);
@@ -428,7 +427,6 @@ export async function connectWebSocket(): Promise<IWelcomeMessage> {
          }
          case MessageType.PendingClaim: {
             const r = message as IPendingClaimMessage;
-            console.log(r, user);
             if (user && r.claims[user.userId]) {
                if (getGameOptions().tradeFilledSound) {
                   playKaching();
@@ -485,7 +483,7 @@ export function reconnectWebSocket() {
 }
 
 function retryConnect() {
-   setTimeout(reconnectWebSocket, Math.min(Math.pow(2, reconnect++) * SECOND, 16 * SECOND));
+   setTimeout(reconnectWebSocket, Math.min(((reconnect++) ** 2) * SECOND, 16 * SECOND));
 }
 
 export function convertOfflineTimeToWarp(w: IWelcomeMessage): void {
@@ -531,6 +529,9 @@ export function isAllyWith(tile: IClientMapEntry): boolean {
    }
    if (!tile.city) {
       return false;
+   }
+   if (Tick.current.specialBuildings.has("LakeLouise")) {
+      return true;
    }
    return tile.city === getGameState().city;
 }

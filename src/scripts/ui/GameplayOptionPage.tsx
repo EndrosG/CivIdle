@@ -1,12 +1,15 @@
 import Tippy from "@tippyjs/react";
+import { useState } from "react";
 import { Config } from "../../../shared/logic/Config";
 import { MAX_OFFLINE_PRODUCTION_SEC } from "../../../shared/logic/Constants";
 import {
    ExtraTileInfoTypes,
    getTranslatedPercentage,
+   ResourcePanelSectionLabels,
+   ResourcePanelSections,
    type ExtraTileInfoType,
 } from "../../../shared/logic/GameState";
-import { notifyGameOptionsUpdate } from "../../../shared/logic/GameStateLogic";
+import { getGameOptions, notifyGameOptionsUpdate } from "../../../shared/logic/GameStateLogic";
 import {
    MAX_ELECTRIFICATION_LEVEL,
    PRIORITY_MAX,
@@ -22,19 +25,24 @@ import {
    formatHM,
    formatPercent,
    keysOf,
+   resolveIn,
    safeParseInt,
    sizeOf,
 } from "../../../shared/utilities/Helper";
 import { L, t } from "../../../shared/utilities/i18n";
 import { useGameOptions } from "../Global";
 import { Todo } from "../logic/Todo";
+import { client } from "../rpc/RPCClient";
 import { jsxMapOf } from "../utilities/Helper";
 import { openUrl } from "../utilities/Platform";
+import { regenerateGreatPersonImages } from "../visuals/GreatPersonVisual";
 import { playClick } from "../visuals/Sound";
 import { ChangeSoundComponent } from "./ChangeSoundComponent";
+import { showToast } from "./GlobalModal";
 import { LanguageSelect } from "./LanguageSelectComponent";
 import { MenuComponent } from "./MenuComponent";
-import { RenderHTML } from "./RenderHTMLComponent";
+import { html, RenderHTML } from "./RenderHTMLComponent";
+import { recoverFromServer } from "./SaveCorruptedPage";
 import { TextWithHelp } from "./TextWithHelpComponent";
 import { TitleBarComponent } from "./TitleBarComponent";
 import { ToggleComponent } from "./ToggleComponent";
@@ -229,28 +237,63 @@ export function GameplayOptionPage(): React.ReactNode {
                   }}
                />
                <div className="separator" />
-               {jsxMapOf(Todo, (id, t) => {
-                  if (id.startsWith("S")) {
-                     return null;
-                  }
-                  return (
-                     <ToggleComponent
-                        key={id}
-                        title={t.name()}
-                        contentHTML=""
-                        value={!options.disabledTodos.has(id)}
-                        onValueChange={(value) => {
-                           playClick();
-                           if (value) {
-                              options.disabledTodos.delete(id);
-                           } else {
-                              options.disabledTodos.add(id);
+               <div className="table-view">
+                  <table>
+                     <thead>
+                        <tr>
+                           <th>{t(L.TodoTabs)}</th>
+                           <th className="text-right">{t(L.EnableTodo)}</th>
+                           <th className="text-right">{t(L.PinTodo)}</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        {jsxMapOf(Todo, (id, todo) => {
+                           if (id.startsWith("S")) {
+                              return null;
                            }
-                           notifyGameOptionsUpdate(options);
-                        }}
-                     />
-                  );
-               })}
+                           return (
+                              <tr key={id}>
+                                 <td>{todo.name()}</td>
+                                 <td>
+                                    <ToggleComponent
+                                       title=""
+                                       contentHTML=""
+                                       value={!options.disabledTodos.has(id)}
+                                       onValueChange={(value) => {
+                                          playClick();
+                                          if (value) {
+                                             options.disabledTodos.delete(id);
+                                          } else {
+                                             options.disabledTodos.add(id);
+                                          }
+                                          notifyGameOptionsUpdate(options);
+                                       }}
+                                    />
+                                 </td>
+                                 <Tippy content={t(L.PinTodoTooltip)}>
+                                    <td>
+                                       <ToggleComponent
+                                          title=""
+                                          contentHTML=""
+                                          value={options.pinnedTodos.has(id)}
+                                          onValueChange={(value) => {
+                                             playClick();
+                                             if (value) {
+                                                options.pinnedTodos.add(id);
+                                             } else {
+                                                options.pinnedTodos.delete(id);
+                                             }
+                                             notifyGameOptionsUpdate(options);
+                                          }}
+                                       />
+                                    </td>
+                                 </Tippy>
+                              </tr>
+                           );
+                        })}
+                     </tbody>
+                  </table>
+               </div>
                <div className="separator" />
                <ToggleComponent
                   title={t(L.ShowWonderPopup)}
@@ -270,6 +313,29 @@ export function GameplayOptionPage(): React.ReactNode {
                      notifyGameOptionsUpdate(options);
                   }}
                />
+            </fieldset>
+            <fieldset>
+               <legend>{t(L.ResourcePanelSections)}</legend>
+               {ResourcePanelSections.map((section) => {
+                  const label = ResourcePanelSectionLabels[section];
+                  return (
+                     <ToggleComponent
+                        key={section}
+                        title={label()}
+                        contentHTML=""
+                        value={!options.hideResourcePanelSections.has(section)}
+                        onValueChange={(value) => {
+                           playClick();
+                           if (value) {
+                              options.hideResourcePanelSections.delete(section);
+                           } else {
+                              options.hideResourcePanelSections.add(section);
+                           }
+                           notifyGameOptionsUpdate(options);
+                        }}
+                     />
+                  );
+               })}
             </fieldset>
             <fieldset>
                <legend>{t(L.OfflineProduction)}</legend>
@@ -432,6 +498,42 @@ export function GameplayOptionPage(): React.ReactNode {
                >
                   {t(L.ClearTransportPlanCache)}
                </button>
+               <RegenerateGreatPersonImagesButton />
+            </fieldset>
+            <fieldset>
+               <legend>{t(L.MirrorServer)}</legend>
+               <ToggleComponent
+                  title={t(L.UseMirrorServer)}
+                  contentHTML={t(L.UseMirrorServerDescHTML)}
+                  value={options.useMirrorServer}
+                  onValueChange={(value) => {
+                     options.useMirrorServer = value;
+                     notifyGameOptionsUpdate(options);
+                  }}
+               />
+            </fieldset>
+            <fieldset>
+               <legend>{t(L.ServerBackup)}</legend>
+               <div className="text-small text-desc">{html(t(L.ServerBackupDescHTML))}</div>
+               <div className="sep5" />
+               <button
+                  className="w100"
+                  onClick={async () => {
+                     playClick();
+                     const options = getGameOptions();
+                     await client.saveOptionsToServer({
+                        ageWisdom: options.ageWisdom,
+                        greatPeople: options.greatPeople,
+                     });
+                     showToast(t(L.OperationSuccessful));
+                  }}
+               >
+                  {t(L.BackupToServer)}
+               </button>
+               <div className="sep5" />
+               <button className="w100 text-red" onClick={() => recoverFromServer()}>
+                  {t(L.RecoverFromServer)}
+               </button>
             </fieldset>
             {sizeOf(options.buildingDefaults) > 0 ? (
                <fieldset>
@@ -478,5 +580,26 @@ export function GameplayOptionPage(): React.ReactNode {
             ) : null}
          </div>
       </div>
+   );
+}
+
+function RegenerateGreatPersonImagesButton(): React.ReactNode {
+   const [ongoing, setOngoing] = useState(false);
+   return (
+      <Tippy content={t(L.RegenerateGreatPersonPortraitsDesc)}>
+         <button
+            disabled={ongoing}
+            className="jcc w100 mt5"
+            onClick={async () => {
+               playClick();
+               setOngoing(true);
+               await resolveIn(1, null);
+               await regenerateGreatPersonImages();
+               setOngoing(false);
+            }}
+         >
+            {ongoing ? t(L.Regenerating) : t(L.RegenerateGreatPersonPortraits)}
+         </button>
+      </Tippy>
    );
 }

@@ -1,6 +1,7 @@
+import { formatPercent } from "../utilities/Helper";
 import type { PartialSet, PartialTabulate } from "../utilities/TypeDefinitions";
 import { L, t } from "../utilities/i18n";
-import type { Deposit, Resource } from "./ResourceDefinitions";
+import type { Deposit, Material } from "./MaterialDefinitions";
 
 export enum BuildingSpecial {
    HQ = 0,
@@ -8,11 +9,13 @@ export enum BuildingSpecial {
    NaturalWonder = 2,
 }
 
+export const DinosaurProvincialParkPercent = 0.15;
+
 export interface IBuildingDefinition {
    name: () => string;
-   input: PartialTabulate<Resource>;
-   construction?: PartialTabulate<Resource>;
-   output: PartialTabulate<Resource>;
+   input: PartialTabulate<Material>;
+   construction?: PartialTabulate<Material>;
+   output: PartialTabulate<Material>;
    vision?: number;
    deposit?: PartialSet<Deposit>;
    range?: number,
@@ -25,7 +28,7 @@ export interface IBuildingDefinition {
    special?: BuildingSpecial;
 }
 
-export const BUILDING_DEFAULT_VISION = 2;
+export const BuildingDefaultVisionRange = 2;
 
 export class BuildingDefinitions {
    // #region Workers ////////////////////////////////////////////////////////////////////////////////////////
@@ -142,6 +145,13 @@ export class BuildingDefinitions {
       power: true,
    };
 
+   FusionFuelPlant: IBuildingDefinition = {
+      name: () => t(L.FusionFuelPlant),
+      input: { NuclearFuelRod: 10 },
+      output: { FusionFuel: 1 },
+      power: true,
+   };
+
    OilWell: IBuildingDefinition = {
       name: () => t(L.OilWell),
       input: {},
@@ -196,6 +206,12 @@ export class BuildingDefinitions {
       // Lydia: added waste
       output: { NuclearWaste: 2, Power: 65 },
       construction: { ReinforcedConcrete: 16, Steel: 16 },
+   };
+
+   FusionPowerPlant: IBuildingDefinition = {
+      name: () => t(L.FusionPowerPlant),
+      input: { FusionFuel: 2 },
+      output: { Power: 1140 },
    };
    // #endregion /////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -510,6 +526,12 @@ export class BuildingDefinitions {
       output: { CivGPT: 1 },
       power: true,
    };
+   AILab: IBuildingDefinition = {
+      name: () => t(L.AILab),
+      input: { Internet: 2, Supercomputer: 4, Radio: 2 },
+      output: { CivGPT: 2 },
+      power: true,
+   };
    CivTok: IBuildingDefinition = {
       name: () => t(L.CivTok),
       input: { Internet: 1, Politics: 1 },
@@ -749,6 +771,12 @@ export class BuildingDefinitions {
       output: { Spacecraft: 1 },
       power: true,
    };
+   Cosmodrome: IBuildingDefinition = {
+      name: () => t(L.Cosmodrome),
+      input: { Rocket: 4, Satellite: 4, Airplane: 4 },
+      output: { Spacecraft: 2 },
+      power: true,
+   };
    SemiconductorFab: IBuildingDefinition = {
       name: () => t(L.SemiconductorFab),
       input: { Silicon: 10, Copper: 10 },
@@ -810,6 +838,12 @@ export class BuildingDefinitions {
       name: () => t(L.BitcoinMiner),
       input: { HedgeFund: 2, CivTok: 1 },
       output: { Bitcoin: 1 },
+      power: true,
+   };
+   CryptoFund: IBuildingDefinition = {
+      name: () => t(L.CryptoFund),
+      input: { HedgeFund: 4, CivTok: 2 },
+      output: { Bitcoin: 2 },
       power: true,
    };
 
@@ -2487,6 +2521,182 @@ export class BuildingDefinitions {
       wikipedia: "Port_of_Singapore",
    };
 
+   SydneyOperaHouse: IBuildingDefinition = {
+      name: () => t(L.SydneyOperaHouse),
+      desc: () => t(L.SydneyOperaHouseDesc),
+      input: {},
+      output: {},
+      construction: { TV: 500, Radio: 500, Diplomacy: 500 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "Sydney_Opera_House",
+   };
+
+   SydneyHarbourBridge: IBuildingDefinition = {
+      name: () => t(L.SydneyHarbourBridge),
+      desc: () => t(L.SydneyHarbourBridgeDesc),
+      input: {},
+      output: {},
+      construction: { ReinforcedConcrete: 100, Car: 100, Submarine: 100 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "Sydney_Harbour_Bridge",
+   };
+
+   GreatOceanRoad: IBuildingDefinition = {
+      name: () => t(L.GreatOceanRoad),
+      desc: () => t(L.GreatOceanRoadDesc),
+      input: {},
+      output: {},
+      construction: { Battleship: 150, Rocket: 150 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "Great_Ocean_Road",
+   };
+
+   GreatBarrierReef: IBuildingDefinition = {
+      name: () => t(L.GreatBarrierReef),
+      desc: () => t(L.GreatBarrierReefDesc),
+      input: {},
+      output: {},
+      construction: {},
+      max: 0,
+      special: BuildingSpecial.NaturalWonder,
+      wikipedia: "Great_Barrier_Reef",
+   };
+
+   Uluru: IBuildingDefinition = {
+      name: () => t(L.Uluru),
+      desc: () => t(L.UluruDesc),
+      input: {},
+      output: {},
+      construction: {},
+      max: 0,
+      special: BuildingSpecial.NaturalWonder,
+      wikipedia: "Uluru",
+   };
+
+   LakeBaikal: IBuildingDefinition = {
+      name: () => t(L.LakeBaikal),
+      desc: () => t(L.LakeBaikalDesc),
+      input: {},
+      output: {},
+      construction: {},
+      max: 0,
+      special: BuildingSpecial.NaturalWonder,
+      wikipedia: "Lake_Baikal",
+   };
+
+   KizhiPogost: IBuildingDefinition = {
+      name: () => t(L.KizhiPogost),
+      desc: () => t(L.KizhiPogostDescV2),
+      input: {},
+      output: {},
+      construction: { Bond: 100, Law: 100, Frigate: 100 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "Kizhi_Pogost",
+   };
+
+   Hermitage: IBuildingDefinition = {
+      name: () => t(L.Hermitage),
+      desc: () => t(L.HermitageDesc),
+      input: {},
+      output: {},
+      construction: { Politics: 150, Newspaper: 150 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "Hermitage_Museum",
+   };
+
+   Sputnik1: IBuildingDefinition = {
+      name: () => t(L.Sputnik1),
+      desc: () => t(L.Sputnik1DescV3),
+      input: {},
+      output: {},
+      construction: { Satellite: 500 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "Sputnik_1",
+   };
+
+   AkademikLomonosov: IBuildingDefinition = {
+      name: () => t(L.AkademikLomonosov),
+      desc: () => t(L.AkademikLomonosovDescV2),
+      input: {},
+      output: {},
+      construction: { Spacecraft: 500 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "Akademik_Lomonosov",
+   };
+
+   AuroraBorealis: IBuildingDefinition = {
+      name: () => t(L.AuroraBorealis),
+      desc: () => t(L.AuroraBorealisDesc),
+      input: {},
+      output: {},
+      construction: {},
+      max: 0,
+      special: BuildingSpecial.NaturalWonder,
+      wikipedia: "Aurora_Borealis",
+   };
+
+   LakeLouise: IBuildingDefinition = {
+      name: () => t(L.LakeLouise),
+      desc: () => t(L.LakeLouiseDesc),
+      input: {},
+      output: {},
+      construction: {},
+      max: 0,
+      special: BuildingSpecial.NaturalWonder,
+      wikipedia: "Lake_Louise_(Alberta)",
+   };
+
+   DinosaurProvincialPark: IBuildingDefinition = {
+      name: () => t(L.DinosaurProvincialPark),
+      desc: () => t(L.DinosaurProvincialParkDesc, { percent: formatPercent(DinosaurProvincialParkPercent) }),
+      input: {},
+      output: {},
+      construction: {},
+      max: 0,
+      special: BuildingSpecial.NaturalWonder,
+      wikipedia: "Dinosaur_Provincial_Park",
+   };
+
+   ChateauFrontenac: IBuildingDefinition = {
+      name: () => t(L.ChateauFrontenac),
+      desc: () => t(L.ChateauFrontenacDesc),
+      input: {},
+      output: {},
+      construction: { Tank: 100, Ironclad: 100, Train: 100 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "Chateau_Frontenac",
+   };
+
+   Habitat67: IBuildingDefinition = {
+      name: () => t(L.Habitat67),
+      desc: () => t(L.Habitat67DescV2),
+      input: {},
+      output: {},
+      construction: { Bitcoin: 500 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "Habitat_67",
+   };
+
+   WorldTradeOrganization: IBuildingDefinition = {
+      name: () => t(L.WorldTradeOrganization),
+      desc: () => t(L.WorldTradeOrganizationDesc),
+      input: {},
+      output: {},
+      construction: { MutualFund: 100, Koti: 100, TV: 100 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "World_Trade_Organization",
+   };
+
    // #endregion /////////////////////////////////////////////////////////////////////////////////////////////
 
    // Winery: IBuildingDefinition = {
@@ -2586,11 +2796,73 @@ export const BuildingShowLevel = new Set<Building>([
    "QutbMinar",
    "UnitedNations",
    "PortOfSingapore",
+   "SydneyOperaHouse",
+   "SydneyHarbourBridge",
+   "GreatOceanRoad",
+   "Hermitage",
+   "Sputnik1",
+   "AkademikLomonosov",
+   "ChateauFrontenac",
+   "Habitat67",
+   "WorldTradeOrganization",
 ] satisfies Building[]);
 
+// Added by Lydia
 export const BuildingIsCaravan = new Set<Building>([
    "Caravansary",
    "Caravansary2",
    "Caravansary3",
    "Caravansary4",
 ] satisfies Building[]);
+
+
+// This controls whether we allow upgrade for multiple levels. e.g. Tradition/Religion/Ideology wonders should NOT allow this!
+export const UpgradableWorldWonders = new Set<Building>([
+   // Added by Lydia
+   "NuclearArmsRace",
+   "Retreat2",
+   "VanGoghMuseum",
+   "InternationalCriminalCourt",
+   "KotiRepository",
+   "NuclearWasteRepository",
+
+   "InternationalSpaceStation",
+   "MarinaBaySands",
+   "PalmJumeirah",
+   "AldersonDisk",
+   "DysonSphere",
+   "MatrioshkaBrain",
+   "LargeHadronCollider",
+   "CologneCathedral",
+   "SantaClausVillage",
+   "YearOfTheSnake",
+   "SwissBank",
+   "ItaipuDam",
+   "UnitedNations",
+   "RedFort",
+   "QutbMinar",
+   "PortOfSingapore",
+   "SydneyOperaHouse",
+   "SydneyHarbourBridge",
+   "GreatOceanRoad",
+   "Hermitage",
+   "Sputnik1",
+   "AkademikLomonosov",
+   "ChateauFrontenac",
+   "Habitat67",
+   "WorldTradeOrganization",
+] satisfies Building[]);
+
+// Include buildings here that does not really cost construction resources to upgrade
+export const IgnoreBuildingUpgradeValue = new Set<Building>([
+   "Petra",
+   "EastIndiaCompany",
+   "BranCastle",
+] satisfies Building[]);
+
+// The base of the exponential cost. Default is 1.5
+export const WonderCostBase: Partial<Record<Building, number>> = {
+   SydneyOperaHouse: 5,
+   GreatOceanRoad: 1.7,
+   WorldTradeOrganization: 2,
+};

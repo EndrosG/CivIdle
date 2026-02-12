@@ -70,7 +70,7 @@ export function calculateHappiness(gs: GameState) {
       if (isWorldWonder(building.type)) {
          ++fromWonders;
       }
-      if (isNaturalWonder(building.type) && gs.tiles.get(xy)!.explored) {
+      if (isNaturalWonder(building.type) && gs.tiles.get(xy)?.explored) {
          ++fromWonders;
       }
    });

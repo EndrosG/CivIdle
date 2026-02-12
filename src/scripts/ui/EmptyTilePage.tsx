@@ -1,5 +1,5 @@
 import Tippy from "@tippyjs/react";
-import { useCallback, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import type { Building, IBuildingDefinition } from "../../../shared/definitions/BuildingDefinitions";
 import {
    applyBuildingDefaults,
@@ -165,8 +165,8 @@ export function EmptyTilePage({ tile }: { tile: ITileData }): React.ReactNode {
       return (
          filter &&
          (Config.Building[v].name().toLowerCase().includes(s) ||
-            anyOf(Config.Building[v].input, (res) => Config.Resource[res].name().toLowerCase().includes(s)) ||
-            anyOf(Config.Building[v].output, (res) => Config.Resource[res].name().toLowerCase().includes(s)))
+            anyOf(Config.Building[v].input, (res) => Config.Material[res].name().toLowerCase().includes(s)) ||
+            anyOf(Config.Building[v].output, (res) => Config.Material[res].name().toLowerCase().includes(s)))
       );
    });
 
@@ -186,48 +186,14 @@ export function EmptyTilePage({ tile }: { tile: ITileData }): React.ReactNode {
                   })
                   .map((b) => {
                      return (
-                        <Tippy
+                        <BuildingGridItem
                            key={b}
-                           content={
-                              <>
-                                 {buildRange > 0 ? (
-                                    <div className="text-strong">
-                                       {t(L.XBuildingsWillBeBuilt, { count: buildCount })}
-                                    </div>
-                                 ) : null}
-                                 <BuildingInfoComponent building={b} />
-                              </>
-                           }
-                        >
-                           <div
-                              className="building-grid-item"
-                              onClick={() => {
-                                 build(b);
-                              }}
-                              onMouseOver={() => onMouseOver(b)}
-                              onMouseLeave={() => onMouseLeave(b)}
-                           >
-                              <div style={{ width: 50, height: 50 }} className="row cc">
-                                 <BuildingSpriteComponent
-                                    building={b}
-                                    scale={0.5}
-                                    style={{ filter: "invert(0.75)" }}
-                                 />
-                              </div>
-                              <div
-                                 className="text-strong"
-                                 style={{
-                                    width: "100%",
-                                    overflow: "hidden",
-                                    textOverflow: "ellipsis",
-                                    whiteSpace: "nowrap",
-                                    textAlign: "center",
-                                 }}
-                              >
-                                 {Config.Building[b].name()}
-                              </div>
-                           </div>
-                        </Tippy>
+                           building={b}
+                           buildCount={buildCount}
+                           onClick={build}
+                           onMouseOver={onMouseOver}
+                           onMouseLeave={onMouseLeave}
+                        />
                      );
                   })}
             </div>
@@ -359,7 +325,7 @@ export function EmptyTilePage({ tile }: { tile: ITileData }): React.ReactNode {
                               <div>
                                  {jsxMapOf(building.input, (res, amount) => (
                                     <span key={res} className="mr5">
-                                       {Config.Resource[res].name()} x{formatNumber(amount)}
+                                       {Config.Material[res].name()} x{formatNumber(amount)}
                                     </span>
                                  ))}
                               </div>
@@ -371,7 +337,7 @@ export function EmptyTilePage({ tile }: { tile: ITileData }): React.ReactNode {
                               <div>
                                  {jsxMapOf(building.output, (res, amount) => (
                                     <span key={res} className="mr5">
-                                       {Config.Resource[res].name()} x{formatNumber(amount)}
+                                       {Config.Material[res].name()} x{formatNumber(amount)}
                                     </span>
                                  ))}
                               </div>
@@ -428,7 +394,7 @@ export function EmptyTilePage({ tile }: { tile: ITileData }): React.ReactNode {
                                  ?.drawSelection(tileToPoint(tile.tile), result);
                            }}
                         >
-                           {Config.Resource[k].name()}
+                           {Config.Material[k].name()}
                         </button>
                      );
                   })}
@@ -590,3 +556,63 @@ function BuildingInfoComponent({ building }: { building: Building }): React.Reac
       </>
    );
 }
+
+function _BuildingGridItem({
+   building,
+   buildCount,
+   onClick,
+   onMouseOver,
+   onMouseLeave,
+}: {
+   building: Building;
+   buildCount: number;
+   onClick: (b: Building) => void;
+   onMouseOver: (b: Building) => void;
+   onMouseLeave: (b: Building) => void;
+}): React.ReactNode {
+   return (
+      <Tippy
+         content={
+            <>
+               {buildCount > 0 ? (
+                  <div className="text-strong">{t(L.XBuildingsWillBeBuilt, { count: buildCount })}</div>
+               ) : null}
+               <BuildingInfoComponent building={building} />
+            </>
+         }
+      >
+         <div
+            className="building-grid-item"
+            onClick={onClick.bind(null, building)}
+            onMouseOver={onMouseOver.bind(null, building)}
+            onMouseLeave={onMouseLeave.bind(null, building)}
+         >
+            <div style={{ width: 50, height: 50 }} className="row cc">
+               <BuildingSpriteComponent building={building} scale={0.5} style={{ filter: "invert(0.75)" }} />
+            </div>
+            <div
+               className="text-strong"
+               style={{
+                  width: "100%",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  textAlign: "center",
+               }}
+            >
+               {Config.Building[building].name()}
+            </div>
+         </div>
+      </Tippy>
+   );
+}
+
+const BuildingGridItem = memo(_BuildingGridItem, (prev, next) => {
+   return (
+      prev.building === next.building &&
+      prev.buildCount === next.buildCount &&
+      prev.onClick === next.onClick &&
+      prev.onMouseOver === next.onMouseOver &&
+      prev.onMouseLeave === next.onMouseLeave
+   );
+});

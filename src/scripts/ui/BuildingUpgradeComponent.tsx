@@ -1,6 +1,6 @@
 import Tippy from "@tippyjs/react";
 import { Fragment, useEffect, useState } from "react";
-import type { Resource } from "../../../shared/definitions/ResourceDefinitions";
+import type { Material } from "../../../shared/definitions/MaterialDefinitions";
 import {
    getDowngradeTargetLevels,
    getStackingTargetLevels,
@@ -135,7 +135,7 @@ export function BuildingUpgradeComponent({ gameState, xy }: IBuildingComponentPr
    };
 
    const buildCost = (idx: number, level: number) => {
-      const resCost: PartialTabulate<Resource> = {};
+      const resCost: PartialTabulate<Material> = {};
 
       selected.forEach((xy) => {
          const b = gameState.tiles.get(xy)?.building;
@@ -161,7 +161,7 @@ export function BuildingUpgradeComponent({ gameState, xy }: IBuildingComponentPr
                            (Tick.current.resourceAmount.get(item) ?? 0) < resCost[item]! ? "text-red" : ""
                         }
                      >
-                        {Config.Resource[item].name()} {formatNumber(resCost[item])}
+                        {Config.Material[item].name()} {formatNumber(resCost[item])}
                      </span>
                   </Fragment>
                );
@@ -179,7 +179,7 @@ export function BuildingUpgradeComponent({ gameState, xy }: IBuildingComponentPr
       );
    };
    const stackCost = (idx: number, stack: number) => {
-      const resCost: PartialTabulate<Resource> = {};
+      const resCost: PartialTabulate<Material> = {};
       selected.forEach((xy) => {
          const b = gameState.tiles.get(xy)?.building;
          if (!b) return;
@@ -213,7 +213,7 @@ export function BuildingUpgradeComponent({ gameState, xy }: IBuildingComponentPr
                            (Tick.current.resourceAmount.get(item) ?? 0) < resCost[item]! ? "text-red" : ""
                         }
                      >
-                        {Config.Resource[item].name()} {formatNumber(resCost[item])}
+                        {Config.Material[item].name()} {formatNumber(resCost[item])}
                      </span>
                   </Fragment>
                );
@@ -412,7 +412,7 @@ export function BuildingUpgradeComponent({ gameState, xy }: IBuildingComponentPr
                   disabled={moving || (theMet.building.resources.Teleport ?? 0) <= 0}
                   onClick={async () => {
                      playClick();
-                     showToast(t(L.MoveBuildingSelectTileToastHTML), 10000000);
+                     showToast(t(L.MoveBuildingSelectTileToastHTML), Number.POSITIVE_INFINITY);
                      setMoving(true);
                      const point = await Singleton().sceneManager.getCurrent(WorldScene)?.hijackSelectGrid();
                      hideToast();

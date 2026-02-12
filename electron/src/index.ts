@@ -29,9 +29,6 @@ export function getLocalGameSavePath(): string {
 export const MIN_WIDTH = 1136;
 export const MIN_HEIGHT = 640;
 
-const disableFloatingMode = !app.isPackaged || process.argv.includes("--disable-floating-mode");
-// const enableDevTools = process.argv.includes("--enable-dev-tools");
-
 const createWindow = async () => {
    try {
       const steam = init();
@@ -44,9 +41,7 @@ const createWindow = async () => {
          minHeight: MIN_HEIGHT,
          minWidth: MIN_WIDTH,
          show: false,
-         frame: disableFloatingMode,
          roundedCorners: false,
-         thickFrame: disableFloatingMode,
          backgroundColor: "#000000",
       });
 
@@ -88,7 +83,18 @@ const createWindow = async () => {
 
       mainWindow.on("close", (e) => {
          e.preventDefault();
-         mainWindow.webContents.send("close");
+         dialog
+            .showMessageBox({
+               type: "info",
+               title: "Exit CivIdle",
+               message: "Are you sure you want to exit CivIdle?",
+               buttons: ["Yes", "No"],
+            })
+            .then((result) => {
+               if (result.response === 0) {
+                  mainWindow.webContents.send("close");
+               }
+            });
       });
 
       const service = new IPCService(steam, mainWindow, checksum);
