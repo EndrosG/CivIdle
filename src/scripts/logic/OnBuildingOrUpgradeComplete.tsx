@@ -67,11 +67,16 @@ export function onBuildingOrUpgradeComplete(xy: Tile): void {
          if (!chateauFrontenac.buildings) {
             chateauFrontenac.buildings = {};
          }
-         const techAge = getCurrentAge(gs);
+         // Modified by Lydia
+         // const techAge = getCurrentAge(gs);
+         let myage = getCurrentAge(gs);
+         if (Config.TechAge[myage].hidden === true) {
+            myage = "InformationAge";
+         }
          const candidates = entriesOf(Config.BuildingTechAge)
             .filter(([building, age]) => {
                return (
-                  age === techAge &&
+                  age === myage &&
                   !isSpecialBuilding(building) &&
                   (!Config.BuildingCity[building] || Config.BuildingCity[building] === gs.city)
                );

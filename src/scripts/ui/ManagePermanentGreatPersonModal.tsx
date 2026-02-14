@@ -387,6 +387,25 @@ function GreatPersonWildcardRow({ greatPerson }: { greatPerson: GreatPerson }): 
             >
                {t(L.GreatPersonWildCardBirth)}
             </button>
+            <button
+               disabled={!permanent || permanent.amount < 100}
+               className="w100 text-strong"
+               onClick={() => {
+                  if (Config.GreatPerson[choice].type === GreatPersonType.Wildcard) {
+                     playError();
+                     return;
+                  }
+                  if (permanent && permanent.amount >= 100) {
+                     permanent.amount -= 100;
+                     addPermanentGreatPerson(choice, 100);
+                     playUpgrade();
+                     notifyGameOptionsUpdate();
+                     return;
+                  }
+               }}
+            >
+               {t(L.GreatPersonWildCardBirth)} +100
+            </button>
          </td>
          <td>
             <Tippy content={t(L.AgeWisdomNotEligible)}>

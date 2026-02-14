@@ -1,4 +1,4 @@
-import { BuildingIsCaravan, type Building } from "../../../shared/definitions/BuildingDefinitions";
+import { BuildingIsCaravan, BuildingIsTrading, type Building } from "../../../shared/definitions/BuildingDefinitions";
 import { GreatPersonTickFlag, type GreatPerson } from "../../../shared/definitions/GreatPersonDefinitions";
 import {
    IOFlags,
@@ -885,7 +885,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          if (Date.now() - lastVotedBoostUpdatedAt > MINUTE) {
             lastVotedBoostUpdatedAt = Date.now();
             if (votedBoost === null || getWeekId() !== votedBoost.id) {
-               client.getVotedBoosts().then((resp:IGetVotedBoostResponse | null) => {
+               client.getVotedBoosts().then((resp: IGetVotedBoostResponse | null) => {
                   votedBoost = resp;
                });
             }
@@ -1063,7 +1063,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "ApolloProgram": {
-         addMultiplier("RocketFactory", { output: 2 * buildingLevelStack, worker: 2 * buildingLevelStack, storage: 2 * buildingLevelStack}, buildingName);
+         addMultiplier("RocketFactory", { output: 2 * buildingLevelStack, worker: 2 * buildingLevelStack, storage: 2 * buildingLevelStack }, buildingName);
          const tick = (tile: Required<ITileData>, xy: Tile) => {
             if (!tile.building) return;
             let adjacent = 0;
@@ -1243,14 +1243,9 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          // natural wonder: cannot be upgraded
          const currentAge = getCurrentAge(gs);
          const count = Config.TechAge[currentAge].idx + 1;
-         addMultiplier("Warehouse", { storage: count }, buildingName);
-         addMultiplier("Warehouse2", { storage: count }, buildingName);
-         addMultiplier("Warehouse3", { storage: count }, buildingName);
-         addMultiplier("Market", { storage: count }, buildingName);
-         addMultiplier("Caravansary", { storage: count }, buildingName);
-         addMultiplier("Caravansary2", { storage: count }, buildingName);
-         addMultiplier("Caravansary3", { storage: count }, buildingName);
-         addMultiplier("Caravansary4", { storage: count }, buildingName);
+         for (const btype of BuildingIsTrading) {
+            addMultiplier(btype, { storage: count }, buildingName);
+         }
          const total =
             getGreatPersonTotalLevel("AlbertEinstein", gs, options) +
             (options.ageWisdom[Config.GreatPerson.AlbertEinstein.age] ?? 0);
@@ -1754,7 +1749,8 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                const greatPerson = Config.GreatPerson[gp];
                greatPerson.tick(
                   gp,
-                  1,
+                  // Modified by Lydia
+                  buildingLevelStack,
                   t(L.CambridgeUniversitySource, { age: Config.TechAge[age].name() }),
                   GreatPersonTickFlag.None,
                );
@@ -1794,18 +1790,23 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "EastIndiaCompany": {
          if ((building.resources.TradeValue ?? 0) > EAST_INDIA_COMPANY_BOOST_PER_EV) {
             safeAdd(building.resources, "TradeValue", -EAST_INDIA_COMPANY_BOOST_PER_EV);
+            let caraRange = 1;
+            // Modified by Lydia with respect to multiple caravansary building types
             for (const cara of BuildingIsCaravan) {
+               caraRange = Config.Building[cara].range ?? 1;
                getBuildingsByType(cara, gs)?.forEach((tile, xy) => {
                   if (!getWorkingBuilding(xy, gs)) {
                      return;
                   }
-                  grid.getNeighbors(tileToPoint(xy)).forEach((p) => {
-                     mapSafePush(Tick.next.tileMultipliers, pointToTile(p), {
+                  // Modified by Lydia with respect to caravans range
+                  // grid.getNeighbors(tileToPoint(xy)).forEach((p) => {
+                  for (const point of grid.getRange(tileToPoint(xy), caraRange)) {
+                     mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {
                         output: isFestival("EastIndiaCompany", gs) ? building.level : 0.5 * building.level,
                         source: buildingName,
                         unstable: true,
                      });
-                  });
+                  }
                });
             }
          }
@@ -2183,9 +2184,12 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "PortOfSingapore": {
-         addMultiplier("Warehouse", { output: building.level, storage: building.level }, buildingName);
-         addMultiplier("Caravansary", { output: building.level, storage: building.level }, buildingName);
-         addMultiplier("Market", { output: building.level, storage: building.level }, buildingName);
+         // addMultiplier("Warehouse", { output: building.level, storage: building.level }, buildingName);
+         // addMultiplier("Caravansary", { output: building.level, storage: building.level }, buildingName);
+         // addMultiplier("Market", { output: building.level, storage: building.level }, buildingName);
+         for (const btype of BuildingIsTrading) {
+            addMultiplier(btype, OSmulti, buildingName);
+         }
          break;
       }
       case "SydneyHarbourBridge": {
@@ -2246,7 +2250,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "KizhiPogost": {
-         const range = isFestival(building.type, gs) ? 6 : 3;
+         const range = (isFestival(building.type, gs) ? 6 : 3) + Math.floor(buildingLevelStack / 10);
          const multiplier = totalMultiplierFor(xy, "output", 0, false, gs);
          for (const point of grid.getRange(tileToPoint(xy), range)) {
             const targetXy = pointToTile(point);

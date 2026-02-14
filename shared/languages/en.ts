@@ -18,7 +18,7 @@ export const EN = {
    JanMarsalek: "Jan Marsalek",
    MarkusBraun: "Markus Braun",
    NuclearArmsRace: "Nuclear Arms Race",
-   NuclearArmsRaceDesc: "All Cold War Age great people get +1 level for this run. This wonder can be upgraded and each additional upgrade provides +0.5 level to all Information Age great people for this run",
+   NuclearArmsRaceDesc: "All Cold War Age great people get +1 level for this run. This wonder can be upgraded and each additional upgrade provides +0.5 level to all Cold War Age great people for this run",
 
    Caravansary2: "Caravansary 2.0",
    Caravansary3: "Caravansary 3.0",

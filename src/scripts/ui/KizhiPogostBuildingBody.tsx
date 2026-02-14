@@ -3,6 +3,7 @@ import { L, t } from "../../../shared/utilities/i18n";
 import { BuildingColorComponent } from "./BuildingColorComponent";
 import { BuildingDescriptionComponent } from "./BuildingDescriptionComponent";
 import type { IBuildingComponentProps } from "./BuildingPage";
+import { BuildingUpgradeComponent } from "./BuildingUpgradeComponent";
 import { BuildingValueComponent } from "./BuildingValueComponent";
 import { BuildingWikipediaComponent } from "./BuildingWikipediaComponent";
 
@@ -30,6 +31,7 @@ export function KizhiPogostBuildingBody({ gameState, xy }: IBuildingComponentPro
             </ul>
          </fieldset>
          <BuildingDescriptionComponent gameState={gameState} xy={xy} />
+         <BuildingUpgradeComponent gameState={gameState} xy={xy} key={xy} />
          <BuildingValueComponent gameState={gameState} xy={xy} />
          <BuildingWikipediaComponent gameState={gameState} xy={xy} />
          <BuildingColorComponent gameState={gameState} xy={xy} />

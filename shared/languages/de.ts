@@ -18,7 +18,7 @@ export const DE = {
    JanMarsalek: "Jan Marsalek",
    MarkusBraun: "Markus Braun",
    NuclearArmsRace: "Atomares Wettrüsten",
-   NuclearArmsRaceDesc: "Alle herausragenden Persönlichkeiten des Kalten Krieges erhalten für diesen Lauf +1 Level. Dieses Wunder kann verbessert werden und jede zusätzliche Verbesserung verleiht allen herausragenden Persönlichkeiten des Informationszeitalters für diesen Lauf +0.5 Level.",
+   NuclearArmsRaceDesc: "Alle herausragenden Persönlichkeiten des Kalten Krieges erhalten für diesen Lauf +1 Level. Dieses Wunder kann verbessert werden und jede zusätzliche Verbesserung verleiht allen herausragenden Persönlichkeiten des Kalten Krieges für diesen Lauf +0.5 Level.",
 
    Caravansary2: "Karawanserei 2.0",
    Caravansary3: "Karawanserei 3.0",

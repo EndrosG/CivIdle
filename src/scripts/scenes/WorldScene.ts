@@ -20,7 +20,7 @@ import {
    isFestival,
 } from "../../../shared/logic/BuildingLogic";
 import { Config } from "../../../shared/logic/Config";
-import { MANAGED_IMPORT_RANGE } from "../../../shared/logic/Constants";
+import { GLOBAL_PARAMS, MANAGED_IMPORT_RANGE } from "../../../shared/logic/Constants";
 import { GameFeature, hasFeature } from "../../../shared/logic/FeatureLogic";
 import {
    DarkTileTextures,
@@ -525,7 +525,7 @@ export class WorldScene extends Scene {
                break;
             }
             case "KizhiPogost": {
-               this.highlightRange(grid, isFestival(building.type, gs) ? 6 : 3);
+               this.highlightRange(grid, isFestival(building.type, gs) ? 6 : 3 + Math.floor(building.level * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) / 10));
                break;
             }
             case "LakeBaikal": {
