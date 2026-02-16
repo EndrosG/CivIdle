@@ -30,6 +30,7 @@ import type {
    IBuildingData,
    ICloneBuildingData,
    IMarketBuildingData,
+   IRecyclingBuildingData,
    IResourceImportBuildingData,
    ITileData,
 } from "./Tile";
@@ -108,6 +109,52 @@ export function getBuildingIO(
             });
          }
       }
+
+      // Added by Lydia
+      if ("recycleInput" in b) {
+         const recPlant = b as IRecyclingBuildingData;
+         if (NoStorage[recPlant.recycleInput] || NoPrice[recPlant.recycleInput] || recPlant.recycleInput === "Koti") {
+            recPlant.recycleInput = "TV";
+         }
+         if (NoStorage[recPlant.recycleOutput] || NoPrice[recPlant.recycleOutput] || recPlant.recycleOutput === "Koti") {
+            recPlant.recycleOutput = "Copper";
+         }
+
+         let recyclingValue = 0;
+         let recyclingQuota = 0.5;
+         switch (b.type) {
+            case "RecyclingPlant":
+               recyclingValue = 1e+5;     // 100k because 500k was still a lot, initially 1m
+               recyclingQuota = 0.8;
+               break;
+            case "RecyclingPlantWo":
+               recyclingValue = 1e+7;     // initially 10m EV as with Koti
+               recyclingQuota = 0.9;
+               break;
+         }
+         // Recycling (abwärts) über mehrere Ebenen der Wertschöpfungskette ist etwas weniger effizient, weil die Wertschöpfungskette so stark ist
+         if ((Config.MaterialTier[recPlant.recycleInput] ?? 5) - (Config.MaterialTier[recPlant.recycleOutput] ?? 1) >= 3) {
+            recyclingQuota -= ((Config.MaterialTier[recPlant.recycleInput] ?? 5) - (Config.MaterialTier[recPlant.recycleOutput] ?? 1)) / 20;
+            if (recyclingQuota < 0.1) {
+               recyclingQuota = 0.1;
+            }
+         }
+         // Recycling ist nur abwärts effizient, nicht aufwärts - aufwärts wird normal produziert
+         if ((Config.MaterialTier[recPlant.recycleOutput] ?? 5) >= (Config.MaterialTier[recPlant.recycleInput] ?? 0)) {
+            recyclingQuota -= (2 + (Config.MaterialTier[recPlant.recycleOutput] ?? 5) - (Config.MaterialTier[recPlant.recycleInput] ?? 0)) / 10;
+            if (recyclingQuota < 0.05) {
+               recyclingQuota = 0.05;
+            }
+         }
+
+         if (type === "input") {
+            resources[recPlant.recycleInput] = recyclingValue / (Config.MaterialPrice[recPlant.recycleInput] ?? 1);
+         }
+         if (type === "output") {
+            resources[recPlant.recycleOutput] = recyclingValue * recyclingQuota / (Config.MaterialPrice[recPlant.recycleOutput] ?? 1) / (Config.MaterialMultiplier[recPlant.recycleInput] ?? 1);
+         }
+      }
+
       if ("resourceImports" in b && type === "input") {
          const configBT = Config.Building[b.type];
          const totalCapacity = getResourceImportCapacity(
@@ -179,7 +226,8 @@ export function getBuildingIO(
          }
          if (hasFlag(options, IOFlags.Multiplier)) {
             const stableOnly = hasFlag(options, IOFlags.StableOnly);
-            if (b.type === "Market") {
+            if (b.type === "Market" || b.type.match("Recycling")) {
+               // Markets and RecyclingPlants use (need) multipliers for input and output!
                value *= totalMultiplierFor(xy, "output", 1, stableOnly, gs);
             } else if (type === "output" && (b.type === "CloneFactory" || b.type === "CloneLab")) {
                value = value * 0.5 + value * 0.5 * totalMultiplierFor(xy, "output", 1, stableOnly, gs);

@@ -371,7 +371,7 @@ export const TradeTileReservationDays: Record<AccountLevel, number> = {
 };
 
 export const ChatMaxChars: Record<AccountLevel, number> = {
-   [AccountLevel.Tribune]: 200,
+   [AccountLevel.Tribune]: 1200,    // Modified by Lydia for DEVENV
    [AccountLevel.Quaestor]: 800,
    [AccountLevel.Aedile]: 800,
    [AccountLevel.Praetor]: 800,

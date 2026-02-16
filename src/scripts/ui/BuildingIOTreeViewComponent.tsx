@@ -46,6 +46,9 @@ export function BuildingIOTreeViewComponent({
                const clone = building as ICloneBuildingData;
                baseValue = type === "input" ? 1 : getCloneLabScienceOutput(clone) / 2;
             }
+            if (building && "recycleInput" in building && buildingType?.match("Recycling")) {
+               baseValue = 1;
+            }
             return (
                <li key={k}>
                   <details>
@@ -98,11 +101,11 @@ export function BuildingIOTreeViewComponent({
                            ) : null}
                            {levelBoost && levelBoost.length > 0
                               ? levelBoost.map((lb, idx) => (
-                                   <li key={idx} className="row">
-                                      <div className="f1">{lb.source}</div>
-                                      <FormatNumber value={lb.value} />
-                                   </li>
-                                ))
+                                 <li key={idx} className="row">
+                                    <div className="f1">{lb.source}</div>
+                                    <FormatNumber value={lb.value} />
+                                 </li>
+                              ))
                               : null}
                         </ul>
                         {type === "output" ? (

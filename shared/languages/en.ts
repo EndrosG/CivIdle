@@ -82,6 +82,11 @@ export const EN = {
    WindTurbineDesc: "The first electricity-generating wind turbine was installed by the Austrian Josef Friedländer at the Vienna International Electrical Exhibition in 1883. It was a Halladay windmill for driving a dynamo. Friedländer's 6.6 m (22 ft) diameter Halladay 'wind motor' was supplied by U.S. Wind Engine & Pump Co. of Batavia, Illinois. The 3.7 kW (5 hp) windmill drove a dynamo at ground level that fed electricity into a series of batteries. The batteries powered various electrical tools and lamps, as well as a threshing machine.",
    WindPark: "Wind Farm",
    EnvironmentalMovement: "Environmental Movement",
+   Recycling: "Recycling",
+   RecyclingPlant: "Recycling Plant",
+   RecyclingPlantDesc: "In der Recycling-Anlage können Rohstoffe zurückgewonnen werden. Die Verarbeitungskapazität beträgt 100K EV pro Zyklus (bis zu 80% Wirkungsgrad), sämtliche Multiplikatoren (Gebäudestufe, Elektrifizierung, Produktion) werden angewendet.",
+   LargeScaleRecyclingPlant: "Large-scale Recycling Plant",
+   LargeScaleRecyclingPlantDesc: "In der großen Recycling-Anlage können Rohstoffe zurückgewonnen werden. Die Verarbeitungskapazität beträgt 10M EV pro Zyklus (bis zu 90% Wirkungsgrad), sämtliche Multiplikatoren (Gebäudestufe, Elektrifizierung, Produktion) werden angewendet.",
 
    // Lydia: more culture
    HuldrychZwingli: "Huldrych Zwingli",
@@ -96,9 +101,9 @@ export const EN = {
    SmartphoneFactory: "Smartphone Factory",
 
    // Lydia: Future GP
-   Beatrice2022: "Beatrice Troeger",
+   Beatrice2022: "Beatrice", // Troeger",
    HappyFamily: "We are family!",
-   Lydia2017: "Lydia Troeger",
+   Lydia2017: "Lydia", // Troeger",
    // Beatrice2022Desc: "A cute soft toy",
    HappyFamilyDesc: "+%{value} Happiness",
    // Lydia2017Desc: "A female IT nerd",
@@ -109,7 +114,7 @@ export const EN = {
    LyaNox: "Lya (Nox)",
    SevenOfNine: "Seven of Nine",
    BorgQueen: "Borg Queen",
-   Asgard: "Asgard",
+   Asgard: "Thor (Asgard)",
 
    BorgQueenDesc: "+%{value} Builder Capacity Multiplier",
    MerlinDesc: "+%{value} Builder Capacity Multiplier",
@@ -117,6 +122,59 @@ export const EN = {
    // OmaDesalaDesc: "Oma Desala from Stargate",
    // LyaNoxDesc: "Lya, a Nox from Stargate",
    // SevenOfNineDesc: "Seven of Nine from Star Trek",
+
+   // Lydia: more military stuff
+   RocketryII: "Rocketry 2.0",
+   ModernTactics: "Modern Tactics",
+   ModernWarfare: "Modern Warfare",
+   StealthTechnology: "Stealth Technology",
+
+   InterceptorMissile: "Interceptor Missile",
+   GuidedMissile: "Guided Missile",
+   CruiseMissile: "Cruise Missile",
+   Drone: "Drone",
+   CombatDrone: "Combat Drone",
+   InterceptorMissileFactory: "Interceptor Missile Factory",
+   GuidedMissileFactory: "Guided Missile Factory",
+   CruiseMissileFactory: "Cruise Missile Factory",
+   DroneFactory: "Drone Factory",
+   CombatDroneFactory: "Combat Drone Factory",
+
+   IronDome: "Iron Dome",
+   IronDomeDesc: "(TBD)",
+   Israel: "Israel",
+   Ukraine: "Ukraine",
+   MariinskyiPalace: "Mariinskyi Palace",
+   // Alloy: "Alloy",
+   CompositeMaterial: "Composite Material",
+   AlloyFactory: "Alloy Factory",
+   CompositeMaterialFactory: "Composite Material Factory",
+
+   ModernFighter: "Modern Fighter Jet",
+   StealthFighter: "Stealth Fighter",
+   StealthBomber: "Stealth Bomber",
+   ModernAircraftCarrier: "ModernAircraftCarrier",
+   ModernBattleship: "ModernBattleship",
+   ModernFighterFactory: "Modern Fighter Jet Factory",
+   StealthFighterFactory: "Stealth Fighter Factory",
+   StealthBomberFactory: "Stealth Bomber Factory",
+   ModernAircraftCarrierYard: "Modern Aircraft Carrier Yard",
+   ModernBattleshipYard: "Modern Battleship Yard",
+
+   CryptoStorage: "Crypto Storage",
+   CryptoRepository: "Crypto Repository",
+
+   // Lydia: corruption and resilien
+   Corruption: "Corruption",
+   InvestigativeJournalism: "Investigative Journalism",
+   OrganisedCrime: "Organised Crime",
+   Mafia: "Mafia",
+   Mythologisation: "Mythologisation",
+   Propaganda: "Propaganda",
+   Lobbyism: "Lobbyism",
+   CoverUp: "Cover Up",
+   Desinformation: "Desinformation",
+
 
    // CivIdle Standard
    About: "About CivIdle",

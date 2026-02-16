@@ -242,6 +242,11 @@ export function transportAndConsumeResources(
       clearTransportSourceCache();
    }
 
+   // Added by Lydia
+   if (!building.stack) {
+      building.stack = 1;
+      building.desiredStack = 1;
+   }
    // Modified by Lydia
    if (building.status === "completed") {
       if (building.desiredLevel > building.level) {
@@ -252,24 +257,25 @@ export function transportAndConsumeResources(
          building.desiredLevel > 0
       ) {
          building.status = "downgrading";
+      } else if (
+         GLOBAL_PARAMS.USE_STACKING &&
+         building.status === "completed" &&
+         building.desiredStack > building.stack
+      ) {
+         if (building.level === 0) {
+            building.stack = building.desiredStack;
+         } else {
+            building.status = "stacking";
+         }
+      } else if (
+         GLOBAL_PARAMS.USE_STACKING &&
+         building.desiredStack < building.stack &&
+         building.desiredStack >= building.stack - 5 &&
+         building.desiredStack > 0
+      ) {
+         building.status = "downstacking";
       } else {
          building.desiredLevel = building.level;
-      }
-   }
-   // Added by Lydia
-   if (!building.stack) {
-      building.stack = 1;
-      building.desiredStack = 1;
-   }
-   if (
-      GLOBAL_PARAMS.USE_STACKING &&
-      building.status === "completed" &&
-      building.desiredStack > building.stack
-   ) {
-      if (building.level === 0) {
-         building.stack = building.desiredStack;
-      } else {
-         building.status = "stacking";
       }
    }
 
@@ -355,7 +361,8 @@ export function transportAndConsumeResources(
       (building.status === "completed" ||
          building.status === "upgrading" ||
          building.status === "downgrading" ||
-         building.status === "stacking") &&
+         building.status === "stacking" ||
+         building.status === "downstacking") &&
       isSpecialBuilding(building.type)
    ) {
       Tick.next.specialBuildings.set(building.type, tile as Required<ITileData>);
@@ -477,31 +484,36 @@ export function transportAndConsumeResources(
 
    // Added by Lydia
    if (building.status === "downgrading") {
-      if (GLOBAL_PARAMS.DEBUG_DOWNGRADING) {
-         addSystemMessage(
-            `Computing Downgrading for ${building.type} level ${building.level} to desiredLevel ${building.desiredLevel}`,
-         );
+      if (building.desiredLevel < 0) {
+         building.desiredLevel = 1;
       }
-      if (Config.Building[building.type].power && building.level >= GLOBAL_PARAMS.BUILDINGS_HIGH_LEVEL) {
-         Tick.next.powerBuildings.add(xy);
-      }
-      building.level--;
-      const cost = getBuildingCost(building);
-      const completed = true;
-      if (completed) {
-         forEach(cost, (res, amount) => {
-            safeAdd(building.resources, res, +amount);
-         });
-         building.suspendedInput.clear();
-         OnBuildingOrUpgradeComplete.emit(xy);
-         if (building.level <= building.desiredLevel) {
-            if (GLOBAL_PARAMS.DEBUG_DOWNGRADING) {
-               addSystemMessage(
-                  `Completing Downgrading for ${building.type} level ${building.level} to desiredLevel ${building.desiredLevel}`,
-               );
-            }
-            building.status = "completed";
+      if (building.level > building.desiredLevel) {
+         if (GLOBAL_PARAMS.DEBUG_DOWNGRADING) {
+            addSystemMessage(
+               `Computing Downgrading for ${building.type} level ${building.level} to desiredLevel ${building.desiredLevel}`,
+            );
          }
+         if (Config.Building[building.type].power && building.level >= GLOBAL_PARAMS.BUILDINGS_HIGH_LEVEL) {
+            Tick.next.powerBuildings.add(xy);
+         }
+         building.level--;
+         const cost = getBuildingCost(building);
+         const completed = true;
+         if (completed) {
+            forEach(cost, (res, amount) => {
+               safeAdd(building.resources, res, +amount);
+            });
+            building.suspendedInput.clear();
+            OnBuildingOrUpgradeComplete.emit(xy);
+         }
+      }
+      if (building.level <= building.desiredLevel) {
+         if (GLOBAL_PARAMS.DEBUG_DOWNGRADING) {
+            addSystemMessage(
+               `Completing Downgrading for ${building.type} level ${building.level} to desiredLevel ${building.desiredLevel}`,
+            );
+         }
+         building.status = "completed";
       }
       return;
    }
@@ -615,6 +627,45 @@ export function transportAndConsumeResources(
          if (building.status === "stacking" && building.stack >= building.desiredStack) {
             building.status = "completed";
          }
+      }
+      return;
+   }
+   if (building.status === "downstacking") {
+      if (building.desiredStack < 0) {
+         building.desiredStack = 1;
+      }
+      if (building.stack > building.desiredStack) {
+         if (GLOBAL_PARAMS.DEBUG_DOWNGRADING) {
+            addSystemMessage(
+               `Computing Downstacking for ${building.type} stack ${building.stack} to desiredStack ${building.desiredStack}`,
+            );
+         }
+         if (Config.Building[building.type].power && building.level >= GLOBAL_PARAMS.BUILDINGS_HIGH_LEVEL) {
+            Tick.next.powerBuildings.add(xy);
+         }
+         building.stack--;
+         const prevCost = getTotalBuildingCost(building, 0, building.level, building.stack);
+         const newCost = getTotalBuildingCost(building, 0, building.level, building.stack + 1);
+         const cost = {};
+         forEach(newCost, (res, amount) => safeAdd(cost, res, amount));
+         forEach(prevCost, (res, amount) => safeAdd(cost, res, -amount));
+
+         const completed = true;
+         if (completed) {
+            forEach(cost, (res, amount) => {
+               safeAdd(building.resources, res, +amount);
+            });
+            building.suspendedInput.clear();
+            OnBuildingOrUpgradeComplete.emit(xy);
+         }
+      }
+      if (building.stack <= building.desiredStack) {
+         if (GLOBAL_PARAMS.DEBUG_DOWNGRADING) {
+            addSystemMessage(
+               `Completing Downstacking for ${building.type} stack ${building.stack} to desiredStack ${building.desiredStack}`,
+            );
+         }
+         building.status = "completed";
       }
       return;
    }

@@ -14,6 +14,20 @@ export class MaterialDefinitions {
    Pollution = { name: () => t(L.Pollution) };
    Smartphone = { name: () => t(L.Smartphone) };
 
+   InterceptorMissile = { name: () => t(L.InterceptorMissile) };
+   GuidedMissile = { name: () => t(L.GuidedMissile) };
+   CruiseMissile = { name: () => t(L.CruiseMissile) };
+   Drone = { name: () => t(L.Drone) };
+   CombatDrone = { name: () => t(L.CombatDrone) };
+   Alloy = { name: () => t(L.Alloy) };
+   CompositeMaterial = { name: () => t(L.CompositeMaterial) };
+   ModernFighter = { name: () => t(L.ModernFighter) };
+   StealthFighter = { name: () => t(L.StealthFighter) };
+   StealthBomber = { name: () => t(L.StealthBomber) };
+   ModernAircraftCarrier = { name: () => t(L.ModernAircraftCarrier) };
+   ModernBattleship = { name: () => t(L.ModernBattleship) };
+
+
    Worker: IMaterialDefinition = { name: () => t(L.Worker) };
    Power: IMaterialDefinition = { name: () => t(L.Power) };
    Science: IMaterialDefinition = { name: () => t(L.Science) };

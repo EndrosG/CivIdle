@@ -20,7 +20,7 @@ export interface ITileData {
    building?: IBuildingData;
 }
 
-export type BuildingStatus = "building" | "upgrading" | "completed" | "downgrading" | "stacking";
+export type BuildingStatus = "building" | "upgrading" | "completed" | "downgrading" | "stacking" | "downstacking";
 
 export enum BuildingOptions {
    None = 0,
@@ -162,6 +162,13 @@ export interface ISwissBankBuildingData extends IBuildingData {
    flags: SwissBankFlags;
 }
 
+// Added by Lydia, adapted from CloneBuilding and SwissBankBuilding
+export interface IRecyclingBuildingData extends IBuildingData {
+   // recycleInput: Material | null;
+   recycleInput: Material;
+   recycleOutput: Material;
+}
+
 export interface IItaipuDamBuildingData extends IBuildingData {
    productionMultiplier: number;
 }
@@ -299,6 +306,17 @@ export function makeBuilding(data: Pick<IBuildingData, "type"> & Partial<IBuildi
          }
          if (!s.transportedAmount) {
             s.transportedAmount = 0;
+         }
+         break;
+      }
+      case "RecyclingPlant":
+      case "RecyclingPlantWo": {
+         const recPlant = building as IRecyclingBuildingData;
+         if (!recPlant.recycleInput) {
+            recPlant.recycleInput = "Tool";
+         }
+         if (!recPlant.recycleOutput) {
+            recPlant.recycleOutput = "Copper";
          }
          break;
       }

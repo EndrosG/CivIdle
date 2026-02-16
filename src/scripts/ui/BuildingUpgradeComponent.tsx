@@ -3,6 +3,7 @@ import { Fragment, useEffect, useState } from "react";
 import type { Material } from "../../../shared/definitions/MaterialDefinitions";
 import {
    getDowngradeTargetLevels,
+   getDownstackingTargetLevels,
    getStackingTargetLevels,
    getTotalBuildingCost,
    getUpgradeTargetLevels,
@@ -55,6 +56,7 @@ export function BuildingUpgradeComponent({ gameState, xy }: IBuildingComponentPr
    const levels = getUpgradeTargetLevels(building);
    const levelsDown = getDowngradeTargetLevels(building);
    const stacks = getStackingTargetLevels(building);
+   const stacksDown = getDownstackingTargetLevels(building);
    const upgradeTo = (targetLevel: number) => {
       selected.forEach((xy) => {
          const b = gameState.tiles.get(xy)?.building;
@@ -98,6 +100,21 @@ export function BuildingUpgradeComponent({ gameState, xy }: IBuildingComponentPr
          if ((!isSpecialBuilding(b.type) || (GLOBAL_PARAMS.WONDER_STACKING && Config.Building[b.type].special === 1)) && target > b.stack) {
             b.desiredStack = target;
             b.status = "stacking";
+         }
+      });
+      setSelected(/* @__PURE__ */ new Set([xy]));
+      Singleton().sceneManager.getCurrent(WorldScene)?.drawSelection(null, Array.from(selected));
+      notifyGameStateUpdate();
+   };
+   const downstackTo = (targetStack: number) => {
+      selected.forEach((xy) => {
+         const b = gameState.tiles.get(xy)?.building;
+         if (!b)
+            return;
+         const target = targetStack < 0 ? b.stack + targetStack : targetStack;
+         if ((!isSpecialBuilding(b.type) || (GLOBAL_PARAMS.WONDER_STACKING && Config.Building[b.type].special === 1)) && target < b.stack) {
+            b.desiredStack = target;
+            b.status = "downstacking";
          }
       });
       setSelected(/* @__PURE__ */ new Set([xy]));
@@ -400,6 +417,17 @@ export function BuildingUpgradeComponent({ gameState, xy }: IBuildingComponentPr
                      <Tippy key={idx} content={stackCost(idx, stack)}>
                         <button className="f1" onClick={() => stackTo(idx === 0 ? -1 : stack)}>
                            {idx === 0 ? "+1" : `${stack}`}
+                        </button>
+                     </Tippy>
+                  ))}
+               </div>
+            ) : null}
+            {GLOBAL_PARAMS.SHOW_STACKING && GLOBAL_PARAMS.USE_STACKING && GLOBAL_PARAMS.SHOW_DOWNGRADING ? (
+               <div className="row">
+                  {stacksDown.map((stack, idx) => (
+                     <Tippy key={idx} content={downgradeHint(idx, stack)}>
+                        <button className="f1" onClick={() => downstackTo(idx === 0 ? -1 : stack)}>
+                           {idx === 0 ? "-1" : `${stack}`}
                         </button>
                      </Tippy>
                   ))}

@@ -161,7 +161,7 @@ export function ConstructionPage({ tile }: { tile: ITileData }): React.ReactNode
             ) : null}
             {!isWorldWonder(building.type) && building.level > 0 ? (
                <WarningComponent className="mb10 text-small" icon="warning">
-                  <RenderHTML html={building.status === "downgrading" ? t(L.DowngradeBuildingNotProducingDescV2) : t(L.UpgradeBuildingNotProducingDescV2)} />
+                  <RenderHTML html={building.status === "downgrading" || building.status === "downstacking" ? t(L.DowngradeBuildingNotProducingDescV2) : t(L.UpgradeBuildingNotProducingDescV2)} />
                </WarningComponent>
             ) : null}
             {hasFeature(GameFeature.BuildingProductionPriority, gs) ? (
@@ -227,7 +227,7 @@ function CancelUpgradeComponent({ building }: { building: IBuildingData }): Reac
    const gs = useGameState();
 
    const cancelUpgrade = () => {
-      if (building.status === "upgrading" || building.status === "downgrading" || building.status === "stacking") {
+      if (building.status === "upgrading" || building.status === "downgrading" || building.status === "stacking" || building.status === "downstacking") {
          building.status = "completed";
          building.desiredLevel = building.level;
          building.desiredStack = building.stack;
@@ -240,7 +240,7 @@ function CancelUpgradeComponent({ building }: { building: IBuildingData }): Reac
          if (!b) {
             return;
          }
-         if (b.status === "upgrading" || b.status === "downgrading" || b.status === "stacking") {
+         if (b.status === "upgrading" || b.status === "downgrading" || b.status === "stacking" || building.status === "downstacking") {
             b.status = "completed";
             b.desiredLevel = b.level;
             b.desiredStack = b.stack;

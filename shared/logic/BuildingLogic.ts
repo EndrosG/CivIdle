@@ -647,6 +647,7 @@ export function getCurrentPriority(building: IBuildingData, gs: GameState): numb
       case "upgrading":
       case "downgrading":
       case "stacking":
+      case "downstacking":
          return building.constructionPriority;
       case "completed":
          return building.productionPriority;
@@ -701,7 +702,8 @@ export function getBuildingPercentage(xy: Tile, gs: GameState): BuildingPercenta
    // Reworked by Lydia
    switch (building.status) {
       case "completed":
-      case "downgrading": {
+      case "downgrading":
+      case "downstacking": {
          return { percent: 1, secondsLeft: 0, cost: {}, maxCost: {} };
       }
       case "stacking": {
@@ -800,6 +802,11 @@ export function getStackingTargetLevels(b: IBuildingData): number[] {
       return [b.stack + 1, getNextLevel(b.stack, 25), getNextLevel(b.stack, 100), getNextLevel(b.stack, 1000), Math.floor(b.stack * 1.5), Math.floor(b.stack * 2)];
    }
    return [b.stack + 1, getNextLevel(b.stack, 1000), Math.floor(b.stack * 1.5), Math.floor(b.stack * 2)];
+}
+
+// Added by Lydia
+export function getDownstackingTargetLevels(b: IBuildingData): number[] {
+   return [b.stack - 1, b.stack - 2, Math.floor((b.stack - 3) / 5) * 5];
 }
 
 export function isSpecialBuilding(building?: Building): boolean {
@@ -1008,14 +1015,19 @@ export function canBeElectrified(b: Building): boolean {
    if (b === "SwissBank") {
       return true;
    }
-   if (isSpecialBuilding(b)) {
-      return false;
-   }
    if (b === "CloneFactory") {
       return true;
    }
    if (b === "CloneLab" && Tick.current.specialBuildings.has("OsakaCastle")) {
       return true;
+   }
+   // Added by Lydia
+   if (b.match("Recycling")) {
+      return true;
+   }
+
+   if (isSpecialBuilding(b)) {
+      return false;
    }
    const output = Config.Building[b].output;
    if (sizeOf(output) <= 0) {
@@ -1444,6 +1456,9 @@ const WonderToGreatPerson: Partial<Record<Building, GreatPerson>> = {
    Petra: "Zenobia",
    ItaipuDam: "Pele",
    CologneCathedral: "Beethoven",
+   SydneyHarbourBridge: "JohnBradfield",
+   Hermitage: "Tchaikovsky",
+   Habitat67: "GeoffreyHinton",
 };
 
 export function getWonderExtraLevel(building: Building): number {

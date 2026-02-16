@@ -968,7 +968,7 @@ export class BuildingDefinitions {
       output: {},
       construction: { AircraftCarrier: 10, NuclearSubmarine: 10, NuclearMissile: 10, Satellite: 30, FighterJet: 100, AtomicBomb: 100, Rocket: 200, Artillery: 300, Tank: 400 },
       max: 1,
-      special: 1,
+      special: BuildingSpecial.WorldWonder,
       wikipedia: "Nuclear_arms_race",
    };
    Retreat1: IBuildingDefinition = {
@@ -986,9 +986,9 @@ export class BuildingDefinitions {
       output: {},
       construction: { Wisdom: 100 },
       max: 1,
-      special: 1,
-      wikipedia: "Ascension",
+      special: BuildingSpecial.WorldWonder,
       power: true,
+      wikipedia: "Ascension",
    };
    ZPMLab: IBuildingDefinition = {
       name: () => t(L.ZPMLab),
@@ -996,8 +996,8 @@ export class BuildingDefinitions {
       output: { Power: 1e6 },
       construction: { Rebar: 1000, ReinforcedConcrete: 1000, Supercomputer: 1000, Wisdom: 1000 },
       max: 3,
-      wikipedia: "Zero-point_energy",
       power: true,
+      wikipedia: "Zero-point_energy",
    };
 
    // Lydia: Bicycles
@@ -1131,6 +1131,125 @@ export class BuildingDefinitions {
       // construction: { Rebar: 50, ReinforcedConcrete: 30, Plastics: 20, Cable: 10, Engine: 5, Tool: 5 },
       power: true,
    };
+
+   // Lydia: recycling, another environmental thing
+   RecyclingPlant: IBuildingDefinition = {
+      name: () => t(L.RecyclingPlant),
+      desc: () => t(L.RecyclingPlantDesc),
+      input: { Water: 1 },
+      output: {},
+      construction: { Steel: 100, Software: 100, Supercomputer: 50, Maglev: 50, Robocar: 100 },
+      storageCapacity: 10,
+      power: true,
+   };
+   RecyclingPlantWo: IBuildingDefinition = {
+      name: () => t(L.LargeScaleRecyclingPlant),
+      desc: () => t(L.LargeScaleRecyclingPlantDesc),
+      input: { Water: 10 },
+      output: {},
+      construction: { Software: 10, Supercomputer: 20, Maglev: 50, Robocar: 100 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      storageCapacity: 1000,
+      power: true,
+      wikipedia: "Recycling",
+   };
+
+   // Lydia: more military stuff
+   InterceptorMissileFactory: IBuildingDefinition = {
+      name: () => t(L.InterceptorMissileFactory),
+      // basiert ein Stück weit auf der einfachen Rakete
+      // input: { Engine: 2, Dynamite: 2, Steel: 4, Semiconductor: 2, Cable: 5, Petrol: 5 }, // 9909
+      input: { Engine: 2, Dynamite: 2, Steel: 4, Semiconductor: 2, Cable: 5, Petrol: 5 },
+      output: { InterceptorMissile: 1 },
+      power: true,
+   };
+   GuidedMissileFactory: IBuildingDefinition = {
+      name: () => t(L.GuidedMissileFactory),
+      // input: { Rocket: 1, Semiconductor: 2, Dynamite: 5 },
+      // input: { Engine: 1, Semiconductor: 2, Artillery: 1, Steel: 6, Cable: 6, Petrol: 10 },
+      input: { Engine: 1, Computer: 1, Artillery: 1, Steel: 6, Cable: 6, Petrol: 10 },
+      output: { GuidedMissile: 1 },
+      power: true,
+   };
+   CruiseMissileFactory: IBuildingDefinition = {
+      name: () => t(L.CruiseMissileFactory),
+      input: { GuidedMissile: 2, Software: 1, Satellite: 1 },
+      output: { CruiseMissile: 1 },
+      power: true,
+   };
+   DroneFactory: IBuildingDefinition = {
+      name: () => t(L.DroneFactory),
+      // input: { Engine: 1, Plastics: 2, Cable: 2, Semiconductor: 2, Petrol: 5 },
+      input: { Engine: 1, Computer: 1, Plastics: 2, Cable: 2, Petrol: 5 },
+      output: { Drone: 1 },
+      power: true,
+   };
+   CombatDroneFactory: IBuildingDefinition = {
+      name: () => t(L.CombatDroneFactory),
+      input: { Drone: 2, Dynamite: 5, Software: 1, Radio: 1 },
+      output: { CombatDrone: 1 },
+      power: true,
+   };
+
+   IronDome: IBuildingDefinition = {
+      name: () => t(L.IronDome),
+      desc: () => t(L.IronDomeDesc),
+      input: {},
+      output: {},
+      construction: { InterceptorMissile: 100, Software: 10 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      power: true,
+      wikipedia: "Iron_Dome",
+   };
+
+   AlloyFactory: IBuildingDefinition = {
+      name: () => t(L.AlloyFactory),
+      input: { Aluminum: 1, Copper: 2, Iron: 2, Gold: 1 },
+      output: { Alloy: 1 },
+      power: true,
+   };
+   CompositeMaterialFactory: IBuildingDefinition = {
+      name: () => t(L.CompositeMaterialFactory),
+      input: { Coal: 5, Plastics: 5, OpticalFiber: 1 },
+      output: { CompositeMaterial: 1 },
+      power: true,
+   };
+
+   ModernFighterFactory: IBuildingDefinition = {
+      name: () => t(L.ModernFighterFactory),
+      input: { Airplane: 1, Computer: 1, Software: 1, GatlingGun: 2, InterceptorMissile: 2, Dynamite: 4 },
+      output: { ModernFighter: 1 },
+      power: true,
+   };
+   StealthFighterFactory: IBuildingDefinition = {
+      name: () => t(L.StealthFighterFactory),
+      input: { ModernFighter: 1, Alloy: 2, CompositeMaterial: 2, GuidedMissile: 4 },
+      output: { StealthFighter: 1 },
+      power: true,
+   };
+   StealthBomberFactory: IBuildingDefinition = {
+      name: () => t(L.StealthBomberFactory),
+      input: { ModernFighter: 2, Alloy: 4, CompositeMaterial: 4, AtomicBomb: 4, Dynamite: 10, GuidedMissile: 4 },
+      output: { StealthBomber: 1 },
+      power: true,
+   };
+
+   ModernAircraftCarrierYard: IBuildingDefinition = {
+      name: () => t(L.ModernAircraftCarrierYard),
+      input: { Battleship: 1, Alloy: 20, Computer: 5, Satellite: 1, InterceptorMissile: 10, ModernFighter: 20, StealthFighter: 10 },
+      output: { ModernAircraftCarrier: 1 },
+      power: true,
+   };
+   ModernBattleshipYard: IBuildingDefinition = {
+      name: () => t(L.ModernBattleshipYard),
+      // input: { Battleship: 1, Alloy: 50, ModernFighter: 5, StealthFighter: 10, InterceptorMissile: 10 },
+      input: { Ironclad: 1, Alloy: 10, Computer: 5, Satellite: 1, Artillery: 5, InterceptorMissile: 10, GuidedMissile: 10, CruiseMissile: 10 },
+      output: { ModernBattleship: 1 },
+      power: true,
+   };
+
 
    // CivIdle Standard again
    CloneFactory: IBuildingDefinition = {

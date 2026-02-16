@@ -5,7 +5,7 @@ import { Config } from "../../../shared/logic/Config";
 import { notifyGameStateUpdate } from "../../../shared/logic/GameStateLogic";
 import { getBuildingIO, unlockedResources } from "../../../shared/logic/IntraTickCache";
 import { getBuildingsThatProduce } from "../../../shared/logic/ResourceLogic";
-import type { ICloneBuildingData } from "../../../shared/logic/Tile";
+import type { ICloneBuildingData, IRecyclingBuildingData } from "../../../shared/logic/Tile";
 import { isEmpty, keysOf } from "../../../shared/utilities/Helper";
 import { L, t } from "../../../shared/utilities/i18n";
 import { playClick } from "../visuals/Sound";
@@ -82,5 +82,45 @@ function ChooseResource({ gameState, xy }: IBuildingComponentProps): React.React
          </>
       );
    }
+
+   // Added by Lydia
+   if (building && building.type.match("Recycling")) {
+      const c = building as IRecyclingBuildingData;
+      const resources = keysOf(unlockedResources(gameState))
+         .filter((r) => !NoStorage[r] && !NoPrice[r])
+         .sort((a, b) => Config.Material[a].name().localeCompare(Config.Material[b].name()));
+      return (
+         <>
+            <select
+               className="w100"
+               value={c.recycleInput}
+               onChange={(e) => {
+                  playClick();
+                  const res = e.target.value as Material;
+                  if (c.recycleInput !== res) {
+                     c.recycleInput = res;
+                     notifyGameStateUpdate();
+                  }
+               }}
+            >
+               {resources.map((r) => (
+                  <option key={r} value={r}>
+                     {Config.Material[r].name()}
+                  </option>
+               ))}
+            </select>
+            <div className="sep10" />
+            <ApplyToAllComponent
+               xy={xy}
+               getOptions={() => {
+                  return { recycleInput: c.recycleInput, recycleOutput: c.recycleOutput } as IRecyclingBuildingData;
+               }}
+               gameState={gameState}
+            />
+            <div className="separator" />
+         </>
+      );
+   }
+
    return null;
 }

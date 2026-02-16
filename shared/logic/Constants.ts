@@ -100,6 +100,8 @@ interface IRecipe {
 export function calculateTierAndPrice(log?: (val: string) => void) {
    forEach(IsDeposit, (k) => {
       Config.MaterialTier[k] = 1;
+      Config.MaterialInputs[k] = 0;
+      Config.MaterialMultiplier[k] = 1;
       const tech = getDepositUnlockTech(k);
       Config.MaterialPrice[k] = Math.round(
          Config.Tech[tech].column + (Config.TechAge[getAgeForTech(tech)!].idx ** 2),
@@ -116,6 +118,8 @@ export function calculateTierAndPrice(log?: (val: string) => void) {
          forEach(buildingDef.output, (res) => {
             if (!Config.MaterialTier[res]) {
                Config.MaterialTier[res] = 1;
+               Config.MaterialInputs[res] = 0;
+               Config.MaterialMultiplier[res] = 1;
             }
             if (!Config.MaterialPrice[res]) {
                const tech = getBuildingUnlockTechSlow(building);
@@ -312,6 +316,12 @@ export function calculateTierAndPrice(log?: (val: string) => void) {
             // const multiplier = 0.5 + Math.sqrt(sizeOf(input));
             const multiplier = 1.5 + 0.25 * sizeOf(input);
             forEach(output, (res) => {
+               // Added by Lydia
+               if (sizeOf(input) > (Config.MaterialInputs[res] ?? 0)) {
+                  Config.MaterialInputs[res] = sizeOf(input);
+                  Config.MaterialMultiplier[res] = multiplier;
+               }
+
                const price = Math.round(
                   (multiplier * inputResourcesValue - notPricedResourceValue) / allOutputAmount,
                );
@@ -341,6 +351,7 @@ export function calculateTierAndPrice(log?: (val: string) => void) {
 
    Config.BuildingTier.CloneFactory = 8;
    Config.BuildingTier.CloneLab = 8;
+   Config.BuildingTier.RecyclingPlant = 8;
 
    Config.MaterialTier.Koti = 8;
    Config.MaterialPrice.Koti = 10_000_000;
@@ -448,8 +459,12 @@ export function calculateTierAndPrice(log?: (val: string) => void) {
       .filter((r) => !NoPrice[r])
       .forEach((r) => {
          resourcePrice.push(
-            `${r.padEnd(20)}${numberToRoman(Config.MaterialTier[r]!)!.padEnd(10)}${String(
+            `${r.padEnd(25)}${numberToRoman(Config.MaterialTier[r]!)!.padEnd(10)}${String(
                Config.MaterialPrice[r]!,
+            ).padEnd(10)}${String(
+               Config.MaterialMultiplier[r]!,
+            ).padEnd(10)}${String(
+               Config.MaterialInputs[r]!,
             ).padEnd(10)}${String(resourcesUsedByWonder.get(r) ?? "0*").padEnd(10)}${resourcesUsedByBuildings.get(r) ?? "0*"
             }`,
          );
@@ -493,7 +508,7 @@ export function calculateTierAndPrice(log?: (val: string) => void) {
          }
          if (cost > 0) {
             buildingInputCost.push(
-               `${def.name().padEnd(30)}${numberToRoman(Config.BuildingTier[building]!)!.padStart(10)}${round(
+               `${def.name().padEnd(32)}${numberToRoman(Config.BuildingTier[building]!)!.padStart(10)}${round(
                   cost,
                   2,
                )
@@ -516,7 +531,7 @@ export function calculateTierAndPrice(log?: (val: string) => void) {
    );
    log?.(
       `>>>>>>>>>> NotBoostedBuildings <<<<<<<<<<\n${notBoostedBuildings
-         .map((a) => `${a.building.padEnd(25)}${a.tech.padEnd(30)}${a.age}`)
+         .map((a) => `${a.building.padEnd(32)}${a.tech.padEnd(30)}${a.age}`)
          .join("\n")}`,
    );
    log?.(`>>>>>>>>>> Building Input Cost <<<<<<<<<<\n${buildingInputCost.join("\n")}`);

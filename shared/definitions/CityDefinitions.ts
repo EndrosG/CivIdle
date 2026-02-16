@@ -24,7 +24,7 @@ export class CityDefinitions {
          NaturalGas: 0.03,
          Uranium: 0.01,
       },
-      size: 40,
+      size: 30,
       buildingNames: {
          Headquarter: () => t(L.NoordeindePalace),
       },
@@ -33,6 +33,65 @@ export class CityDefinitions {
          WindMill: "Machinery",
          VanGoghMuseum: "Television",
          InternationalCriminalCourt: "MilitaryTactics",
+      },
+      uniqueMultipliers: {},
+      naturalWonders: { DeltaWorks: true },
+      requireGreatPeopleLevel: 10,
+      requireSupporterPack: false,
+      festivalDesc: () => t(L.BicycleCulture),
+      uniqueEffects: () => [],
+      hidden: true,
+   };
+   Israel: ICityDefinition = {
+      name: () => t(L.Israel),
+      deposits: {
+         Water: 0.05,
+         Copper: 0.02,
+         Iron: 0.02,
+         Wood: 0.03,
+         Stone: 0.02,
+         Gold: 0.01,
+         Coal: 0.01,
+         Oil: 0.03,
+         Aluminum: 0.02,
+         NaturalGas: 0.03,
+         Uranium: 0.01,
+      },
+      size: 30,
+      buildingNames: {
+         Headquarter: () => t(L.NoordeindePalace),
+      },
+      uniqueBuildings: {
+         IronDome: "ModernTactics",
+      },
+      uniqueMultipliers: {},
+      naturalWonders: { DeltaWorks: true },
+      requireGreatPeopleLevel: 10,
+      requireSupporterPack: false,
+      festivalDesc: () => t(L.BicycleCulture),
+      uniqueEffects: () => [],
+      hidden: true,
+   };
+   Ukraine: ICityDefinition = {
+      name: () => t(L.Ukraine),
+      deposits: {
+         Water: 0.02,
+         Copper: 0.02,
+         Iron: 0.03,
+         Wood: 0.02,
+         Stone: 0.02,
+         Gold: 0.01,
+         Coal: 0.03,
+         Oil: 0.02,
+         Aluminum: 0.02,
+         NaturalGas: 0.02,
+         Uranium: 0.01,
+      },
+      size: 30,
+      buildingNames: {
+         Headquarter: () => t(L.MariinskyiPalace),
+      },
+      uniqueBuildings: {
          CryptoFund: "Blockchain",
       },
       uniqueMultipliers: {},
@@ -43,7 +102,6 @@ export class CityDefinitions {
       uniqueEffects: () => [],
       hidden: true,
    };
-
    Rome: ICityDefinition = {
       name: () => t(L.Roman),
       deposits: {

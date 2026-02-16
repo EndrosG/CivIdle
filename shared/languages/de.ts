@@ -82,6 +82,13 @@ export const DE = {
    WindTurbineDesc: "Die erste belegte windbetriebene Anlage zur Stromerzeugung errichtete 1883 der österreichische Ingenieur Josef Friedländer anlässlich der Internationalen Elektrizitätsausstellung 1883, sie stand im Eingangsbereich des Ausstellungsgeländes vor der Rotunde im Wiener Prater. Bei dem Windrad handelte es sich um eine Windturbine des Halladay-Bautyps, die in Nordamerika auf Farmen zum Pumpen von Wasser eingesetzt wurden. Josef Friedländer adaptierte die Anlage zur Erzeugung von Elektrizität. Das Windrad hatte einen Durchmesser von 6,6 Metern und trieb einen Dynamo am Boden an, der Strom in mehrere Batterien einspeiste, die wiederum Werkzeuge und Lampen sowie eine Dreschmaschine betrieben.",
    WindPark: "Windpark",
    EnvironmentalMovement: "Umweltbewegung",
+   Recycling: "Recycling",
+   RecyclingPlant: "Recycling-Anlage",
+   RecyclingPlantDesc: "In der Recycling-Anlage können Rohstoffe zurückgewonnen werden. Die Verarbeitungskapazität beträgt 100K EV pro Zyklus (bis zu 80% Wirkungsgrad), sämtliche Multiplikatoren (Gebäudestufe, Elektrifizierung, Produktion) werden angewendet.",
+   LargeScaleRecyclingPlant: "Große Recycling-Anlage",
+   LargeScaleRecyclingPlantDesc: "In der großen Recycling-Anlage können Rohstoffe zurückgewonnen werden. Die Verarbeitungskapazität beträgt 10M EV pro Zyklus (bis zu 90% Wirkungsgrad), sämtliche Multiplikatoren (Gebäudestufe, Elektrifizierung, Produktion) werden angewendet.",
+   // InputResourceForRecycling: "Eingaberessource für das Recycling",
+   // OutputResourceForRecycling: "Produktionsergebnis im Recycling",
 
    // Lydia: more culture
    HuldrychZwingli: "Huldrych Zwingli",
@@ -96,9 +103,9 @@ export const DE = {
    SmartphoneFactory: "Smartphone Fabrik",
 
    // Lydia: Future GP
-   Beatrice2022: "Beatrice Tröger",
-   HappyFamily: "Bären-Familie",
-   Lydia2017: "Lydia Tröger",
+   Beatrice2022: "Beatrice",
+   HappyFamily: "Die Familie",
+   Lydia2017: "Lydia",
    // Beatrice2022Desc: "A cute soft toy",
    HappyFamilyDesc: "+%{value} Zufriedenheit",
    // Lydia2017Desc: "A female IT nerd",
@@ -109,7 +116,7 @@ export const DE = {
    LyaNox: "Lya (Nox)",
    SevenOfNine: "Seven of Nine",
    BorgQueen: "Borg-Königin",
-   Asgard: "Asgard",
+   Asgard: "Thor (Asgard)",
 
    BorgQueenDesc: "+%{value} Multiplikator der Bauarbeiterkapazität",
    MerlinDesc: "+%{value} Multiplikator der Bauarbeiterkapazität",
@@ -117,6 +124,59 @@ export const DE = {
    // OmaDesalaDesc: "Oma Desala from Stargate",
    // LyaNoxDesc: "Lya, a Nox from Stargate",
    // SevenOfNineDesc: "Seven of Nine from Star Trek",
+
+   // Lydia: more military stuff
+   RocketryII: "Raketentechnik 2.0",
+   ModernTactics: "Moderne Taktiken",
+   ModernWarfare: "Moderne Kriegsführung",
+   StealthTechnology: "Tarnkappen-Technik",
+
+   InterceptorMissile: "Abfangrakete",
+   GuidedMissile: "Lenkrakete",
+   CruiseMissile: "Marschflugkörper",
+   Drone: "Drohne",
+   CombatDrone: "Kampfdrohne",
+   InterceptorMissileFactory: "Abfangraketen-Fabrik",
+   GuidedMissileFactory: "Lenkraketen-Fabrik",
+   CruiseMissileFactory: "Marschflugkörper-Fabrik",
+   DroneFactory: "Drohnen-Fabrik",
+   CombatDroneFactory: "Kampfdrohnen-Fabrik",
+
+   IronDome: "Iron Dome",
+   IronDomeDesc: "(TBD)",
+   Israel: "Israel",
+   Ukraine: "Ukraine",
+   MariinskyiPalace: "Marienpalast",
+   // Alloy: "Legierung",
+   CompositeMaterial: "Verbundwerkstoff",
+   AlloyFactory: "Schmelze für Legierungen",
+   CompositeMaterialFactory: "Fabrik für Verbundwerkstoffe",
+
+   ModernFighter: "Moderner Kampfjet",
+   StealthFighter: "Tarnkappenjäger",
+   StealthBomber: "Tarnkappenbomber",
+   ModernAircraftCarrier: "Moderner Flugzeugträger",
+   ModernBattleship: "Modernes Schlachtschiff",
+   StealthFighterFactory: "Tarnkappenjäger-Fabrik",
+   ModernFighterFactory: "Moderne Kampfjet-Fabrik",
+   StealthBomberFactory: "Tarnkappenbomber-Fabrik",
+   ModernAircraftCarrierYard: "Moderne Flugzeugträger-Werft",
+   ModernBattleshipYard: "Moderne Schlachtschiff-Werft",
+
+   CryptoStorage: "Crypto-Speicherung",
+   CryptoRepository: "Crypto-Speicherplatz",
+
+   // Lydia: corruption and resilien
+   Corruption: "Korruption",
+   InvestigativeJournalism: "Investigativer Journalismus",
+   OrganisedCrime: "Organisiertes Verbrechen",
+   Mafia: "Mafia",
+   Mythologisation: "Mythenbildung", // hier geht es um kulturelle Überhöhung
+   Propaganda: "Propaganda",
+   Lobbyism: "Lobbyismus",
+   CoverUp: "Vertuschung",
+   Desinformation: "Desinformation",
+
 
    // CivIdle Standard
    About: "Über CivIdle",

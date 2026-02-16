@@ -417,7 +417,7 @@ export function EmptyTilePage({ tile }: { tile: ITileData }): React.ReactNode {
                >
                   <div className="m-icon small">globe</div>
                </Filter>
-               {[1, 2, 3, 4, 5, 6, 7, 8].map((tier) => {
+               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((tier) => {
                   return (
                      <Filter
                         key={tier}

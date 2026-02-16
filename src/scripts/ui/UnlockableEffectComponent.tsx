@@ -97,22 +97,40 @@ export function UnlockableEffectComponent({
                   <legend>
                      <b>{t(L.BuildingMultipliers)}</b> {Config.Building[k].name()}
                   </legend>
-                  {v.output ? (
+                  {v.output && v.output > 0 ? (
                      <div className="row mv5">
                         <div className="f1">{t(L.ProductionMultiplier)}</div>
                         <div className="text-strong">+{v.output}</div>
                      </div>
                   ) : null}
-                  {v.worker ? (
+                  {v.output && v.output < 0 ? (
+                     <div className="row mv5">
+                        <div className="f1">{t(L.ProductionMultiplier)}</div>
+                        <div className="text-strong text-red">{v.output}</div>
+                     </div>
+                  ) : null}
+                  {v.worker && v.worker > 0 ? (
                      <div className="row mv5">
                         <div className="f1">{t(L.WorkerMultiplier)}</div>
                         <div className="text-strong">+{v.worker}</div>
                      </div>
                   ) : null}
-                  {v.storage ? (
+                  {v.worker && v.worker < 0 ? (
+                     <div className="row mv5">
+                        <div className="f1">{t(L.WorkerMultiplier)}</div>
+                        <div className="text-strong text-red">{v.worker}</div>
+                     </div>
+                  ) : null}
+                  {v.storage && v.storage > 0 ? (
                      <div className="row mv5">
                         <div className="f1">{t(L.StorageMultiplier)}</div>
                         <div className="text-strong">+{v.storage}</div>
+                     </div>
+                  ) : null}
+                  {v.storage && v.storage < 0 ? (
+                     <div className="row mv5">
+                        <div className="f1">{t(L.StorageMultiplier)}</div>
+                        <div className="text-strong text-red">{v.storage}</div>
                      </div>
                   ) : null}
                </fieldset>
@@ -127,7 +145,11 @@ export function UnlockableEffectComponent({
                   return (
                      <div key={k} className="row mv5">
                         <div className="f1">{GlobalMultiplierNames[k]()}</div>
+                     {v < 0 ? (
+                        <div className="text-strong text-red">{v}</div>
+                     ) : (
                         <div className="text-strong">+{v}</div>
+                     )}
                      </div>
                   );
                })}

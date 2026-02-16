@@ -359,7 +359,8 @@ export class TileVisual extends Container {
          }
          case "upgrading":
          case "downgrading":
-         case "stacking": {
+         case "stacking":
+         case "downstacking": {
             this._construction.visible = false;
             this._notProducing.visible = false;
             this._upgrade.visible = true;

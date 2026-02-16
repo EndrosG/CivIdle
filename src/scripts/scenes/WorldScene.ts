@@ -91,6 +91,10 @@ function getHQ() {
    return findSpecialBuilding("Headquarter", getGameState());
 }
 globalThis.getHQ = getHQ;
+function getGS() {
+   return getGameState();
+}
+globalThis.getGS = getGS;
 
 export class WorldScene extends Scene {
    private _width!: number;

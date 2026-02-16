@@ -13,6 +13,15 @@ import { Fonts } from "./Fonts";
 
 function makeText(text: string, font: string, size: number, tint: number) {
    if (containsNonASCII(text)) {
+      // added by Lydia because OldTypefaces is rather oblique
+      if (font === Fonts.OldTypefaces || font === "OldTypefaces") {
+         return new Text(text, {
+            fontFamily: "serif",
+            fontSize: size * 0.8,
+            fontStyle: "oblique",
+            fill: tint,
+         });
+      }
       return new Text(text, {
          fontFamily: "serif",
          fontSize: size,

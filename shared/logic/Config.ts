@@ -14,6 +14,8 @@ const BuildingTech: Partial<Record<Building, Tech>> = {};
 const BuildingTechAge: Partial<Record<Building, TechAge>> = {};
 const BuildingCity: Partial<Record<Building, City>> = {};
 
+const MaterialInputs: PartialTabulate<Material> = {}; // Added by Lydia, represents complexity of any material, equals the number of inputs in production
+const MaterialMultiplier: PartialTabulate<Material> = {}; // Added by Lydia, constants.tsx: const multiplier = 1.5 + 0.25 * sizeOf(input);
 const MaterialTier: PartialTabulate<Material> = {};
 const MaterialPrice: PartialTabulate<Material> = {};
 const MaterialTech: PartialTabulate<Material> = {};
@@ -36,6 +38,8 @@ export const Config = {
    BuildingTech,
    BuildingTechAge,
    BuildingCity,
+   MaterialInputs,
+   MaterialMultiplier,
    MaterialTier,
    MaterialTech,
    MaterialPrice,
