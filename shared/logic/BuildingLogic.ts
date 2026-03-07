@@ -1388,6 +1388,10 @@ export function isFestival(building: Building, gs: GameState): boolean {
    if (!city) {
       return true;
    }
+   if (GLOBAL_PARAMS.BUILDINGS_IGNORE_CITIES) {
+      // this makes also festivals working globally
+      return true;
+   }
    return city === gs.city;
 }
 

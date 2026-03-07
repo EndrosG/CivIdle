@@ -276,7 +276,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          addMultiplier("MusiciansGuild", OSmulti, buildingName);
          addMultiplier("PaintersGuild", OSmulti, buildingName);
          addMultiplier("WritersGuild", OSmulti, buildingName);
-         Tick.next.globalMultipliers.happiness.push({ value: 5 * HAPPImulti, source: buildingName });
+         Tick.next.globalMultipliers.happiness.push({ value: 5 + (HAPPImulti-1), source: buildingName });
          break;
       }
       case "Alps": {
@@ -366,7 +366,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "HagiaSophia": {
-         let happiness = 5 * HAPPImulti;
+         let happiness = 5 + (HAPPImulti-1);
          const currentHappiness = Tick.current.happiness?.value ?? 0;
          if (Tick.current.tick <= 10 && currentHappiness < 0) {
             happiness += Math.abs(currentHappiness);
@@ -383,7 +383,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
             happiness += Config.Building.Colosseum.input.Chariot;
          }
          Tick.next.globalMultipliers.happiness.push({
-            value: happiness * HAPPImulti,
+            value: happiness + 2 * (HAPPImulti-1),
             source: buildingName,
          });
          getBuildingsByType("ChariotWorkshop", gs)?.forEach((tile, xy) => {
@@ -638,7 +638,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                addMultiplier(b, OWSmulti, buildingName);
             }
          });
-         Tick.next.globalMultipliers.happiness.push({ value: 5 * HAPPImulti, source: buildingName });
+         Tick.next.globalMultipliers.happiness.push({ value: 5 + (HAPPImulti-1), source: buildingName });
          break;
       }
       case "SummerPalace": {
@@ -768,7 +768,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                ++count;
             }
          }
-         Tick.next.globalMultipliers.happiness.push({ value: count * HAPPImulti, source: buildingName });
+         Tick.next.globalMultipliers.happiness.push({ value: count + (HAPPImulti-1), source: buildingName });
          const total = getGreatPersonTotalLevel("RamessesII", gs);
          if (total > 0) {
             Tick.next.globalMultipliers.builderCapacity.push({
@@ -817,7 +817,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                ++count;
             }
          }
-         Tick.next.globalMultipliers.happiness.push({ value: count + 5, source: buildingName });
+         Tick.next.globalMultipliers.happiness.push({ value: count + 5 + (HAPPImulti-1), source: buildingName });
          break;
       }
       case "GoldenGateBridge": {
@@ -1002,7 +1002,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "PorcelainTower": {
-         Tick.next.globalMultipliers.happiness.push({ value: 5 * HAPPImulti, source: buildingName });
+         Tick.next.globalMultipliers.happiness.push({ value: 5 + (HAPPImulti-1), source: buildingName });
          if (isFestival("PorcelainTower", gs)) {
             forEach(gs.greatPeople, (gp, level) => {
                if (level > 0) {
@@ -1059,7 +1059,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                ++happiness;
             }
          });
-         Tick.next.globalMultipliers.happiness.push({ value: happiness, source: buildingName });
+         Tick.next.globalMultipliers.happiness.push({ value: happiness + 2 * (HAPPImulti-1), source: buildingName });
          break;
       }
       case "ApolloProgram": {
