@@ -10,6 +10,9 @@ export const EN = {
    StackBuilding: "Stack",
    StackBuildingNotProducingDescV2: "This building is being upgraded (stacking) - <b>production will halt until upgrade is complete</b>",
    StackTo: "Upgrade To Stack %{stack}",
+   SourceGreatPersonPermanentShard: "Permanent Great Person Shard: %{person}",
+   MakeGreatPeopleFromThisRunPermanent: "Make Great People from this run permanent",
+   PorcelainHut: "Porcelain Hut",
 
    DysonHabitat: "Dyson Habitat",
    DysonHabitat2: "Dyson Habitat 2.0",
@@ -99,6 +102,8 @@ export const EN = {
    FastFashion: "kurzlebige Mode",
    Smartphone: "Smartphone",
    SmartphoneFactory: "Smartphone Factory",
+   SteveJobs: "Steve Jobs (iPhone)",
+   FrankCanova: "Frank Canova (IBM Simon)",
 
    // Lydia: Future GP
    Beatrice2022: "Beatrice", // Troeger",
@@ -140,6 +145,9 @@ export const EN = {
    DroneFactory: "Drone Factory",
    CombatDroneFactory: "Combat Drone Factory",
 
+   EmptyWonderDesc: "(TBD)",
+   DefenseCapability: "Defense Capability",
+   DefenseCapabilityDesc: "(TBD)",
    IronDome: "Iron Dome",
    IronDomeDesc: "(TBD)",
    Israel: "Israel",
@@ -149,6 +157,14 @@ export const EN = {
    CompositeMaterial: "Composite Material",
    AlloyFactory: "Alloy Factory",
    CompositeMaterialFactory: "Composite Material Factory",
+
+   Container: "Container",
+   MalcomMcLean: "Malcom McLean",
+   ContainerFactory: "Containter Factory",
+   ContainerPortRotterdam: "Container Port of Rotterdam",
+   ContainerPortAntwerp: "Container Port of Antwerp-Bruges",
+   ContainerPortHamburg: "Container Port of Hamburg",
+   ContainerPortValencia: "Container Port of Valencia (APV)",
 
    ModernFighter: "Modern Fighter Jet",
    StealthFighter: "Stealth Fighter",
@@ -160,11 +176,12 @@ export const EN = {
    StealthBomberFactory: "Stealth Bomber Factory",
    ModernAircraftCarrierYard: "Modern Aircraft Carrier Yard",
    ModernBattleshipYard: "Modern Battleship Yard",
+   MightMakesRight: "Might Makes Right",
 
    CryptoStorage: "Crypto Storage",
    CryptoRepository: "Crypto Repository",
 
-   // Lydia: corruption and resilien
+   // Lydia: corruption and resilience
    Corruption: "Corruption",
    InvestigativeJournalism: "Investigative Journalism",
    OrganisedCrime: "Organised Crime",
@@ -174,6 +191,66 @@ export const EN = {
    Lobbyism: "Lobbyism",
    CoverUp: "Cover Up",
    Desinformation: "Desinformation",
+
+   // Lydia: more food
+   Belgian: "Belgian",
+   // ExtensiveLandownership: "Extensive Landownership",
+   IndustrialFarming: "Industrial Farming",
+   FoodIndustry: "Food Industry",
+   ChocolateIndustry: "Chocolate Industry",
+   CakeIndustry: "Cake Industry",
+   Supermarket: "Supermarket",
+   HolidayCustoms: "Holiday Customs",
+
+   Butter: "Butter",
+   Egg: "Egg",
+   Flower: "Flower",
+   Fruit: "Fruit",
+   SugarBeet: "Sugar Beet",
+   Sugar: "Sugar",
+   CocoaBean: "Cocoa Bean",
+   Chocolate: "Chocolate",
+   ChocolateCandy: "Chocolate Candy",
+   Cheesecake: "Cheesecake",
+   ChocolateCake: "Chocolate Cake",
+   FruitFlan: "Fruit Flan",
+   FruitMilk: "Fruit Milk",
+   Juice: "Juice",
+   Spirits: "Spirits",
+   Groceries: "Groceries",
+
+   IndustrialWheatFarm: "Commercial Wheat Grower",
+   JustusVonLiebig: "Justus von Liebig",
+   JohnBennetLawes: "John Bennet Lawes",
+
+   Dairy: "Dairy",
+   EggFarm: "Egg Farm",
+   Floriculture: "Floriculture",
+   TulipField: "Tulip Field",
+   Orchard: "Orchard",
+   FruitPlantation: "Fruit Plantation",
+   SugarBeetFarm: "Sugar Beet Farm",
+   SugarPlantation: "Sugar Plantation",
+   SugarFactory: "Sugar Factory",
+   CocoaFarm: "Cocoa Farm",
+   CocoaPlantation: "Cocoa Plantation",
+   ChocolateFactory: "Chocolate Factory",
+   PralineFactory: "Praline Factory",
+   BelgianChocolate: "Belgian Chocolate Manufactory",
+   CheesecakeFactory: "Cheesecake Factory",
+   ChocolateCakeFactory: "Chocolate Cake Factory",
+   FruitFlanFactory: "Fruit Flan Factory",
+   SoftDrinkFactory: "Soft Drink Factory",
+   Destillery: "Destillery",
+   DrinksMarket: "Drinks Market",
+
+   ValentinesDay: "Valentines Day",
+   WomensDay: "Womens Day",
+   ChildrensDay: "Childrens Day",
+   WorldChildrensDay: "World Childrens Day",
+   LabourDay: "Labour Day",
+   FathersDay: "Fathers Day",
+   MothersDay: "Mothers Day",
 
 
    // CivIdle Standard

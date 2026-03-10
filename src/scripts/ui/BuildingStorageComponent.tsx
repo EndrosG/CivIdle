@@ -17,7 +17,8 @@ import { ProgressBarComponent } from "./ProgressBarComponent";
 export function BuildingStorageComponent({ gameState, xy }: IBuildingComponentProps): React.ReactNode {
    const storage = getStorageFor(xy, gameState);
    const building = gameState.tiles.get(xy)?.building;
-   if (building == null || !Number.isFinite(storage.total) || storage.total <= 0) {
+   // Modified by Lydia to show storage details for Wonders
+   if (building == null || !Number.isFinite(storage.total) || (storage.total <= 0 && storage.used <= 0)) {
       return null;
    }
    const percentage = storage.used / storage.total;
@@ -27,7 +28,7 @@ export function BuildingStorageComponent({ gameState, xy }: IBuildingComponentPr
          <legend className="row">
             {showWarning ? <img src={warning} style={{ margin: "0 2px 0 0" }} /> : null}
             <div className={classNames({ f1: true, "production-warning": showWarning })}>
-               {t(L.Storage)}: {formatPercent(percentage)}
+               {t(L.Storage)}: {storage.total > 0 ? formatPercent(percentage) : null}
             </div>
          </legend>
          <ProgressBarComponent progress={percentage} />

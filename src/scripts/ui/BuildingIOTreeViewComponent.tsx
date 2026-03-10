@@ -23,9 +23,14 @@ export function BuildingIOTreeViewComponent({
    type: "input" | "output";
 }): React.ReactNode {
    const data = getBuildingIO(xy, type, IOFlags.Multiplier | IOFlags.Capacity, gameState);
-   const totalMultiplier = type === "input" ? 1 : totalMultiplierFor(xy, type, 1, false, gameState);
    const building = gameState.tiles.get(xy)?.building;
+   if (!building) {
+      return null;
+   }
    const buildingType = building?.type;
+   const configBT = Config.Building[building.type];
+   const configBTInputMultiplier = configBT.inputMultiplier ?? 0;
+   const totalMultiplier = type === "input" ? (configBTInputMultiplier > 0 ? 1 + totalMultiplierFor(xy, "output", 0, false, gameState) * configBTInputMultiplier : 1) : totalMultiplierFor(xy, type, 1, false, gameState);
    const isCloneOutput =
       type === "output" && (buildingType === "CloneFactory" || buildingType === "CloneLab");
    const levelBoost = Tick.current.levelBoost.get(xy) ?? [];
@@ -108,7 +113,7 @@ export function BuildingIOTreeViewComponent({
                               ))
                               : null}
                         </ul>
-                        {type === "output" ? (
+                        {type === "output" || totalMultiplier > 1 ? (
                            <>
                               <li className="row">
                                  <div className="f1">{t(L.ProductionMultiplier)}</div>
@@ -123,7 +128,7 @@ export function BuildingIOTreeViewComponent({
                                     <div>1</div>
                                  </li>
                                  {getMultipliersFor(xy, false, gameState).map((m, idx) => {
-                                    if (!m[type]) {
+                                    if (!m.output) {
                                        return null;
                                     }
                                     return (
@@ -135,7 +140,7 @@ export function BuildingIOTreeViewComponent({
                                              </Tippy>
                                           ) : null}
                                           <div className="f1 text-right">
-                                             <FormatNumber value={m[type]} />
+                                             <FormatNumber value={m.output * (type === "input" ? configBTInputMultiplier : 1)} />
                                           </div>
                                        </li>
                                     );

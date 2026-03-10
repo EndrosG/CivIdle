@@ -53,7 +53,12 @@ export function getGreatPersonTotalLevel(
    gs: GameState = getGameState(),
    options: GameOptions = getGameOptions(),
 ): number {
-   return getGreatPersonThisRunLevel(gs.greatPeople[gp] ?? 0) + (options.greatPeople[gp]?.level ?? 0);
+   const permGP = options.greatPeople[gp];
+   if (permGP) {
+      // Math.log added by Lydia, kinda approximates (from below) the effect of GP in current run - but with a soft limit
+      return getGreatPersonThisRunLevel(gs.greatPeople[gp] ?? 0) + permGP.level + (permGP.amount > 0 ? Math.log(clamp(permGP.amount, Math.E, 64)) : 0);
+   }
+   return getGreatPersonThisRunLevel(gs.greatPeople[gp] ?? 0);
 }
 
 export function getProgressTowardsNextGreatPerson(): number {
@@ -115,7 +120,10 @@ export function makeGreatPeopleFromThisRunPermanent(): void {
    const gs = getGameState();
    forEach(gs.greatPeople, (k, v) => {
       addPermanentGreatPerson(k, v);
-      v = 0;
+      // added by Lydia: this fixes wrong behaviour when called inside a run - this really sets the current GameState value to 0 ; v=0 does nothing
+      gs.cementedGreatPeople += v;
+      delete gs.greatPeople[k];
+      // v = 0;
    });
 }
 
@@ -127,8 +135,8 @@ export function addPermanentGreatPerson(gp: GreatPerson, amount: number): void {
    } else {
       options.greatPeople[gp] =
          Config.GreatPerson[gp].type === GreatPersonType.Normal ||
-         Config.GreatPerson[gp].type === GreatPersonType.Adaptive ||
-         Config.GreatPerson[gp].type === GreatPersonType.LevelBoost
+            Config.GreatPerson[gp].type === GreatPersonType.Adaptive ||
+            Config.GreatPerson[gp].type === GreatPersonType.LevelBoost
             ? { level: 1, amount: amount - 1 }
             : { level: 0, amount };
    }
@@ -181,7 +189,7 @@ export function rollPermanentGreatPeople(
       filterOf(
          Config.GreatPerson,
          (_, v) =>
-            (isNullOrUndefined(v.city) || v.city === city) &&
+            (isNullOrUndefined(v.city) || v.city === city || GLOBAL_PARAMS.GP_IGNORE_CITIES) &&
             Config.TechAge[v.age].idx <= currentTechAgeIdx + 1 &&
             !(GLOBAL_PARAMS.GP_IGNORE_PROMOTION && v.type === 2),
       ),
@@ -216,9 +224,9 @@ export function rollGreatPeopleThisRun(
       keysOf(
          filterOf(
             Config.GreatPerson,
-            (_, v) => (isNullOrUndefined(v.city) || v.city === city) &&
-            ages.has(v.age) &&
-            !(GLOBAL_PARAMS.GP_IGNORE_PROMOTION && v.type === 2),
+            (_, v) => (isNullOrUndefined(v.city) || v.city === city || GLOBAL_PARAMS.GP_IGNORE_CITIES) &&
+               ages.has(v.age) &&
+               !(GLOBAL_PARAMS.GP_IGNORE_PROMOTION && v.type === 2),
          ),
       ),
    );

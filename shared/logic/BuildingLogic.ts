@@ -265,12 +265,15 @@ export function getStorageFor(xy: Tile, gs: GameState): IStorageResult {
       return NoStorage[k] ? prev : prev + v;
    };
    const building = gs.tiles.get(xy)?.building;
+   // Added by Lydia to make code more readable
+   if (!building) {
+      return { base: 0, multiplier: 0, total: 0, used: 0 };
+   }
    let used = reduceOf(building?.resources, accumulate, 0);
    let multiplier = totalMultiplierFor(xy, "storage", 1, true, gs);
-
    let base = 0;
 
-   switch (building?.type) {
+   switch (building.type) {
       case "Market":
       case "Caravansary":
       case "Caravansary2":
@@ -335,7 +338,8 @@ export function getStorageFor(xy: Tile, gs: GameState): IStorageResult {
          break;
       }
    }
-   return { base, multiplier, total: base * multiplier, used };
+   // Modified by Lydia: add 100b per building if appropriate
+   return { base, multiplier, total: base * multiplier + (base > 0 ? 1e11 * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) : 0), used };
 }
 
 export function getStorageRequired(res: PartialTabulate<Material>): number {

@@ -123,7 +123,7 @@ export class TechDefinitions {
    Farming: ITechDefinition = {
       name: () => t(L.Farming),
       column: 1,
-      unlockBuilding: ["WheatFarm"],
+      unlockBuilding: ["Orchard", "WheatFarm", "SugarBeetFarm"],
       requireTech: ["Shelter", "Logging"],
    };
 
@@ -147,7 +147,7 @@ export class TechDefinitions {
    Herding: ITechDefinition = {
       name: () => t(L.Herding),
       column: 2,
-      unlockBuilding: ["PoultryFarm", "DairyFarm"],
+      unlockBuilding: ["PoultryFarm", "DairyFarm", "EggFarm"],
       requireTech: ["Counting", "Farming"],
       additionalUpgrades: () => [t(L.TechResourceTransportPreference)],
    };
@@ -224,7 +224,7 @@ export class TechDefinitions {
       name: () => t(L.Astronomy),
       column: 4,
       requireTech: ["Arithmetic", "Writing"],
-      unlockBuilding: ["Brewery", "Stonehenge"],
+      unlockBuilding: ["Brewery", "CheeseMaker", "Stonehenge"],
    };
 
    Shamanism: ITechDefinition = {
@@ -284,7 +284,7 @@ export class TechDefinitions {
       name: () => t(L.Literature),
       column: 6,
       requireTech: ["Calendar", "Music"],
-      unlockBuilding: ["CheeseMaker", "WritersGuild"],
+      unlockBuilding: ["Dairy", "Glassworks", "WritersGuild"],
    };
 
    Machinery: ITechDefinition = {
@@ -313,7 +313,7 @@ export class TechDefinitions {
       name: () => t(L.Library),
       column: 7,
       requireTech: ["Literature"],
-      unlockBuilding: ["Library", "Glassworks", "PoetrySchool"],
+      unlockBuilding: ["Library", "PoetrySchool", "Floriculture"],
    };
 
    Architecture: ITechDefinition = {
@@ -460,7 +460,7 @@ export class TechDefinitions {
       name: () => t(L.Exploration),
       column: 12,
       requireTech: ["Optics"],
-      unlockBuilding: ["CannonWorkshop"],
+      unlockBuilding: ["CannonWorkshop", "CocoaFarm"],
    };
 
    PrintingPress: ITechDefinition = {
@@ -523,7 +523,7 @@ export class TechDefinitions {
       name: () => t(L.Alloy),
       column: 14,
       requireTech: ["PrivateOwnership"],
-      unlockBuilding: ["SteelMill", "AlloyFactory", "EiffelTower"],
+      unlockBuilding: ["SteelMill", "EiffelTower"],
    };
 
    SteamEngine: ITechDefinition = {
@@ -578,6 +578,14 @@ export class TechDefinitions {
       revealDeposit: ["Oil"],
    };
 
+   // Added by Lydia
+   IndustrialFarming: ITechDefinition = {
+      name: () => t(L.IndustrialFarming),
+      column: 15,
+      requireTech: ["Capitalism", "SteamEngine"],
+      unlockBuilding: ["IndustrialWheatFarm", "CocoaPlantation", "SugarPlantation", "FruitPlantation"],
+   };
+
    Journalism: ITechDefinition = {
       name: () => t(L.Journalism),
       column: 15,
@@ -614,6 +622,14 @@ export class TechDefinitions {
       requireTech: ["Railway", "Drilling", "RapidFire"],
       unlockBuilding: ["CoalPowerPlant", "ReinforcedConcretePlant", "WindTurbine", "Caravansary2"],
       additionalUpgrades: () => [t(L.ElectrificationUpgrade)],
+   };
+
+   // Added by Lydia
+   FoodIndustry: ITechDefinition = {
+      name: () => t(L.FoodIndustry),
+      column: 16,
+      requireTech: ["IndustrialFarming", "Railway"],
+      unlockBuilding: ["SugarFactory", "FruitBrandy", "EggNog"],
    };
 
    Olympics: ITechDefinition = {
@@ -682,8 +698,8 @@ export class TechDefinitions {
    Urbanization: ITechDefinition = {
       name: () => t(L.Urbanization),
       column: 17,
-      requireTech: ["Olympics", "StockMarket", "Electricity"],
-      unlockBuilding: ["Pizzeria", "ResearchLab"],
+      requireTech: ["FoodIndustry", "Olympics", "StockMarket", "Electricity"],
+      unlockBuilding: ["Pizzeria", "ResearchLab", "AppleJuice", "FruitMilk"],
    };
 
    // Added by Lydia
@@ -707,7 +723,7 @@ export class TechDefinitions {
       name: () => t(L.Synthetics),
       column: 18,
       requireTech: ["Refinery", "Electrolysis"],
-      unlockBuilding: ["PlasticsFactory", "GasPowerPlant"],
+      unlockBuilding: ["PlasticsFactory", "GasPowerPlant", "AlloyFactory"],
    };
 
    AtomicTheory: ITechDefinition = {
@@ -730,6 +746,14 @@ export class TechDefinitions {
       column: 18,
       requireTech: ["Urbanization"],
       unlockBuilding: ["MovieStudio", "Hollywood"],
+   };
+
+   // Added by Lydia
+   ChocolateIndustry: ITechDefinition = {
+      name: () => t(L.ChocolateIndustry),
+      column: 18,
+      requireTech: ["Urbanization"],
+      unlockBuilding: ["ChocolateFactory", "PralineFactory"],
    };
 
    // Added by Lydia
@@ -770,10 +794,18 @@ export class TechDefinitions {
    };
 
    // Added by Lydia
+   CakeIndustry: ITechDefinition = {
+      name: () => t(L.CakeIndustry),
+      column: 19,
+      requireTech: ["ChocolateIndustry"],
+      unlockBuilding: ["CheesecakeFactory", "ChocolateCakeFactory", "FruitFlanFactory"],
+   };
+
+   // Added by Lydia
    Mythologisation: ITechDefinition = {
       name: () => t(L.Mythologisation),
       column: 19,
-      requireTech: ["MotionPicture", "Mafia"],
+      requireTech: ["MotionPicture", "ChocolateIndustry", "Mafia"],
       // unlockBuilding: ["RadioStation", "CristoRedentor"],
    };
 
@@ -804,6 +836,14 @@ export class TechDefinitions {
       column: 20,
       requireTech: ["Radio"],
       unlockBuilding: ["Embassy", "UnitedNations"],
+   };
+
+   // Added by Lydia
+   Supermarket: ITechDefinition = {
+      name: () => t(L.Supermarket),
+      column: 20,
+      requireTech: ["CakeIndustry", "Radio"],
+      unlockBuilding: ["Supermarket", "DrinksMarket"],
    };
 
    // Added by Lydia
@@ -838,7 +878,7 @@ export class TechDefinitions {
    Skyscraper: ITechDefinition = {
       name: () => t(L.Skyscraper),
       column: 21,
-      requireTech: ["UnitedNations", "Hydroelectricity"],
+      requireTech: ["UnitedNations", "Hydroelectricity", "Supermarket"],
       unlockBuilding: ["Condo"],
       buildingMultiplier: {
          Library: { output: 1 },
@@ -850,10 +890,18 @@ export class TechDefinitions {
    };
 
    // Added by Lydia
+   HolidayCustoms: ITechDefinition = {
+      name: () => t(L.HolidayCustoms),
+      column: 21,
+      requireTech: ["Supermarket", "Propaganda"],
+      // unlockBuilding: ["ValentinesDay", "WomensDay", "ChildrensDay", "WorldChildrensDay", "LabourDay", "FathersDay", "MothersDay"],
+   };
+
+   // Added by Lydia
    Lobbyism: ITechDefinition = {
       name: () => t(L.Lobbyism),
       column: 21,
-      requireTech: ["UnitedNations", "Propaganda"],
+      requireTech: ["Supermarket", "Propaganda"],
       // unlockBuilding: ["NuclearPowerPlant", "Atomium"],
    };
 
@@ -883,14 +931,14 @@ export class TechDefinitions {
       name: () => t(L.MonetarySystem),
       column: 22,
       requireTech: ["Skyscraper"],
-      unlockBuilding: ["ForexMarket", "SwissBank"],
+      unlockBuilding: ["ForexMarket", "SwissBank", "ContainerFactory"],
    };
 
    // Added by Lydia
    CoverUp: ITechDefinition = {
       name: () => t(L.CoverUp),
       column: 22,
-      requireTech: ["NuclearReactor", "Lobbyism"],
+      requireTech: ["NuclearReactor", "Skyscraper", "HolidayCustoms", "Lobbyism"],
       // unlockBuilding: ["ForexMarket", "SwissBank"],
    };
 
@@ -934,7 +982,7 @@ export class TechDefinitions {
       name: () => t(L.Globalization),
       column: 23,
       requireTech: ["Television", "MonetarySystem"],
-      unlockBuilding: ["OpticalFiberPlant", "PortOfSingapore", "Warehouse2"],
+      unlockBuilding: ["OpticalFiberPlant", "PortOfSingapore", "Warehouse2", "ContainerPortValencia"],
       additionalUpgrades: () => [t(L.XBaseStorageForWarehouseAndCaravansary, { percent: formatPercent(1) })],
    };
 
@@ -975,7 +1023,7 @@ export class TechDefinitions {
       name: () => t(L.ModernTactics),
       column: 25,
       requireTech: ["RocketryII", "Nanotechnology", "Software"],
-      unlockBuilding: ["CruiseMissileFactory", "CombatDroneFactory", "ModernFighterFactory"],
+      unlockBuilding: ["CruiseMissileFactory", "CombatDroneFactory", "ModernFighterFactory", "DefenseCapability"],
    };
    Genetics: ITechDefinition = {
       name: () => t(L.Genetics),
@@ -1040,7 +1088,7 @@ export class TechDefinitions {
       name: () => t(L.ModernWarfare),
       column: 27,
       requireTech: ["StealthTechnology"],
-      unlockBuilding: ["ModernAircraftCarrierYard", "ModernBattleshipYard"],
+      unlockBuilding: ["ModernAircraftCarrierYard", "ModernBattleshipYard", "MightMakesRight"],
    };
    Recycling: ITechDefinition = {
       name: () => t(L.Recycling),
@@ -1087,7 +1135,7 @@ export class TechDefinitions {
       name: () => t(L.AscensionTheory),
       column: 31,
       requireTech: ["Future4"],
-      unlockBuilding: ["Retreat2"],
+      unlockBuilding: ["Retreat2", "PorcelainHut"],
    };
 }
 

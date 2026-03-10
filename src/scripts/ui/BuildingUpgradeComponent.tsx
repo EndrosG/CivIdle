@@ -45,8 +45,61 @@ export function BuildingUpgradeComponent({ gameState, xy }: IBuildingComponentPr
       return null;
    }
    const configBT = Config.Building[building.type];
+   const [moving, setMoving] = useState(false);
+   const theMet = Tick.current.specialBuildings.get("TheMet");
    if ((configBT?.max ?? Number.POSITIVE_INFINITY) <= 1) {
       if (configBT.special != null && !(GLOBAL_PARAMS.WONDER_STACKING && configBT.special === 1)) {
+         if (configBT.special === 2 && theMet) {
+            return (
+               <>
+                  <fieldset>
+                     {theMet ? (
+                        <button
+                           className="row w100 jcc mt5"
+                           disabled={moving || (theMet.building.resources.Teleport ?? 0) <= 0}
+                           onClick={async () => {
+                              playClick();
+                              showToast(t(L.MoveBuildingSelectTileToastHTML), Number.POSITIVE_INFINITY);
+                              setMoving(true);
+                              const point = await Singleton().sceneManager.getCurrent(WorldScene)?.hijackSelectGrid();
+                              hideToast();
+                              setMoving(false);
+                              if (!point || moving || (theMet.building.resources.Teleport ?? 0) <= 0) {
+                                 playError();
+                                 return;
+                              }
+                              const xy = pointToTile(point);
+                              const newTile = gameState.tiles.get(xy);
+                              if (newTile && !newTile.building && newTile.explored) {
+                                 playSuccess();
+                                 newTile.building = building;
+                                 safeAdd(theMet.building.resources, "Teleport", -1);
+                                 delete tile.building;
+                                 RequestResetTile.emit(tile.tile);
+                                 RequestResetTile.emit(newTile.tile);
+                                 notifyGameStateUpdate();
+                                 clearTransportSourceCache();
+                                 clearIntraTickCache();
+                                 Singleton().sceneManager.getCurrent(WorldScene)?.selectGrid(point);
+                              } else {
+                                 showToast(L.MoveBuildingFail);
+                                 playError();
+                              }
+                           }}
+                        >
+                           <div className="m-icon small">zoom_out_map</div>
+                           <Tippy
+                              content={t(L.MoveBuildingNoTeleport)}
+                              disabled={(theMet.building.resources.Teleport ?? 0) > 0}
+                           >
+                              <div className="f1">{moving ? t(L.MoveBuildingSelectTile) : t(L.MoveBuilding)}</div>
+                           </Tippy>
+                        </button>
+                     ) : null}
+                  </fieldset>
+               </>
+            );
+         }
          return null;
       }
    }
@@ -127,8 +180,6 @@ export function BuildingUpgradeComponent({ gameState, xy }: IBuildingComponentPr
 
    const age = Config.BuildingTechAge[building.type]!;
 
-   const [moving, setMoving] = useState(false);
-   const theMet = Tick.current.specialBuildings.get("TheMet");
 
    const selectRange = (range: number, sameType: boolean) => {
       const result = new Set<Tile>();

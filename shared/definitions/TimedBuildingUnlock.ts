@@ -25,8 +25,18 @@ export const TimedBuildingUnlock: Partial<Record<Building, ITimedBuildingUnlock>
       tech: "PrivateOwnership",
       condition: (now) => now.getMonth() === 3 || IGNORE_TIMING,
    },
+
+   // Added by Lydia
    TourDeFrance: { tech: "Olympics", condition: (now) => now.getMonth() === 6 || IGNORE_TIMING },
    GiroDItalia: { tech: "Olympics", condition: (now) => now.getMonth() === 4 || IGNORE_TIMING },
+
+   ValentinesDay: { tech: "HolidayCustoms", condition: (now) => (now.getMonth() === 1 && now.getDate() >= 7 && now.getDate() <= 21) || IGNORE_TIMING },
+   WomensDay: { tech: "HolidayCustoms", condition: (now) => (now.getMonth() === 2 && now.getDate() <= 15) || IGNORE_TIMING },
+   ChildrensDay: { tech: "HolidayCustoms", condition: (now) => (now.getMonth() === 4 && now.getDate() >= 25) || (now.getMonth() === 5 && now.getDate() <= 8) || IGNORE_TIMING },
+   WorldChildrensDay: { tech: "HolidayCustoms", condition: (now) => (now.getMonth() === 10 && now.getDate() >= 13 && now.getDate() <= 27) || IGNORE_TIMING },
+   LabourDay: { tech: "HolidayCustoms", condition: (now) => (now.getMonth() === 3 && now.getDate() >= 24) || (now.getMonth() === 4 && now.getDate() <= 8) || IGNORE_TIMING },
+   FathersDay: { tech: "HolidayCustoms", condition: (now) => (now.getMonth() === 4 && now.getDate() >= 7 && now.getDate() <= 21) || IGNORE_TIMING },
+   MothersDay: { tech: "HolidayCustoms", condition: (now) => (now.getMonth() === 4 && now.getDate() >= 3 && now.getDate() <= 17) || IGNORE_TIMING },
 };
 
 export function isHalloween(now: Date): boolean {
@@ -38,5 +48,5 @@ export function isChristmas(now: Date): boolean {
 }
 
 export function isLunarNewYear(now: Date): boolean {
-   return (now.getMonth() === 1 && now.getDate() >= 10) || (now.getMonth() === 1 && now.getDate() <= 24) || IGNORE_TIMING;
+   return (now.getMonth() === 1 && now.getDate() >= 10 && now.getDate() <= 24) || IGNORE_TIMING;
 }

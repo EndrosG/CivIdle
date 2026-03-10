@@ -155,8 +155,8 @@ export function getBuildingIO(
          }
       }
 
+      const configBT = Config.Building[b.type];
       if ("resourceImports" in b && type === "input") {
-         const configBT = Config.Building[b.type];
          const totalCapacity = getResourceImportCapacity(
             b,
             totalLevelBoostFor(xy),
@@ -230,9 +230,12 @@ export function getBuildingIO(
                // Markets and RecyclingPlants use (need) multipliers for input and output!
                value *= totalMultiplierFor(xy, "output", 1, stableOnly, gs);
             } else if (type === "output" && (b.type === "CloneFactory" || b.type === "CloneLab")) {
-               value = value * 0.5 + value * 0.5 * totalMultiplierFor(xy, "output", 1, stableOnly, gs);
+               value *= 1 + 0.5 * totalMultiplierFor(xy, "output", 0, stableOnly, gs);
             } else if (type === "output") {
                value *= totalMultiplierFor(xy, type, 1, stableOnly, gs);
+            } else if (type === "input" && configBT.inputMultiplier && configBT.inputMultiplier > 0) {
+               // it is important to have the base = 1 separate!
+               value *= 1 + totalMultiplierFor(xy, "output", 0, stableOnly, gs) * configBT.inputMultiplier;
             }
          }
          safeAdd(result, k, value);

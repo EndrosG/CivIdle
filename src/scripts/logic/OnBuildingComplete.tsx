@@ -157,8 +157,10 @@ export function onBuildingComplete(xy: Tile): void {
          });
          break;
       }
+      case "PorcelainHut":
       case "PorcelainTower": {
-         if (gs.claimedGreatPeople > 0) {
+         const newGP = getRebirthGreatPeopleCount() - gs.claimedGreatPeople;
+         if (newGP <= 0) {
             return;
          }
          gs.claimedGreatPeople = getRebirthGreatPeopleCount();
@@ -167,10 +169,10 @@ export function onBuildingComplete(xy: Tile): void {
          let countAuto = 0;
          const choiceCount = getGreatPeopleChoiceCount(gs);
          if (getGameOptions().porcelainTowerMaxPickPerRoll) {
-            pickPerRoll = clamp(Math.floor(gs.claimedGreatPeople / 50), 1, Number.POSITIVE_INFINITY);
+            pickPerRoll = clamp(Math.floor(newGP / 50), 1, Number.POSITIVE_INFINITY);
          }
          rollPermanentGreatPeople(
-            gs.claimedGreatPeople,
+            newGP,
             pickPerRoll,
             choiceCount,
             getCurrentAge(gs),

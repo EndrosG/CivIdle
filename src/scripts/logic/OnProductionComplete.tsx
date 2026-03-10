@@ -1,4 +1,4 @@
-import { BuildingIsCaravan, BuildingIsTrading, type Building } from "../../../shared/definitions/BuildingDefinitions";
+import { BuildingIsCaravan, BuildingIsMilitaryDefense, BuildingIsMilitaryOffense, BuildingIsTrading, type Building } from "../../../shared/definitions/BuildingDefinitions";
 import { GreatPersonTickFlag, type GreatPerson } from "../../../shared/definitions/GreatPersonDefinitions";
 import {
    IOFlags,
@@ -254,21 +254,24 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "HatshepsutTemple": {
-         buildingsByType.get("WheatFarm")?.forEach((tile, xy) => {
-            if (tile.building) {
-               let adjacentWaterTiles = 0;
-               for (const neighbor of grid.getNeighbors(tileToPoint(xy))) {
-                  if (gs.tiles.get(pointToTile(neighbor))?.deposit.Water) {
-                     ++adjacentWaterTiles;
+         const bTypes = new Set<Building>(["WheatFarm", "IndustrialWheatFarm"] satisfies Building[]);
+         bTypes.forEach((btype) => {
+            buildingsByType.get(btype)?.forEach((tile, xy) => {
+               if (tile.building) {
+                  let adjacentWaterTiles = 0;
+                  for (const neighbor of grid.getNeighbors(tileToPoint(xy))) {
+                     if (gs.tiles.get(pointToTile(neighbor))?.deposit.Water) {
+                        ++adjacentWaterTiles;
+                     }
+                  }
+                  if (adjacentWaterTiles > 0) {
+                     mapSafePush(Tick.next.tileMultipliers, tile.tile, {
+                        output: buildingLevelStack * adjacentWaterTiles,
+                        source: buildingName,
+                     });
                   }
                }
-               if (adjacentWaterTiles > 0) {
-                  mapSafePush(Tick.next.tileMultipliers, tile.tile, {
-                     output: buildingLevelStack * adjacentWaterTiles,
-                     source: buildingName,
-                  });
-               }
-            }
+            });
          });
          break;
       }
@@ -276,7 +279,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          addMultiplier("MusiciansGuild", OSmulti, buildingName);
          addMultiplier("PaintersGuild", OSmulti, buildingName);
          addMultiplier("WritersGuild", OSmulti, buildingName);
-         Tick.next.globalMultipliers.happiness.push({ value: 5 + (HAPPImulti-1), source: buildingName });
+         Tick.next.globalMultipliers.happiness.push({ value: 5 + (HAPPImulti - 1), source: buildingName });
          break;
       }
       case "Alps": {
@@ -366,7 +369,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "HagiaSophia": {
-         let happiness = 5 + (HAPPImulti-1);
+         let happiness = 5 + (HAPPImulti - 1);
          const currentHappiness = Tick.current.happiness?.value ?? 0;
          if (Tick.current.tick <= 10 && currentHappiness < 0) {
             happiness += Math.abs(currentHappiness);
@@ -383,7 +386,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
             happiness += Config.Building.Colosseum.input.Chariot;
          }
          Tick.next.globalMultipliers.happiness.push({
-            value: happiness + 2 * (HAPPImulti-1),
+            value: happiness + 2 * (HAPPImulti - 1),
             source: buildingName,
          });
          getBuildingsByType("ChariotWorkshop", gs)?.forEach((tile, xy) => {
@@ -638,7 +641,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                addMultiplier(b, OWSmulti, buildingName);
             }
          });
-         Tick.next.globalMultipliers.happiness.push({ value: 5 + (HAPPImulti-1), source: buildingName });
+         Tick.next.globalMultipliers.happiness.push({ value: 5 + (HAPPImulti - 1), source: buildingName });
          break;
       }
       case "SummerPalace": {
@@ -738,10 +741,11 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "NileRiver": {
          // natural wonder: cannot be upgraded
          addMultiplier("WheatFarm", { output: 1, storage: 1 }, buildingName);
+         addMultiplier("IndustrialWheatFarm", { output: 1, storage: 1 }, buildingName);
          for (const neighbor of grid.getNeighbors(tileToPoint(xy))) {
             const neighborXy = pointToTile(neighbor);
             const building = getWorkingBuilding(neighborXy, gs);
-            if (building?.type === "WheatFarm") {
+            if (building?.type.match("WheatFarm")) {
                mapSafePush(Tick.next.tileMultipliers, neighborXy, {
                   storage: 5,
                   output: 5,
@@ -768,7 +772,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                ++count;
             }
          }
-         Tick.next.globalMultipliers.happiness.push({ value: count + (HAPPImulti-1), source: buildingName });
+         Tick.next.globalMultipliers.happiness.push({ value: count + (HAPPImulti - 1), source: buildingName });
          const total = getGreatPersonTotalLevel("RamessesII", gs);
          if (total > 0) {
             Tick.next.globalMultipliers.builderCapacity.push({
@@ -817,7 +821,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                ++count;
             }
          }
-         Tick.next.globalMultipliers.happiness.push({ value: count + 5 + (HAPPImulti-1), source: buildingName });
+         Tick.next.globalMultipliers.happiness.push({ value: count + 5 + (HAPPImulti - 1), source: buildingName });
          break;
       }
       case "GoldenGateBridge": {
@@ -1002,7 +1006,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "PorcelainTower": {
-         Tick.next.globalMultipliers.happiness.push({ value: 5 + (HAPPImulti-1), source: buildingName });
+         Tick.next.globalMultipliers.happiness.push({ value: 5 + (HAPPImulti - 1), source: buildingName });
          if (isFestival("PorcelainTower", gs)) {
             forEach(gs.greatPeople, (gp, level) => {
                if (level > 0) {
@@ -1059,7 +1063,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                ++happiness;
             }
          });
-         Tick.next.globalMultipliers.happiness.push({ value: happiness + 2 * (HAPPImulti-1), source: buildingName });
+         Tick.next.globalMultipliers.happiness.push({ value: happiness + 2 * (HAPPImulti - 1), source: buildingName });
          break;
       }
       case "ApolloProgram": {
@@ -1482,6 +1486,74 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          }
          break;
       }
+
+      // Lydia: ContainerLogistics
+      case "ContainerPortRotterdam":
+      case "ContainerPortAntwerp":
+      case "ContainerPortHamburg":
+      case "ContainerPortValencia": {
+         const extraLevel = getWonderExtraLevel(building.type);
+         const basecost = Config.Building[building.type].construction?.Container ?? 0;
+         const effect = basecost / 10 * (3 + building.level + extraLevel) * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1);
+         Tick.next.globalMultipliers.builderCapacity.push({
+            value: effect,
+            source: buildingName,
+         });
+         Tick.next.globalMultipliers.output.push({
+            value: effect / 5,
+            source: buildingName,
+         });
+         Tick.next.globalMultipliers.storage.push({
+            value: effect / 5,
+            source: buildingName,
+         });
+         Tick.next.globalMultipliers.transportCapacity.push({
+            value: effect / 5,
+            source: buildingName,
+         });
+         addMultiplier("ContainerFactory", { levelBoost: effect, storage: effect / 2 }, buildingName);
+         break;
+      }
+
+      // Lydia: more military stuff
+      case "IronDome": {
+         addMultiplier("InterceptorMissileFactory", OSmulti, buildingName);
+         addMultiplier("GuidedMissileFactory", OSmulti, buildingName);
+         addMultiplier("SoftwareCompany", OSmulti, buildingName);
+         break;
+      }
+      case "DefenseCapability": {
+         // Military Focus Strategy
+         Tick.next.globalMultipliers.happiness.push({
+            value: buildingLevelStack,
+            source: buildingName,
+         });
+         for (const btype of BuildingIsMilitaryDefense) {
+            addMultiplier(btype, OSmulti, buildingName);
+         }
+         break;
+      }
+      case "MightMakesRight": {
+         // Military Focus Strategy
+         Tick.next.globalMultipliers.happiness.push({
+            value: -buildingLevelStack / 2,
+            source: buildingName,
+         });
+         Tick.next.globalMultipliers.output.push({
+            value: -buildingLevelStack,
+            source: buildingName,
+         });
+         Tick.next.globalMultipliers.storage.push({
+            value: -buildingLevelStack / 2,
+            source: buildingName,
+         });
+         for (const btype of BuildingIsMilitaryOffense) {
+            // effectively +2 = -1 (global) +3 (building)
+            addMultiplier(btype, { output: 3 * buildingLevelStack, storage: 2.5 * buildingLevelStack }, buildingName);
+         }
+         break;
+      }
+
 
       // CivIdle Standard, Modified by Lydia for stacking
       case "InternationalSpaceStation": {

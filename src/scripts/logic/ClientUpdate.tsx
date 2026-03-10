@@ -138,6 +138,16 @@ export function tickEverySecond(gs: GameState, offline: boolean) {
          t(L.SourceGreatPersonPermanent, { person: greatPerson.name() }),
          GreatPersonTickFlag.None,
       );
+
+      // added by Lydia, kinda approximates (from below) the effect of GP in current run - but with a soft limit
+      if (v.amount > 0) {
+         greatPerson.tick(
+            person,
+            Math.log(clamp(v.amount, Math.E, 64)),
+            t(L.SourceGreatPersonPermanentShard, { person: greatPerson.name() }),
+            GreatPersonTickFlag.None,
+         );
+      }
    });
 
    forEach(options.ageWisdom, (age, level) => {

@@ -9,6 +9,7 @@ import {
    getPermanentGreatPeopleLevel,
    getRebirthGreatPeopleCount,
    getValueRequiredForGreatPeople,
+   makeGreatPeopleFromThisRunPermanent,
 } from "../../../shared/logic/RebirthLogic";
 import {
    getCurrentAge,
@@ -509,6 +510,11 @@ function RebirthComponent({ gameState }: { gameState: GameState }): ReactNode {
          <button className="row w100 jcc" onClick={() => showModal(<RebirthModal />)}>
             <div className="m-icon small">stroller</div>
             <div className="f1 text-strong">{t(L.Reborn)}</div>
+         </button>{" "}
+         <div className="sep5"></div>
+         <button className="row w100 jcc" onClick={() => makeGreatPeopleFromThisRunPermanent()}>
+            <div className="m-icon small">person_celebrate</div>
+            <div className="f1 text-strong">{t(L.MakeGreatPeopleFromThisRunPermanent)}</div>
          </button>{" "}
          <div className="sep5"></div>
          <button className="row w100 jcc" onClick={() => showModal(<RebirthHistoryModal />)}>

@@ -47,8 +47,8 @@ import { TraditionBuildingBody } from "./TraditionBuildingBody";
 import { UnitedNationsBuildingBody } from "./UnitedNationsBuildingBody";
 import { UpgradableWonderBuildingBody } from "./UpgradableWonderBuildingBody";
 import { WarehouseBuildingBody } from "./WarehouseBuildingBody";
-import { ZugspitzeBuildingBody } from "./ZugspitzeBuildingBody";
 import { WorldTradeOrganizationBuildingBody } from "./WorldTradeOrganizationBuildingBody";
+import { ZugspitzeBuildingBody } from "./ZugspitzeBuildingBody";
 
 const BuildingBodyOverride: Partial<Record<Building, FunctionComponent<IBuildingComponentProps>>> = {
    Headquarter: HeadquarterBuildingBody,
@@ -61,12 +61,6 @@ const BuildingBodyOverride: Partial<Record<Building, FunctionComponent<IBuilding
    Warehouse: WarehouseBuildingBody,
    Warehouse2: WarehouseBuildingBody,
    Warehouse3: WarehouseBuildingBody,
-   NuclearArmsRace: UpgradableWonderBuildingBody,
-   Retreat2: UpgradableWonderBuildingBody,
-   TourDeFrance: UpgradableWonderBuildingBody,
-   GiroDItalia: UpgradableWonderBuildingBody,
-   VanGoghMuseum: UpgradableWonderBuildingBody,
-   InternationalCriminalCourt: UpgradableWonderBuildingBody,
 
    Petra: PetraBuildingBody,
    OxfordUniversity: ScienceProductionWonderBuildingBody,

@@ -1,3 +1,4 @@
+import { UpgradableWorldWonders } from "../../../shared/definitions/BuildingDefinitions";
 import { BuildingColorComponent } from "./BuildingColorComponent";
 import { BuildingConsumeComponent } from "./BuildingConsumeComponent";
 import { BuildingDepositComponent } from "./BuildingDepositComponent";
@@ -14,12 +15,21 @@ import { BuildingUpgradeComponent } from "./BuildingUpgradeComponent";
 import { BuildingValueComponent } from "./BuildingValueComponent";
 import { BuildingWikipediaComponent } from "./BuildingWikipediaComponent";
 import { BuildingWorkerComponent } from "./BuildingWorkerComponent";
+import { UpgradeableWonderComponent } from "./UpgradeableWonderComponent";
 
 export function DefaultBuildingBody({ gameState, xy }: IBuildingComponentProps): React.ReactNode {
+   // Modified by Lydia to dynamically include the UpgradeableWonders thing without using the BuildingBodyOverride in BuildingPage.tsx for each wonder
+   const building = gameState.tiles.get(xy)?.building;
+   if (!building) {
+      return null;
+   }
    return (
       <div className="window-body">
          <BuildingDescriptionComponent gameState={gameState} xy={xy} />
          <BuildingUpgradeComponent gameState={gameState} xy={xy} key={xy} />
+         {UpgradableWorldWonders.has(building.type) ? (
+            <UpgradeableWonderComponent gameState={gameState} xy={xy} />
+         ) : null}
          <BuildingDepositComponent gameState={gameState} xy={xy} />
          <BuildingConsumeComponent gameState={gameState} xy={xy} />
          <BuildingProduceComponent gameState={gameState} xy={xy} />

@@ -60,6 +60,7 @@ export class GameState {
    tradeValue = 0;
    favoriteTiles: Set<Tile> = new Set();
    claimedGreatPeople = 0;
+   cementedGreatPeople = 0;
    valueTrackers = new Map<ValueToTrack, IValueTracker>();
    speedUp = 1;
    pinStatPanel = false;

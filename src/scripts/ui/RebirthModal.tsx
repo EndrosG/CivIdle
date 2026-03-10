@@ -507,7 +507,7 @@ export function RebirthModal(): React.ReactNode {
 
                      getGameOptions().rebirthInfo.push({
                         greatPeopleAtRebirth: greatPeopleAtRebirthCount,
-                        greatPeopleThisRun: reduceOf(gs.greatPeople, (prev, k, v) => prev + v, 0) - gs.claimedGreatPeople,
+                        greatPeopleThisRun: gs.cementedGreatPeople - gs.claimedGreatPeople,
                         totalEmpireValue: Tick.current.totalValue,
                         totalTicks: gs.tick,
                         totalSeconds: gs.seconds,

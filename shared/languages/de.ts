@@ -10,6 +10,9 @@ export const DE = {
    StackBuilding: "Gebäudeanzahl erhöhen",
    StackBuildingNotProducingDescV2: "Dieses Gebäude wird erweitert - <b>Produktion ist angehalten bis zum Abschluss</b>",
    StackTo: "Erweiterung auf Anzahl %{stack}",
+   SourceGreatPersonPermanentShard: "Dauerhafte Persönlichkeits-Scherben: %{person}",
+   MakeGreatPeopleFromThisRunPermanent: "GP aus diesem Durchgang in perm GP umwandeln",
+   PorcelainHut: "Hütte aus Porzellan",
 
    DysonHabitat: "Dyson-Habitat",
    DysonHabitat2: "Dyson-Habitat 2.0",
@@ -101,6 +104,8 @@ export const DE = {
    FastFashion: "kurzlebige Mode",
    Smartphone: "Smartphone",
    SmartphoneFactory: "Smartphone Fabrik",
+   SteveJobs: "Steve Jobs (iPhone)",
+   FrankCanova: "Frank Canova (IBM Simon)",
 
    // Lydia: Future GP
    Beatrice2022: "Beatrice",
@@ -142,6 +147,9 @@ export const DE = {
    DroneFactory: "Drohnen-Fabrik",
    CombatDroneFactory: "Kampfdrohnen-Fabrik",
 
+   EmptyWonderDesc: "(TBD)",
+   DefenseCapability: "Verteidigungsfähigkeit",
+   DefenseCapabilityDesc: "(TBD)",
    IronDome: "Iron Dome",
    IronDomeDesc: "(TBD)",
    Israel: "Israel",
@@ -151,6 +159,14 @@ export const DE = {
    CompositeMaterial: "Verbundwerkstoff",
    AlloyFactory: "Schmelze für Legierungen",
    CompositeMaterialFactory: "Fabrik für Verbundwerkstoffe",
+
+   Container: "Container",
+   MalcomMcLean: "Malcom McLean",
+   ContainerFactory: "Containter-Fabrik",
+   ContainerPortRotterdam: "Containerhafen Rotterdam",         // Niederlande
+   ContainerPortAntwerp: "Containerhafen Antwerpen-Brügge",    // Belgien
+   ContainerPortHamburg: "Containerhafen Hamburg",             // Hamburg
+   ContainerPortValencia: "Containerhafen Valencia",           // Spanien
 
    ModernFighter: "Moderner Kampfjet",
    StealthFighter: "Tarnkappenjäger",
@@ -162,11 +178,12 @@ export const DE = {
    StealthBomberFactory: "Tarnkappenbomber-Fabrik",
    ModernAircraftCarrierYard: "Moderne Flugzeugträger-Werft",
    ModernBattleshipYard: "Moderne Schlachtschiff-Werft",
+   MightMakesRight: "Macht geht vor Recht",
 
    CryptoStorage: "Crypto-Speicherung",
    CryptoRepository: "Crypto-Speicherplatz",
 
-   // Lydia: corruption and resilien
+   // Lydia: corruption and resilience
    Corruption: "Korruption",
    InvestigativeJournalism: "Investigativer Journalismus",
    OrganisedCrime: "Organisiertes Verbrechen",
@@ -176,6 +193,66 @@ export const DE = {
    Lobbyism: "Lobbyismus",
    CoverUp: "Vertuschung",
    Desinformation: "Desinformation",
+
+   // Lydia: more food
+   Belgian: "Belgisch",
+   // ExtensiveLandownership: "Großgrundbesitz",
+   IndustrialFarming: "Industrielle Landwirtschaft",
+   FoodIndustry: "Lebensmittelindustrie",
+   ChocolateIndustry: "Schokoladenindustrie",
+   CakeIndustry: "Tortenindustrie",
+   Supermarket: "Supermarkt",
+   HolidayCustoms: "Moderne Feiertagsbräuche",
+
+   Butter: "Butter",
+   Egg: "Ei",
+   Flower: "Blume",
+   Fruit: "Obst",
+   SugarBeet: "Zuckerrübe",
+   Sugar: "Zucker",
+   CocoaBean: "Kakaobohne",
+   Chocolate: "Schokolade",
+   ChocolateCandy: "Praline",
+   Cheesecake: "Käsekuchen",
+   ChocolateCake: "Schokoladentorte",
+   FruitFlan: "Obsttorte",
+   FruitMilk: "Fruchtmilch",
+   Juice: "Saft",
+   Spirits: "Sprituosen",
+   Groceries: "Lebensmittel",
+
+   IndustrialWheatFarm: "Industrielle Weizenfarm",
+   JustusVonLiebig: "Justus von Liebig",
+   JohnBennetLawes: "John Bennet Lawes",
+
+   Dairy: "Molkerei",
+   EggFarm: "Hühnerfarm (Eier)",
+   Floriculture: "Blumenzucht",
+   TulipField: "Tulpenfeld",
+   Orchard: "Obstgarten",
+   FruitPlantation: "Obstplantage (Großanbau)",
+   SugarBeetFarm: "Zuckerrübenfarm",
+   SugarPlantation: "Zuckerplantage",
+   SugarFactory: "Zuckerfabrik",
+   CocoaFarm: "Kakaoanbau",
+   CocoaPlantation: "Kakaoplantage",
+   ChocolateFactory: "Schokoladenfabrik",
+   PralineFactory: "Pralinenmanufaktur",
+   BelgianChocolate: "Manufaktur für Belgische Pralinen",
+   CheesecakeFactory: "Käsekuchen-Fabrik",
+   ChocolateCakeFactory: "Schokoladentoren-Fabrik",
+   FruitFlanFactory: "Obsttorten-Fabrik",
+   SoftDrinkFactory: "Getränkefabrik",
+   Destillery: "Destillery",
+   DrinksMarket: "Getränkemarkt",
+
+   ValentinesDay: "Valentinstag",
+   WomensDay: "Frauentag",
+   ChildrensDay: "Kindertag",             // 01.06.
+   WorldChildrensDay: "Weltkindertag",    // 20.11.
+   LabourDay: "Tag der Arbeit",
+   FathersDay: "Vatertag",
+   MothersDay: "Muttertag",
 
 
    // CivIdle Standard

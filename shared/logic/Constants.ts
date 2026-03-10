@@ -81,11 +81,12 @@ export const GLOBAL_PARAMS = {
    WONDER_LEVEL_HAPPINESS: false,   // defaults: vanilla: false ; lmc: false ; lmc_lydia: false -- it's too strong
    DEBUG_HIDDEN: true,			// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
    BUILDINGS_IGNORE_CITIES: true,	// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
+   GP_IGNORE_CITIES: true,	// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
    GP_IGNORE_PROMOTION: true,			// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
    // ignores GP type "promote"
    GP_AUTO_CHOICE_AFTER: 10,	// defaults: vanilla: infinite ; lmc: infinite ; lmc_lydia: 500, but 10 from UserScript
    NAR_MULTI: 1,					// defaults: vanilla: 0, lmc: 0, lmc_lydia: 1 -- wonder only exists in lmc_lydia
-   PALM_JUMEIRAH_MULTI: 1,
+   PALM_JUMEIRAH_MULTI: 1e5,
    MARINA_BAY_SANDS_MULTI: 1,
 };
 globalThis.GLOBAL_PARAMS = GLOBAL_PARAMS;

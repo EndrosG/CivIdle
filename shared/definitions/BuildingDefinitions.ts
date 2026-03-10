@@ -9,11 +9,19 @@ export enum BuildingSpecial {
    NaturalWonder = 2,
 }
 
+export enum BuildingInputMultiplier {
+   None = 0,
+   Low = 0.01,
+   Medium = 0.05,
+   High = 0.10,
+}
+
 export const DinosaurProvincialParkPercent = 0.15;
 
 export interface IBuildingDefinition {
    name: () => string;
    input: PartialTabulate<Material>;
+   inputMultiplier?: BuildingInputMultiplier;
    construction?: PartialTabulate<Material>;
    output: PartialTabulate<Material>;
    vision?: number;
@@ -541,6 +549,7 @@ export class BuildingDefinitions {
    CivOasis: IBuildingDefinition = {
       name: () => t(L.CivOasis),
       input: { CivTok: 1, Supercomputer: 1, Diplomacy: 2 },
+      inputMultiplier: BuildingInputMultiplier.Low,
       output: { CivOasis: 1 },
       power: true,
    };
@@ -643,67 +652,79 @@ export class BuildingDefinitions {
    LumberMill: IBuildingDefinition = {
       name: () => t(L.LumberMill),
       input: { Wood: 2 },
+      inputMultiplier: BuildingInputMultiplier.Medium,
       output: { Lumber: 1 },
       construction: { Stone: 2 },
    };
    Glassworks: IBuildingDefinition = {
       name: () => t(L.Glassworks),
       input: { Sand: 2 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { Glass: 1 },
       construction: { Brick: 1, Wood: 2 },
    };
    LensWorkshop: IBuildingDefinition = {
       name: () => t(L.LensWorkshop),
       input: { Glass: 2 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { Lens: 1 },
    };
    Blacksmith: IBuildingDefinition = {
       name: () => t(L.Blacksmith),
       input: { Copper: 1, Wood: 1 },
+      inputMultiplier: BuildingInputMultiplier.Medium,
       output: { Tool: 1 },
       construction: { Brick: 1 },
    };
    IronForge: IBuildingDefinition = {
       name: () => t(L.IronForge),
       input: { Iron: 1 },
+      inputMultiplier: BuildingInputMultiplier.Medium,
       output: { Tool: 1 },
       construction: { Brick: 1 },
    };
    Brickworks: IBuildingDefinition = {
       name: () => t(L.Brickworks),
       input: { Stone: 2 },
+      inputMultiplier: BuildingInputMultiplier.Medium,
       output: { Brick: 1 },
       construction: { Wood: 2 },
    };
    Marbleworks: IBuildingDefinition = {
       name: () => t(L.Marbleworks),
       input: { Stone: 2, Tool: 1 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { Marble: 1 },
    };
    ConcretePlant: IBuildingDefinition = {
       name: () => t(L.ConcretePlant),
       input: { Brick: 5, Sand: 5, Tool: 5 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { Concrete: 1 },
    };
    RebarPlant: IBuildingDefinition = {
       name: () => t(L.RebarPlant),
       input: { Steel: 5 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { Rebar: 1 },
    };
    ReinforcedConcretePlant: IBuildingDefinition = {
       name: () => t(L.ReinforcedConcretePlant),
       input: { Rebar: 5, Concrete: 5 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { ReinforcedConcrete: 1 },
    };
    SteelMill: IBuildingDefinition = {
       name: () => t(L.SteelMill),
       input: { Iron: 1, Coal: 1 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { Steel: 1 },
       construction: { Brick: 1, Coal: 1 },
    };
    SiliconSmelter: IBuildingDefinition = {
       name: () => t(L.SiliconSmelter),
       input: { Sand: 5 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { Silicon: 1 },
       construction: { Brick: 1, Coal: 1 },
       power: true,
@@ -738,6 +759,7 @@ export class BuildingDefinitions {
    RobocarFactory: IBuildingDefinition = {
       name: () => t(L.RobocarFactory),
       input: { Car: 5, Supercomputer: 2, Satellite: 1 },
+      inputMultiplier: BuildingInputMultiplier.Low,
       output: { Robocar: 1 },
       power: true,
    };
@@ -750,6 +772,7 @@ export class BuildingDefinitions {
    OilRefinery: IBuildingDefinition = {
       name: () => t(L.OilRefinery),
       input: { Oil: 2 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { Petrol: 1 },
       construction: { Steel: 1 },
    };
@@ -801,48 +824,57 @@ export class BuildingDefinitions {
    CoinMint: IBuildingDefinition = {
       name: () => t(L.CoinMint),
       input: { Gold: 3 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { Coin: 1 },
       construction: { Gold: 2, Lumber: 1, Copper: 1 },
    };
    Bank: IBuildingDefinition = {
       name: () => t(L.Bank),
       input: { Coin: 3 },
+      inputMultiplier: BuildingInputMultiplier.Low,
       output: { Banknote: 1 },
    };
    BondMarket: IBuildingDefinition = {
       name: () => t(L.BondMarket),
       input: { Banknote: 3 },
+      inputMultiplier: BuildingInputMultiplier.Low,
       output: { Bond: 1 },
    };
    StockExchange: IBuildingDefinition = {
       name: () => t(L.StockExchange),
       input: { Bond: 3 },
+      inputMultiplier: BuildingInputMultiplier.Low,
       output: { Stock: 1 },
    };
    ForexMarket: IBuildingDefinition = {
       name: () => t(L.ForexMarket),
       input: { Banknote: 2, Bond: 2 },
+      inputMultiplier: BuildingInputMultiplier.Low,
       output: { Forex: 1 },
    };
    MutualFund: IBuildingDefinition = {
       name: () => t(L.MutualFund),
       input: { Forex: 1, Stock: 1 },
+      inputMultiplier: BuildingInputMultiplier.Low,
       output: { MutualFund: 1 },
    };
    HedgeFund: IBuildingDefinition = {
       name: () => t(L.HedgeFund),
       input: { MutualFund: 2 },
+      inputMultiplier: BuildingInputMultiplier.Low,
       output: { HedgeFund: 1 },
    };
    BitcoinMiner: IBuildingDefinition = {
       name: () => t(L.BitcoinMiner),
       input: { HedgeFund: 2, CivTok: 1 },
+      inputMultiplier: BuildingInputMultiplier.Low,
       output: { Bitcoin: 1 },
       power: true,
    };
    CryptoFund: IBuildingDefinition = {
       name: () => t(L.CryptoFund),
       input: { HedgeFund: 4, CivTok: 2 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { Bitcoin: 2 },
       power: true,
    };
@@ -937,6 +969,7 @@ export class BuildingDefinitions {
       // input: { Maglev: 1, Internet: 5, Computer: 5, Politics: 2, Culture: 50, Philosophy: 20, Garment: 16, Wheat: 100, Water: 110, MutualFund: 1, Stock: 1, Bond: 1 },
       // V2: with new EV values due to introduction of plastics from gas
       input: { Maglev: 1, Internet: 5, Computer: 4, Politics: 2, Culture: 50, Philosophy: 19, Garment: 6, Wheat: 110, Water: 110, MutualFund: 1, Stock: 1, Bond: 1 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { Worker: 2500000 },
       max: 12,
       power: true,
@@ -947,6 +980,7 @@ export class BuildingDefinitions {
       // input: { Water: 1000, Wheat: 500, Maglev: 1, Internet: 4, Software: 1, Computer: 4, Politics: 10, Law: 10, Culture: 100, Philosophy: 60, Book: 40, Opera: 10, Faith: 20, Music: 40, Painting: 40, Garment: 8, Marble: 1, Furniture: 4, Cloth: 5, Tool: 3, Lumber: 5, Brick: 1, Wood: 5, Stone: 1, MutualFund: 1, Stock: 1, Bond: 1, Gold: 1 },
       // V2: with new EV values due to introduction of plastics from gas
       input: { Water: 1000, Wheat: 500, Maglev: 1, Internet: 4, Software: 1, Computer: 3, Politics: 10, Law: 10, Culture: 100, Philosophy: 60, Book: 50, Opera: 10, Faith: 25, Music: 45, Painting: 45, Garment: 10, Marble: 1, Furniture: 4, Cloth: 5, Tool: 3, Lumber: 4, Brick: 1, Wood: 5, Stone: 1, MutualFund: 1, Stock: 1, Bond: 1, Gold: 1 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { Worker: 3000000 },
       max: 12,
       power: true,
@@ -957,6 +991,7 @@ export class BuildingDefinitions {
       // input: { Stock: 5, Forex: 0.975, Bond: 1, MutualFund: 1, Gold: 0.333, Internet: 1, Software: 2, Computer: 5, Garment: 1 },
       // V2: with new EV values due to introduction of plastics from gas
       input: { Stock: 5.0, Forex: 0.995, Bond: 4, MutualFund: 1, Gold: 1.703, Internet: 1, Software: 2, Computer: 4, Garment: 1 },
+      inputMultiplier: BuildingInputMultiplier.Low,
       output: { Koti: 0.1 },
       max: 1,
       power: true,
@@ -975,6 +1010,7 @@ export class BuildingDefinitions {
       name: () => t(L.Retreat1),
       desc: () => t(L.Retreat1Desc),
       input: { Philosophy: 300, Faith: 100, Culture: 100, Water: 20, Wheat: 20 },
+      inputMultiplier: BuildingInputMultiplier.Low,
       output: { Wisdom: 1 },
       construction: { Philosophy: 300, Faith: 100, Culture: 100, Science: 500 },
       wikipedia: "Retreat_(spiritual)",
@@ -990,6 +1026,12 @@ export class BuildingDefinitions {
       power: true,
       wikipedia: "Ascension",
    };
+   PorcelainHut: IBuildingDefinition = {
+      name: () => t(L.PorcelainHut),
+      input: {},
+      output: { Worker: 1 },
+      construction: { Wood: 1, Sand: 1 },
+   };
    ZPMLab: IBuildingDefinition = {
       name: () => t(L.ZPMLab),
       input: {},
@@ -1004,6 +1046,7 @@ export class BuildingDefinitions {
    BicycleFactory: IBuildingDefinition = {
       name: () => t(L.BicycleFactory),
       input: { Steel: 1, Wood: 1, Tool: 1 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { Bicycle: 1 },
       construction: { Brick: 2, Steel: 1, Tool: 1, Engine: 0.5 },
       // power: true,
@@ -1038,7 +1081,8 @@ export class BuildingDefinitions {
       name: () => t(L.UtrechtDistrict),
       desc: () => t(L.UtrechtDistrictDesc),
       input: { Water: 10, Bread: 10, Cheese: 10, Bicycle: 5, Tool: 1, Train: 1 },
-      output: { Worker: 3506 * 2.5 },
+      inputMultiplier: BuildingInputMultiplier.Medium,
+      output: { Worker: 3506 * 2 },
       construction: { Steel: 2, Brick: 2, Lumber: 2, Water: 5, Bread: 5, Cheese: 10, Bicycle: 5, Tool: 1, Train: 1 },
       power: true,
       wikipedia: "Utrecht",
@@ -1127,6 +1171,7 @@ export class BuildingDefinitions {
    SmartphoneFactory: IBuildingDefinition = {
       name: () => t(L.SmartphoneFactory),
       input: { Semiconductor: 10, Software: 5, Plastics: 5, Aluminum: 2, Glass: 2, Lens: 2, Internet: 1 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { Smartphone: 1 },
       // construction: { Rebar: 50, ReinforcedConcrete: 30, Plastics: 20, Cable: 10, Engine: 5, Tool: 5 },
       power: true,
@@ -1161,6 +1206,7 @@ export class BuildingDefinitions {
       // basiert ein Stück weit auf der einfachen Rakete
       // input: { Engine: 2, Dynamite: 2, Steel: 4, Semiconductor: 2, Cable: 5, Petrol: 5 }, // 9909
       input: { Engine: 2, Dynamite: 2, Steel: 4, Semiconductor: 2, Cable: 5, Petrol: 5 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { InterceptorMissile: 1 },
       power: true,
    };
@@ -1169,12 +1215,14 @@ export class BuildingDefinitions {
       // input: { Rocket: 1, Semiconductor: 2, Dynamite: 5 },
       // input: { Engine: 1, Semiconductor: 2, Artillery: 1, Steel: 6, Cable: 6, Petrol: 10 },
       input: { Engine: 1, Computer: 1, Artillery: 1, Steel: 6, Cable: 6, Petrol: 10 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { GuidedMissile: 1 },
       power: true,
    };
    CruiseMissileFactory: IBuildingDefinition = {
       name: () => t(L.CruiseMissileFactory),
       input: { GuidedMissile: 2, Software: 1, Satellite: 1 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { CruiseMissile: 1 },
       power: true,
    };
@@ -1182,22 +1230,35 @@ export class BuildingDefinitions {
       name: () => t(L.DroneFactory),
       // input: { Engine: 1, Plastics: 2, Cable: 2, Semiconductor: 2, Petrol: 5 },
       input: { Engine: 1, Computer: 1, Plastics: 2, Cable: 2, Petrol: 5 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { Drone: 1 },
       power: true,
    };
    CombatDroneFactory: IBuildingDefinition = {
       name: () => t(L.CombatDroneFactory),
       input: { Drone: 2, Dynamite: 5, Software: 1, Radio: 1 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { CombatDrone: 1 },
       power: true,
    };
 
+   DefenseCapability: IBuildingDefinition = {
+      name: () => t(L.DefenseCapability),
+      desc: () => t(L.DefenseCapabilityDesc),
+      input: {},
+      output: {},
+      construction: { Computer: 1, Software: 1, Radio: 2, Satellite: 2, InterceptorMissile: 25, Drone: 50, Artillery: 4, Tank: 5, GuidedMissile: 25, CombatDrone: 100, CruiseMissile: 50, ModernFighter: 10 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      power: true,
+      // wikipedia: "Iron_Dome",
+   };
    IronDome: IBuildingDefinition = {
       name: () => t(L.IronDome),
       desc: () => t(L.IronDomeDesc),
       input: {},
       output: {},
-      construction: { InterceptorMissile: 100, Software: 10 },
+      construction: { InterceptorMissile: 25, Software: 5 },
       max: 1,
       special: BuildingSpecial.WorldWonder,
       power: true,
@@ -1207,31 +1268,89 @@ export class BuildingDefinitions {
    AlloyFactory: IBuildingDefinition = {
       name: () => t(L.AlloyFactory),
       input: { Aluminum: 1, Copper: 2, Iron: 2, Gold: 1 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { Alloy: 1 },
       power: true,
    };
    CompositeMaterialFactory: IBuildingDefinition = {
       name: () => t(L.CompositeMaterialFactory),
       input: { Coal: 5, Plastics: 5, OpticalFiber: 1 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { CompositeMaterial: 1 },
       power: true,
+   };
+
+   ContainerFactory: IBuildingDefinition = {
+      name: () => t(L.ContainerFactory),
+      input: { Steel: 20, Lumber: 1 },
+      inputMultiplier: BuildingInputMultiplier.High,
+      output: { Container: 1 },
+      construction: { Concrete: 5, Steel: 5, Engine: 2, Car: 1, Train: 1 },
+      power: true,
+   };
+   ContainerPortRotterdam: IBuildingDefinition = {
+      name: () => t(L.ContainerPortRotterdam),
+      desc: () => t(L.EmptyWonderDesc),
+      input: {},
+      output: {},
+      construction: { Container: 13.5 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      power: true,
+      wikipedia: "Container_port",
+   };
+   ContainerPortAntwerp: IBuildingDefinition = {
+      name: () => t(L.ContainerPortAntwerp),
+      desc: () => t(L.EmptyWonderDesc),
+      input: {},
+      output: {},
+      construction: { Container: 12.5 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      power: true,
+      wikipedia: "Container_port",
+   };
+   ContainerPortHamburg: IBuildingDefinition = {
+      name: () => t(L.ContainerPortHamburg),
+      desc: () => t(L.EmptyWonderDesc),
+      input: {},
+      output: {},
+      construction: { Container: 7.7 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      power: true,
+      wikipedia: "Container_port",
+   };
+   ContainerPortValencia: IBuildingDefinition = {
+      name: () => t(L.ContainerPortValencia),
+      desc: () => t(L.EmptyWonderDesc),
+      input: {},
+      output: {},
+      construction: { Container: 4.8 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      power: true,
+      wikipedia: "Container_port",
    };
 
    ModernFighterFactory: IBuildingDefinition = {
       name: () => t(L.ModernFighterFactory),
       input: { Airplane: 1, Computer: 1, Software: 1, GatlingGun: 2, InterceptorMissile: 2, Dynamite: 4 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { ModernFighter: 1 },
       power: true,
    };
    StealthFighterFactory: IBuildingDefinition = {
       name: () => t(L.StealthFighterFactory),
       input: { ModernFighter: 1, Alloy: 2, CompositeMaterial: 2, GuidedMissile: 4 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { StealthFighter: 1 },
       power: true,
    };
    StealthBomberFactory: IBuildingDefinition = {
       name: () => t(L.StealthBomberFactory),
       input: { ModernFighter: 2, Alloy: 4, CompositeMaterial: 4, AtomicBomb: 4, Dynamite: 10, GuidedMissile: 4 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { StealthBomber: 1 },
       power: true,
    };
@@ -1239,6 +1358,7 @@ export class BuildingDefinitions {
    ModernAircraftCarrierYard: IBuildingDefinition = {
       name: () => t(L.ModernAircraftCarrierYard),
       input: { Battleship: 1, Alloy: 20, Computer: 5, Satellite: 1, InterceptorMissile: 10, ModernFighter: 20, StealthFighter: 10 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { ModernAircraftCarrier: 1 },
       power: true,
    };
@@ -1246,9 +1366,272 @@ export class BuildingDefinitions {
       name: () => t(L.ModernBattleshipYard),
       // input: { Battleship: 1, Alloy: 50, ModernFighter: 5, StealthFighter: 10, InterceptorMissile: 10 },
       input: { Ironclad: 1, Alloy: 10, Computer: 5, Satellite: 1, Artillery: 5, InterceptorMissile: 10, GuidedMissile: 10, CruiseMissile: 10 },
+      inputMultiplier: BuildingInputMultiplier.High,
       output: { ModernBattleship: 1 },
       power: true,
    };
+
+   MightMakesRight: IBuildingDefinition = {
+      name: () => t(L.MightMakesRight),
+      desc: () => t(L.IronDomeDesc),
+      input: {},
+      output: {},
+      construction: { ModernAircraftCarrier: 1000, ModernBattleship: 400, StealthBomber: 50, StealthFighter: 100, CruiseMissile: 100 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      power: true,
+      wikipedia: "Might_makes_right",
+   };
+
+   // Lydia: more food
+   IndustrialWheatFarm: IBuildingDefinition = {
+      name: () => t(L.IndustrialWheatFarm),
+      input: { Water: 3 },
+      inputMultiplier: BuildingInputMultiplier.Low,
+      output: { Wheat: 3 },
+      construction: { Brick: 3, Lumber: 3, Engine: 1 },
+   };
+   Dairy: IBuildingDefinition = {
+      name: () => t(L.Dairy),
+      input: { Milk: 5 },
+      inputMultiplier: BuildingInputMultiplier.High,
+      output: { Butter: 1 },
+      construction: { Brick: 1, Lumber: 1 },
+   };
+   EggFarm: IBuildingDefinition = {
+      name: () => t(L.EggFarm),
+      input: { Wheat: 2 },
+      inputMultiplier: BuildingInputMultiplier.Medium,
+      output: { Egg: 2 },
+      construction: { Lumber: 1 },
+   };
+   Floriculture: IBuildingDefinition = {
+      name: () => t(L.Floriculture),
+      input: { Water: 3 },
+      inputMultiplier: BuildingInputMultiplier.Low,
+      output: { Flower: 1 },
+      construction: { Brick: 1, Lumber: 1, Glass: 2 },
+   };
+   TulipField: IBuildingDefinition = {
+      name: () => t(L.TulipField),
+      input: { Water: 5 },
+      inputMultiplier: BuildingInputMultiplier.Medium,
+      output: { Flower: 2 },
+      construction: { Brick: 3, Lumber: 3 },
+   };
+   Orchard: IBuildingDefinition = {
+      name: () => t(L.Orchard),
+      input: {},
+      output: { Fruit: 1 },
+      construction: { Wood: 1 },
+   };
+   FruitPlantation: IBuildingDefinition = {
+      name: () => t(L.FruitPlantation),
+      input: { Water: 2 },
+      inputMultiplier: BuildingInputMultiplier.Low,
+      output: { Fruit: 2 },
+      construction: { Brick: 2, Lumber: 2, Engine: 1 },
+   };
+   SugarBeetFarm: IBuildingDefinition = {
+      name: () => t(L.SugarBeetFarm),
+      input: {},
+      output: { SugarBeet: 1 },
+      construction: { Wood: 1 },
+   };
+   SugarPlantation: IBuildingDefinition = {
+      name: () => t(L.SugarPlantation),
+      input: { Water: 2 },
+      inputMultiplier: BuildingInputMultiplier.Low,
+      output: { SugarBeet: 2 },
+      construction: { Brick: 2, Lumber: 2, Engine: 1 },
+   };
+   SugarFactory: IBuildingDefinition = {
+      name: () => t(L.SugarFactory),
+      input: { SugarBeet: 7 },
+      inputMultiplier: BuildingInputMultiplier.High,
+      output: { Sugar: 1 },
+      construction: { Brick: 10, Steel: 2, Engine: 2 },
+      // power: true,
+   };
+   CocoaFarm: IBuildingDefinition = {
+      name: () => t(L.CocoaFarm),
+      input: {},
+      output: { CocoaBean: 1 },
+      construction: { Wood: 1 },
+   };
+   CocoaPlantation: IBuildingDefinition = {
+      name: () => t(L.CocoaPlantation),
+      input: { Water: 2 },
+      inputMultiplier: BuildingInputMultiplier.Low,
+      output: { CocoaBean: 2 },
+      construction: { Brick: 2, Lumber: 2, Engine: 1 },
+   };
+
+   ChocolateFactory: IBuildingDefinition = {
+      name: () => t(L.ChocolateFactory),
+      input: { CocoaBean: 3, Milk: 3, Sugar: 1 },
+      inputMultiplier: BuildingInputMultiplier.High,
+      output: { Chocolate: 2 },
+      construction: { Brick: 10, Steel: 5, Engine: 1 },
+   };
+   PralineFactory: IBuildingDefinition = {
+      name: () => t(L.PralineFactory),
+      input: { CocoaBean: 2, Milk: 3, Sugar: 1, Wheat: 1 },
+      inputMultiplier: BuildingInputMultiplier.High,
+      output: { ChocolateCandy: 1 },
+      construction: { Brick: 10, Steel: 5, Engine: 1 },
+   };
+   BelgianChocolate: IBuildingDefinition = {
+      name: () => t(L.BelgianChocolate),
+      input: { CocoaBean: 5, Milk: 5, Sugar: 2, Wheat: 2 },
+      inputMultiplier: BuildingInputMultiplier.High,
+      output: { ChocolateCandy: 2 },
+      construction: { Brick: 20, Steel: 10, Engine: 2 },
+   };
+   CheesecakeFactory: IBuildingDefinition = {
+      name: () => t(L.CheesecakeFactory),
+      input: { CocoaBean: 2, Milk: 3, Sugar: 1, Wheat: 1 },
+      inputMultiplier: BuildingInputMultiplier.High,
+      output: { Cheesecake: 1 },
+      construction: { Brick: 10, Steel: 5, Engine: 1 },
+   };
+   ChocolateCakeFactory: IBuildingDefinition = {
+      name: () => t(L.ChocolateCakeFactory),
+      input: { CocoaBean: 2, Milk: 3, Sugar: 1, Wheat: 1 },
+      inputMultiplier: BuildingInputMultiplier.High,
+      output: { ChocolateCake: 1 },
+      construction: { Brick: 10, Steel: 5, Engine: 1 },
+   };
+   FruitFlanFactory: IBuildingDefinition = {
+      name: () => t(L.FruitFlanFactory),
+      input: { CocoaBean: 2, Milk: 3, Sugar: 1, Wheat: 1 },
+      inputMultiplier: BuildingInputMultiplier.High,
+      output: { FruitFlan: 1 },
+      construction: { Brick: 10, Steel: 5, Engine: 1 },
+   };
+
+   AppleJuice: IBuildingDefinition = {
+      name: () => t(L.SoftDrinkFactory),
+      input: { Water: 4, Fruit: 2, Sugar: 2, Glass: 2 },
+      inputMultiplier: BuildingInputMultiplier.High,
+      output: { Juice: 2 },
+      construction: { Brick: 5, Steel: 5, Lumber: 5 },
+      power: true,
+   };
+   FruitMilk: IBuildingDefinition = {
+      name: () => t(L.SoftDrinkFactory),
+      input: { Milk: 3, Fruit: 2, Sugar: 2, Glass: 2 },
+      inputMultiplier: BuildingInputMultiplier.High,
+      output: { FruitMilk: 2 },
+      construction: { Brick: 5, Steel: 5, Lumber: 5 },
+      power: true,
+   };
+   FruitBrandy: IBuildingDefinition = {
+      name: () => t(L.Destillery),
+      input: { Fruit: 1, Sugar: 1, Alcohol: 2, Glass: 1 },
+      inputMultiplier: BuildingInputMultiplier.High,
+      output: { Spirits: 1 },
+      construction: { Brick: 5, Steel: 5, Lumber: 5, Wood: 5 },
+      power: true,
+   };
+   EggNog: IBuildingDefinition = {
+      name: () => t(L.Destillery),
+      input: { Egg: 2, Sugar: 0.5, Milk: 0.5, Alcohol: 2, Glass: 1 },
+      inputMultiplier: BuildingInputMultiplier.High,
+      output: { Spirits: 1 },
+      construction: { Brick: 5, Steel: 5, Lumber: 5, Wood: 5 },
+      power: true,
+   };
+
+   Supermarket: IBuildingDefinition = {
+      name: () => t(L.Supermarket),
+      input: { Water: 3, Wheat: 3, Fruit: 3, Bread: 2, Butter: 1, Milk: 2, Cheese: 2, Meat: 2, Egg: 2, Flour: 2, Sugar: 2, Chocolate: 1 },
+      inputMultiplier: BuildingInputMultiplier.High,
+      output: { Groceries: 5 },
+      construction: { Brick: 10, Steel: 10, Glass: 10, Lumber: 5, Car: 1 },
+      power: true,
+   };
+   DrinksMarket: IBuildingDefinition = {
+      name: () => t(L.DrinksMarket),
+      input: { Water: 3, Milk: 3, Juice: 2, FruitMilk: 1, Alcohol: 1, Spirits: 1 },
+      inputMultiplier: BuildingInputMultiplier.High,
+      output: { Groceries: 5 },
+      construction: { Brick: 10, Steel: 10, Glass: 10, Lumber: 5 },
+      power: true,
+   };
+
+
+   ValentinesDay: IBuildingDefinition = {
+      name: () => t(L.ValentinesDay),
+      desc: () => t(L.IronDomeDesc),
+      input: {},
+      output: {},
+      construction: { Flower: 1, ChocolateCandy: 10, ChocolateCake: 1 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "Valentine's_Day",
+   };
+   WomensDay: IBuildingDefinition = {
+      name: () => t(L.WomensDay),
+      desc: () => t(L.IronDomeDesc),
+      input: {},
+      output: {},
+      construction: { Flower: 1, ChocolateCandy: 10, ChocolateCake: 1 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "International_Women's_Day",
+   };
+   ChildrensDay: IBuildingDefinition = {
+      name: () => t(L.ChildrensDay),
+      desc: () => t(L.IronDomeDesc),
+      input: {},
+      output: {},
+      construction: { Chocolate: 2, ChocolateCake: 2, Cheesecake: 2, FruitFlan: 2 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "Children's_Day",
+   };
+   WorldChildrensDay: IBuildingDefinition = {
+      name: () => t(L.WorldChildrensDay),
+      desc: () => t(L.IronDomeDesc),
+      input: {},
+      output: {},
+      construction: { Chocolate: 2, ChocolateCake: 2, Cheesecake: 2, FruitFlan: 2 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "Children's_Day",
+   };
+   LabourDay: IBuildingDefinition = {
+      name: () => t(L.LabourDay),
+      desc: () => t(L.IronDomeDesc),
+      input: {},
+      output: {},
+      construction: { Meat: 1, Alcohol: 1, Spirits: 3 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "Labour_Day",
+   };
+   FathersDay: IBuildingDefinition = {
+      name: () => t(L.FathersDay),
+      desc: () => t(L.IronDomeDesc),
+      input: {},
+      output: {},
+      construction: { Meat: 1, Alcohol: 1, Spirits: 3 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "Father's_Day",
+   };
+   MothersDay: IBuildingDefinition = {
+      name: () => t(L.MothersDay),
+      desc: () => t(L.IronDomeDesc),
+      input: {},
+      output: {},
+      construction: { ChocolateCandy: 2, ChocolateCake: 2, Cheesecake: 2 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "Mother's_Day",
+   };
+
 
 
    // CivIdle Standard again
@@ -2944,17 +3327,93 @@ export const BuildingIsTrading = new Set<Building>([
    "Warehouse3",
 ] satisfies Building[]);
 
+export const BuildingIsMilitaryOffense = new Set<Building>([
+   "GunpowderMill",
+   "DynamiteWorkshop",
+   "RifleFactory",
+   "GatlingGunFactory",
+   "ArtilleryFactory",
+
+   "CannonWorkshop",
+   "TankFactory",
+
+   "AtomicFacility",
+   "RocketFactory",
+   "NuclearMissileSilo",
+   "SatelliteFactory",
+
+   "IroncladBuilder",
+   "SubmarineYard",
+   "NuclearSubmarineYard",
+   "BattleshipBuilder",
+   "FighterJetPlant",
+   "AircraftCarrierYard",
+
+   "InterceptorMissileFactory",
+   "GuidedMissileFactory",
+   "CruiseMissileFactory",
+   "DroneFactory",
+   "CombatDroneFactory",
+
+   "ModernFighterFactory",
+   "StealthFighterFactory",
+   "StealthBomberFactory",
+   "ModernAircraftCarrierYard",
+   "ModernBattleshipYard",
+] satisfies Building[]);
+export const BuildingIsMilitaryDefense = new Set<Building>([
+   "GunpowderMill",
+   "DynamiteWorkshop",
+   "RifleFactory",
+   "GatlingGunFactory",
+   "ArtilleryFactory",
+   "CannonWorkshop",
+   "TankFactory",
+   "FighterJetPlant",
+
+   "InterceptorMissileFactory",
+   "GuidedMissileFactory",
+   "CruiseMissileFactory",
+   "DroneFactory",
+   "CombatDroneFactory",
+
+   "ModernFighterFactory",
+] satisfies Building[]);
+
 
 // This controls whether we allow upgrade for multiple levels. e.g. Tradition/Religion/Ideology wonders should NOT allow this!
 export const UpgradableWorldWonders = new Set<Building>([
    // Added by Lydia
    "NuclearArmsRace",
    "Retreat2",
+   "WindMill",
    "VanGoghMuseum",
    "InternationalCriminalCourt",
+   "TourDeFrance",
+   "GiroDItalia",
    "KotiRepository",
    "NuclearWasteRepository",
 
+   "RecyclingPlantWo",
+   "ContainerPortRotterdam",
+   "ContainerPortAntwerp",
+   "ContainerPortHamburg",
+   "ContainerPortValencia",
+
+   "DefenseCapability",
+   "IronDome",
+   "MightMakesRight",
+
+   "ValentinesDay",
+   "WomensDay",
+   "ChildrensDay",
+   "WorldChildrensDay",
+   "LabourDay",
+   "FathersDay",
+   "MothersDay",
+
+
+   // CivIdle Standard
    "InternationalSpaceStation",
    "MarinaBaySands",
    "PalmJumeirah",

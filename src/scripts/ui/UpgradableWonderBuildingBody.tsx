@@ -1,6 +1,7 @@
 import { BuildingColorComponent } from "./BuildingColorComponent";
 import { BuildingDescriptionComponent } from "./BuildingDescriptionComponent";
 import type { IBuildingComponentProps } from "./BuildingPage";
+import { BuildingStorageComponent } from "./BuildingStorageComponent";
 import { BuildingUpgradeComponent } from "./BuildingUpgradeComponent";
 import { BuildingValueComponent } from "./BuildingValueComponent";
 import { BuildingWikipediaComponent } from "./BuildingWikipediaComponent";
@@ -18,6 +19,7 @@ export function UpgradableWonderBuildingBody({ gameState, xy }: IBuildingCompone
          <BuildingDescriptionComponent gameState={gameState} xy={xy} />
          <BuildingUpgradeComponent gameState={gameState} xy={xy} key={xy} />
          <UpgradeableWonderComponent gameState={gameState} xy={xy} />
+         <BuildingStorageComponent gameState={gameState} xy={xy} />
          <BuildingValueComponent gameState={gameState} xy={xy} />
          <BuildingWikipediaComponent gameState={gameState} xy={xy} />
          <BuildingColorComponent gameState={gameState} xy={xy} />

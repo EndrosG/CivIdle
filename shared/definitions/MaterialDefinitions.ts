@@ -21,11 +21,30 @@ export class MaterialDefinitions {
    CombatDrone = { name: () => t(L.CombatDrone) };
    Alloy = { name: () => t(L.Alloy) };
    CompositeMaterial = { name: () => t(L.CompositeMaterial) };
+   Container = { name: () => t(L.Container) };
    ModernFighter = { name: () => t(L.ModernFighter) };
    StealthFighter = { name: () => t(L.StealthFighter) };
    StealthBomber = { name: () => t(L.StealthBomber) };
    ModernAircraftCarrier = { name: () => t(L.ModernAircraftCarrier) };
    ModernBattleship = { name: () => t(L.ModernBattleship) };
+
+   Butter = { name: () => t(L.Butter) };
+   Egg = { name: () => t(L.Egg) };
+   Flower = { name: () => t(L.Flower) };
+   Fruit = { name: () => t(L.Fruit) };
+   SugarBeet = { name: () => t(L.SugarBeet) };
+   Sugar = { name: () => t(L.Sugar) };
+   CocoaBean = { name: () => t(L.CocoaBean) };
+   Chocolate = { name: () => t(L.Chocolate) };
+   ChocolateCandy = { name: () => t(L.ChocolateCandy) };
+   Cheesecake = { name: () => t(L.Cheesecake) };
+   ChocolateCake = { name: () => t(L.ChocolateCake) };
+   FruitFlan = { name: () => t(L.FruitFlan) };
+   FruitMilk = { name: () => t(L.FruitMilk) };
+   Juice = { name: () => t(L.Juice) };
+   Spirits = { name: () => t(L.Spirits) };
+   Groceries = { name: () => t(L.Groceries) };
+
 
 
    Worker: IMaterialDefinition = { name: () => t(L.Worker) };

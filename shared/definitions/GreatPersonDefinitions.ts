@@ -31,7 +31,7 @@ export class GreatPersonDefinitions {
       // desc: (self, level) => t(L.BuildingLevelBoostDesc, { value: self.value(level), building: "WirecardAG" }),
       boost: {
          multipliers: ["levelBoost", "storage"],
-         buildings: ["WirecardAG"]
+         buildings: ["WirecardAG"],
       },
       time: "1969 AD ~ now",
       value: (level) => level,
@@ -172,7 +172,7 @@ export class GreatPersonDefinitions {
    SevenOfNine: IGreatPersonDefinition = boostOf({
       name: () => t(L.SevenOfNine),
       boost: {
-         multipliers: ["levelBoost", "output", "storage"],
+         multipliers: ["levelBoost", "storage"],
          buildings: ["InternetServiceProvider", "CivTok", "HedgeFund", "SupercomputerLab"],
       },
       time: "2344 ~ 24xx AD",
@@ -247,13 +247,71 @@ export class GreatPersonDefinitions {
    Asgard: IGreatPersonDefinition = boostOf({
       name: () => t(L.Asgard),
       boost: {
-         multipliers: ["levelBoost", "storage"],
+         multipliers: ["levelBoost", "worker", "storage"],
          buildings: ["ComputerFactory", "SupercomputerLab", "CloneFactory"],
       },
       time: "unknown",
       value: (level) => level,
       maxLevel: Number.POSITIVE_INFINITY,
       age: "AscensionAge",
+   });
+
+   MalcomMcLean: IGreatPersonDefinition = boostOf({
+      name: () => t(L.MalcomMcLean),
+      boost: {
+         multipliers: ["levelBoost", "storage"],
+         buildings: ["ContainerFactory"],
+      },
+      time: "1913 ~ 2001 AD",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "ColdWarAge",
+   });
+
+   JohnBennetLawes: IGreatPersonDefinition = boostOf({
+      name: () => t(L.JohnBennetLawes),
+      boost: {
+         multipliers: ["output", "storage"],
+         buildings: ["IndustrialWheatFarm", "FruitPlantation", "SugarPlantation", "CocoaPlantation"],
+      },
+      time: "1814 ~ 1900 AD",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "IndustrialAge",
+   });
+   JustusVonLiebig: IGreatPersonDefinition = boostOf({
+      name: () => t(L.JustusVonLiebig),
+      boost: {
+         multipliers: ["levelBoost", "storage"],
+         buildings: ["IndustrialWheatFarm", "FruitPlantation", "SugarPlantation", "CocoaPlantation"],
+      },
+      time: "1803 ~ 1873 AD",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "IndustrialAge",
+   });
+
+   FrankCanova: IGreatPersonDefinition = boostOf({
+      name: () => t(L.FrankCanova),
+      boost: {
+         multipliers: ["output", "storage"],
+         buildings: ["SmartphoneFactory"],
+      },
+      time: "1956 AD ~ now",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "InformationAge",
+   });
+   SteveJobs: IGreatPersonDefinition = boostOf({
+      name: () => t(L.SteveJobs),
+      boost: {
+         multipliers: ["levelBoost", "storage"],
+         buildings: ["SmartphoneFactory"],
+      },
+      time: "1955 ~ 2011 AD",
+      value: (level) => level,
+      maxLevel: Number.POSITIVE_INFINITY,
+      age: "InformationAge",
    });
 
 
