@@ -5,6 +5,7 @@ import { client } from "../rpc/RPCClient";
 import { BuildingColorComponent } from "./BuildingColorComponent";
 import { BuildingDescriptionComponent } from "./BuildingDescriptionComponent";
 import type { IBuildingComponentProps } from "./BuildingPage";
+import { BuildingStorageComponent } from "./BuildingStorageComponent";
 import { BuildingValueComponent } from "./BuildingValueComponent";
 import { BuildingWikipediaComponent } from "./BuildingWikipediaComponent";
 import { html } from "./RenderHTMLComponent";
@@ -36,9 +37,10 @@ export function WorldTradeOrganizationBuildingBody({
             getVotedBoosts={client.getTradeTileBonusVotes}
             voteBoosts={client.voteTradeTileBonus}
          />
+         <BuildingStorageComponent gameState={gameState} xy={xy} />
          <BuildingValueComponent gameState={gameState} xy={xy} />
-         <BuildingWikipediaComponent gameState={gameState} xy={xy} />
          <BuildingColorComponent gameState={gameState} xy={xy} />
+         <BuildingWikipediaComponent gameState={gameState} xy={xy} />
       </div>
    );
 }

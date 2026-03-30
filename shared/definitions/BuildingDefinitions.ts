@@ -1290,7 +1290,7 @@ export class BuildingDefinitions {
    };
    ContainerPortRotterdam: IBuildingDefinition = {
       name: () => $t(L.ContainerPortRotterdam),
-      desc: () => $t(L.EmptyWonderDesc),
+      desc: () => $t(L.ContainerPortDesc),
       input: {},
       output: {},
       construction: { Container: 13.5 },
@@ -1301,7 +1301,7 @@ export class BuildingDefinitions {
    };
    ContainerPortAntwerp: IBuildingDefinition = {
       name: () => $t(L.ContainerPortAntwerp),
-      desc: () => $t(L.EmptyWonderDesc),
+      desc: () => $t(L.ContainerPortDesc),
       input: {},
       output: {},
       construction: { Container: 12.5 },
@@ -1312,7 +1312,7 @@ export class BuildingDefinitions {
    };
    ContainerPortHamburg: IBuildingDefinition = {
       name: () => $t(L.ContainerPortHamburg),
-      desc: () => $t(L.EmptyWonderDesc),
+      desc: () => $t(L.ContainerPortDesc),
       input: {},
       output: {},
       construction: { Container: 7.7 },
@@ -1323,7 +1323,7 @@ export class BuildingDefinitions {
    };
    ContainerPortValencia: IBuildingDefinition = {
       name: () => $t(L.ContainerPortValencia),
-      desc: () => $t(L.EmptyWonderDesc),
+      desc: () => $t(L.ContainerPortDesc),
       input: {},
       output: {},
       construction: { Container: 4.8 },
@@ -1357,7 +1357,7 @@ export class BuildingDefinitions {
 
    ModernAircraftCarrierYard: IBuildingDefinition = {
       name: () => $t(L.ModernAircraftCarrierYard),
-      input: { Battleship: 1, Alloy: 20, Computer: 5, Satellite: 1, InterceptorMissile: 10, ModernFighter: 20, StealthFighter: 10 },
+      input: { Battleship: 1, NuclearFuelRod: 20, Alloy: 20, Computer: 5, Satellite: 1, InterceptorMissile: 10, ModernFighter: 20, StealthFighter: 10 },
       inputMultiplier: BuildingInputMultiplier.High,
       output: { ModernAircraftCarrier: 1 },
       power: true,

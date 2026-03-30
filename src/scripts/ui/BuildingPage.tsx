@@ -63,6 +63,11 @@ const BuildingBodyOverride: Partial<Record<Building, FunctionComponent<IBuilding
    Warehouse2: WarehouseBuildingBody,
    Warehouse3: WarehouseBuildingBody,
 
+   ContainerPortRotterdam: GrandBazaarBuildingBody,
+   ContainerPortAntwerp: GrandBazaarBuildingBody,
+   ContainerPortHamburg: GrandBazaarBuildingBody,
+   ContainerPortValencia: GrandBazaarBuildingBody,
+
    Petra: PetraBuildingBody,
    OxfordUniversity: ScienceProductionWonderBuildingBody,
    StPetersBasilica: ScienceProductionWonderBuildingBody,

@@ -40,9 +40,9 @@ export function DefaultBuildingBody({ gameState, xy }: IBuildingComponentProps):
          <BuildingStockpileComponent gameState={gameState} xy={xy} />
          <BuildingInputModeComponent gameState={gameState} xy={xy} />
          <BuildingValueComponent gameState={gameState} xy={xy} />
-         <BuildingWikipediaComponent gameState={gameState} xy={xy} />
          <BuildingColorComponent gameState={gameState} xy={xy} />
          <BuildingSellComponent gameState={gameState} xy={xy} />
+         <BuildingWikipediaComponent gameState={gameState} xy={xy} />
       </div>
    );
 }

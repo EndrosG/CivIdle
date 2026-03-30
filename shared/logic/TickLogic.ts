@@ -157,6 +157,11 @@ export const Tick = {
    next: EmptyTickData(),
 };
 
+function getTick() {
+   return Tick;
+}
+globalThis.getTick = getTick;
+
 interface IMultiplier {
    input: number;
    output: number;
@@ -207,14 +212,15 @@ export function totalEmpireValue(gs: GameState): number {
 export function calculateCurrentTick(tick: ITickData, gs: GameState): void {
    getTypeBuildings(gs).forEach((buildings, type) => {
       const multipliers = tick._buildingMultipliers.get(type);
-      const levelBoost = tick.globalMultipliers.levelBoost;
+      // const levelBoost = tick.globalMultipliers.levelBoost;
       buildings.forEach((building) => {
          multipliers?.forEach((m) => {
             mapSafePush(tick.tileMultipliers, building.tile, m);
          });
-         levelBoost.forEach((m) => {
-            mapSafePush(tick.levelBoost, building.tile, m);
-         });
+         // Lydia: I do not need this because I have this already in "Update.ts:987"
+         // levelBoost.forEach((m) => {
+         // mapSafePush(tick.levelBoost, building.tile, m);
+         // });
       });
    });
 }

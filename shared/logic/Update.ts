@@ -930,8 +930,8 @@ export function transportAndConsumeResources(
          const worker = getWorkersFor(xy, gs);
          useWorkers("Worker", worker.output, xy);
          deductResources(building.resources, input);
+         const storage = Tick.current.specialBuildings.get("Headquarter")?.building.resources;
          forEach(nonTransportables, (res, amount) => {
-            const storage = Tick.current.specialBuildings.get("Headquarter")?.building.resources;
             switch (res) {
                case "Science": {
                   if (storage) {
@@ -1347,6 +1347,10 @@ export function tickPrice(gs: GameState) {
    }
    const resources = filterOf(unlockedResources(gs), (res) => !NoPrice[res] && !NoStorage[res]);
    const grandBazaar = findSpecialBuildingCached("GrandBazaar", gs);
+   const hasContainerPort = Tick.current.specialBuildings.has("ContainerPortRotterdam") ||
+      Tick.current.specialBuildings.has("ContainerPortAntwerp") ||
+      Tick.current.specialBuildings.has("ContainerPortHamburg") ||
+      Tick.current.specialBuildings.has("ContainerPortValencia");
    const grid = getGrid(gs);
    getBuildingsByType("Market", gs)?.forEach((tile, xy) => {
       const building = gs.tiles.get(xy)?.building;
@@ -1356,7 +1360,7 @@ export function tickPrice(gs: GameState) {
       const market = building as IMarketBuildingData;
       if (forceUpdatePrice || sizeOf(market.availableResources) === 0) {
          let seed = `${priceId},${xy}`;
-         if (!import.meta.env.DEV) {
+         if (!import.meta.env.DEV && !hasContainerPort) {
             const nextToGrandBazaar =
                grandBazaar?.building.status === "completed" && grid.distanceTile(grandBazaar.tile, xy) <= 1;
             seed = nextToGrandBazaar ? `${priceId},${xy}` : `${priceId}`;

@@ -22,13 +22,17 @@ import { Singleton } from "../utilities/Singleton";
 import { playClick } from "../visuals/Sound";
 import { BuildingColorComponent } from "./BuildingColorComponent";
 import { BuildingDescriptionComponent } from "./BuildingDescriptionComponent";
+import { BuildingElectricityComponent } from "./BuildingElectricityComponent";
 import type { IBuildingComponentProps } from "./BuildingPage";
+import { BuildingStorageComponent } from "./BuildingStorageComponent";
+import { BuildingUpgradeComponent } from "./BuildingUpgradeComponent";
 import { BuildingValueComponent } from "./BuildingValueComponent";
 import { BuildingWikipediaComponent } from "./BuildingWikipediaComponent";
 import { FormatNumber } from "./HelperComponents";
 import { RenderHTML } from "./RenderHTMLComponent";
 import { TableView } from "./TableView";
 import { TextWithHelp } from "./TextWithHelpComponent";
+import { UpgradeableWonderComponent } from "./UpgradeableWonderComponent";
 import { WarningComponent } from "./WarningComponent";
 
 interface IGrandBazaarMarketData {
@@ -486,10 +490,15 @@ export function GrandBazaarBuildingBody({ gameState, xy }: IBuildingComponentPro
             </menu>
             {content}
          </div>
+
          <div className="sep10"></div>
-         <BuildingWikipediaComponent gameState={gameState} xy={xy} />
+         <BuildingUpgradeComponent gameState={gameState} xy={xy} key={xy} />
+         <UpgradeableWonderComponent gameState={gameState} xy={xy} />
+         <BuildingStorageComponent gameState={gameState} xy={xy} />
+         <BuildingElectricityComponent gameState={gameState} xy={xy} />
          <BuildingValueComponent gameState={gameState} xy={xy} />
          <BuildingColorComponent gameState={gameState} xy={xy} />
+         <BuildingWikipediaComponent gameState={gameState} xy={xy} />
       </div>
    );
 }

@@ -165,6 +165,7 @@ export const EN = {
    ContainerPortAntwerp: "Container Port of Antwerp-Bruges",
    ContainerPortHamburg: "Container Port of Hamburg",
    ContainerPortValencia: "Container Port of Valencia (APV)",
+   ContainerPortDesc: "The introduction of modern TEU Containers / ISO Containers in 1956 has revolutionized global transportation and trading. This wonder can be upgraded and increases Production Multiplier depending on Port name / construction cost (slightly). Also: Manage all your markets. All markets get different trades.",
 
    ModernFighter: "Modern Fighter Jet",
    StealthFighter: "Stealth Fighter",

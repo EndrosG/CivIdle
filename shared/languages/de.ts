@@ -165,8 +165,9 @@ export const DE = {
    ContainerFactory: "Containter-Fabrik",
    ContainerPortRotterdam: "Containerhafen Rotterdam",         // Niederlande
    ContainerPortAntwerp: "Containerhafen Antwerpen-Brügge",    // Belgien
-   ContainerPortHamburg: "Containerhafen Hamburg",             // Hamburg
+   ContainerPortHamburg: "Containerhafen Hamburg",             // Deutschland
    ContainerPortValencia: "Containerhafen Valencia",           // Spanien
+   ContainerPortDesc: "Die Einführung des modernen ISO-Containers im Jahr 1956 hat den Schiffsverkehr und in der Folge den weltweiten Handel revolutioniert. Dieses Wunder kann ausgebaut werden. Jeder Ausbau erhöht bei allen Gebäuden den Produktionsmultiplikator je nach Hafen bzw. Baukosten (ein wenig). Ferner: Alle Märkte kontrollieren. Alle Märkte erhalten verschiedene Marktangebote.",
 
    ModernFighter: "Moderner Kampfjet",
    StealthFighter: "Tarnkappenjäger",

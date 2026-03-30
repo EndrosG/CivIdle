@@ -19,8 +19,8 @@ export function UpgradableWonderBuildingBody({ gameState, xy }: IBuildingCompone
          <UpgradeableWonderComponent gameState={gameState} xy={xy} />
          <BuildingStorageComponent gameState={gameState} xy={xy} />
          <BuildingValueComponent gameState={gameState} xy={xy} />
-         <BuildingWikipediaComponent gameState={gameState} xy={xy} />
          <BuildingColorComponent gameState={gameState} xy={xy} />
+         <BuildingWikipediaComponent gameState={gameState} xy={xy} />
       </div>
    );
 }
