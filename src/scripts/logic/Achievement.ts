@@ -1,6 +1,6 @@
 import type { TechAge } from "../../../shared/definitions/TechDefinitions";
 import {
-   findSpecialBuilding,
+   findSpecialBuildingCached,
    getScienceFromWorkers,
    isNaturalWonder,
    isWorldWonder,
@@ -177,6 +177,10 @@ export function checkRebirthAchievements(extraGP: number, gs: GameState): void {
             SteamClient.unlockAchievement("Mir");
             break;
          }
+         case "Carthaginian": {
+            SteamClient.unlockAchievement("RiseOfPunic");
+            break;
+         }
       }
    }
 
@@ -289,17 +293,17 @@ export function checkRebirthAchievements(extraGP: number, gs: GameState): void {
       SteamClient.unlockAchievement("ThinkTank");
    }
 
-   const eic = findSpecialBuilding("EastIndiaCompany", gs);
+   const eic = findSpecialBuildingCached("EastIndiaCompany", gs);
    if (eic && eic.building.level >= 10) {
       SteamClient.unlockAchievement("TradeMonopoly");
    }
 
-   const soh = findSpecialBuilding("SydneyOperaHouse", gs);
+   const soh = findSpecialBuildingCached("SydneyOperaHouse", gs);
    if (soh && soh.building.level >= 2) {
       SteamClient.unlockAchievement("MoreTilesMoreFun");
    }
 
-   const ppd = findSpecialBuilding("CentrePompidou", gs);
+   const ppd = findSpecialBuildingCached("CentrePompidou", gs);
    if (ppd) {
       const building = ppd.building as ICentrePompidouBuildingData;
       if (building.cities.size >= sizeOf(Config.City)) {
@@ -311,7 +315,7 @@ export function checkRebirthAchievements(extraGP: number, gs: GameState): void {
       SteamClient.unlockAchievement("CivitasMirabilis");
    }
 
-   const swissBank = findSpecialBuilding("SwissBank", gs);
+   const swissBank = findSpecialBuildingCached("SwissBank", gs);
    if ((swissBank?.building.resources.Koti ?? 0) >= 1_000_000) {
       SteamClient.unlockAchievement("SwissBanker");
    }

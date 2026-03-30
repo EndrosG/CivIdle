@@ -20,7 +20,7 @@ import { ZH_TW } from "../languages/zh-TW";
 import type { ChatChannel } from "../utilities/Database";
 import { forEach, uuid4, type Tile } from "../utilities/Helper";
 import type { PartialSet, PartialTabulate } from "../utilities/TypeDefinitions";
-import { L, t } from "../utilities/i18n";
+import { $t, L } from "../utilities/i18n";
 import { SAVE_FILE_VERSION } from "./Constants";
 import { getGameOptions, notifyGameOptionsUpdate } from "./GameStateLogic";
 import type { IShortcutConfig, Shortcut } from "./Shortcut";
@@ -109,16 +109,16 @@ export const ResourcePanelSections = [
 ] as const;
 
 export const ResourcePanelSectionLabels: Record<ResourcePanelSection, () => string> = {
-   Happiness: () => t(L.Happiness),
-   Festival: () => t(L.Festival),
-   Workers: () => t(L.Workers),
-   Electricity: () => t(L.Electricity),
-   Science: () => t(L.Science),
-   Deficit: () => t(L.StatisticsResourcesDeficit),
-   EmpireValue: () => t(L.EmpireValue),
-   GreatPeople: () => t(L.GreatPeople),
-   PlayerTrade: () => t(L.PlayerTrade),
-   TimeWarp: () => t(L.TimeWarp),
+   Happiness: () => $t(L.Happiness),
+   Festival: () => $t(L.Festival),
+   Workers: () => $t(L.Workers),
+   Electricity: () => $t(L.Electricity),
+   Science: () => $t(L.Science),
+   Deficit: () => $t(L.StatisticsResourcesDeficit),
+   EmpireValue: () => $t(L.EmpireValue),
+   GreatPeople: () => $t(L.GreatPeople),
+   PlayerTrade: () => $t(L.PlayerTrade),
+   TimeWarp: () => $t(L.TimeWarp),
 };
 
 export type ResourcePanelSection = (typeof ResourcePanelSections)[number];
@@ -139,20 +139,20 @@ export function resetThemeResourceColors() {
 }
 
 export const ThemeColorNames: Record<keyof typeof DefaultThemeColors, () => string> = {
-   ResearchBackground: () => t(L.ThemeColorResearchBackground),
-   InactiveBuildingAlpha: () => t(L.ThemeInactiveBuildingAlpha),
-   TransportIndicatorAlpha: () => t(L.ThemeTransportIndicatorAlpha),
-   ResearchLockedColor: () => t(L.ThemeResearchLockedColor),
-   ResearchUnlockedColor: () => t(L.ThemeResearchUnlockedColor),
-   ResearchHighlightColor: () => t(L.ThemeResearchHighlightColor),
-   BuildingStatusIconAlpha: () => t(L.ThemeBuildingStatusIconAlpha),
-   SpinnerAlpha: () => t(L.ThemeSpinnerAlpha),
+   ResearchBackground: () => $t(L.ThemeColorResearchBackground),
+   InactiveBuildingAlpha: () => $t(L.ThemeInactiveBuildingAlpha),
+   TransportIndicatorAlpha: () => $t(L.ThemeTransportIndicatorAlpha),
+   ResearchLockedColor: () => $t(L.ThemeResearchLockedColor),
+   ResearchUnlockedColor: () => $t(L.ThemeResearchUnlockedColor),
+   ResearchHighlightColor: () => $t(L.ThemeResearchHighlightColor),
+   BuildingStatusIconAlpha: () => $t(L.ThemeBuildingStatusIconAlpha),
+   SpinnerAlpha: () => $t(L.ThemeSpinnerAlpha),
 };
 
 export const ExtraTileInfoTypes = {
-   None: () => t(L.ExtraTileInfoTypeNone),
-   EmpireValue: () => t(L.ExtraTileInfoTypeEmpireValue),
-   StoragePercentage: () => t(L.ExtraTileInfoTypeStoragePercentage),
+   None: () => $t(L.ExtraTileInfoTypeNone),
+   EmpireValue: () => $t(L.ExtraTileInfoTypeEmpireValue),
+   StoragePercentage: () => $t(L.ExtraTileInfoTypeStoragePercentage),
 } as const;
 
 export const TileTextures = [
@@ -230,13 +230,16 @@ export function getTextColor(): number {
 }
 
 export const CursorOptions = {
-   OldFashioned: () => t(L.CursorOldFashioned),
-   BigOldFashioned: () => t(L.CursorBigOldFashioned),
-   System: () => t(L.CursorSystem),
+   OldFashioned: () => $t(L.CursorOldFashioned),
+   BigOldFashioned: () => $t(L.CursorBigOldFashioned),
+   System: () => $t(L.CursorSystem),
 } as const;
 
 export type ExtraTileInfoType = keyof typeof ExtraTileInfoTypes;
 export type CursorOption = keyof typeof CursorOptions;
+
+export const TransportSourceCacheTimeoutMin = 10;
+export const TransportSourceCacheTimeoutMax = 60 * 5;
 
 export class GameOptions {
    useModernUI = true;
@@ -264,6 +267,7 @@ export class GameOptions {
    chatHideLatestMessage = false;
    chatChannels: Set<ChatChannel> = new Set(["en"]);
    enableTransportSourceCache = false;
+   transportSourceCacheTimeout = 60;
    resourceBarShowUncappedHappiness = false;
    extraTileInfoType: ExtraTileInfoType = "StoragePercentage";
    buildingDefaults: Partial<Record<Building, Partial<IBuildingData>>> = {};

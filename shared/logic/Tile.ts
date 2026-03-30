@@ -8,10 +8,10 @@ import type { TechAge } from "../definitions/TechDefinitions";
 import type { Tradition } from "../definitions/TraditionDefinitions";
 import { clamp, isNullOrUndefined, type Tile } from "../utilities/Helper";
 import type { PartialSet, PartialTabulate } from "../utilities/TypeDefinitions";
-import { L, t } from "../utilities/i18n";
+import { $t, L } from "../utilities/i18n";
 import { Config } from "./Config";
 import type { GameState } from "./GameState";
-import { clearTransportSourceCache } from "./Update";
+import { getCitySize } from "./IntraTickCache";
 
 export interface ITileData {
    tile: Tile;
@@ -33,15 +33,15 @@ export enum BuildingInputMode {
 }
 
 export const BuildingInputModeNames: Map<BuildingInputMode, () => string> = new Map([
-   [BuildingInputMode.Distance, () => t(L.TechResourceTransportPreferenceDistance)],
-   [BuildingInputMode.Amount, () => t(L.TechResourceTransportPreferenceAmount)],
-   [BuildingInputMode.StoragePercentage, () => t(L.TechResourceTransportPreferenceStorage)],
+   [BuildingInputMode.Distance, () => $t(L.TechResourceTransportPreferenceDistance)],
+   [BuildingInputMode.Amount, () => $t(L.TechResourceTransportPreferenceAmount)],
+   [BuildingInputMode.StoragePercentage, () => $t(L.TechResourceTransportPreferenceStorage)],
 ]);
 
 export const BuildingInputModeTooltips: Map<BuildingInputMode, () => string> = new Map([
-   [BuildingInputMode.Distance, () => t(L.TechResourceTransportPreferenceDistanceTooltip)],
-   [BuildingInputMode.Amount, () => t(L.TechResourceTransportPreferenceAmountTooltip)],
-   [BuildingInputMode.StoragePercentage, () => t(L.TechResourceTransportPreferenceStorageTooltip)],
+   [BuildingInputMode.Distance, () => $t(L.TechResourceTransportPreferenceDistanceTooltip)],
+   [BuildingInputMode.Amount, () => $t(L.TechResourceTransportPreferenceAmountTooltip)],
+   [BuildingInputMode.StoragePercentage, () => $t(L.TechResourceTransportPreferenceStorageTooltip)],
 ]);
 
 export enum SuspendedInput {
@@ -313,7 +313,7 @@ export function makeBuilding(data: Pick<IBuildingData, "type"> & Partial<IBuildi
       case "RecyclingPlantWo": {
          const recPlant = building as IRecyclingBuildingData;
          if (!recPlant.recycleInput) {
-            recPlant.recycleInput = "Tool";
+            recPlant.recycleInput = "TV";
          }
          if (!recPlant.recycleOutput) {
             recPlant.recycleOutput = "Copper";
@@ -351,6 +351,27 @@ export function makeBuilding(data: Pick<IBuildingData, "type"> & Partial<IBuildi
          }
          break;
       }
+      case "AuroraBorealis": {
+         const auroraBorealis = building as IAuroraBorealisBuildingData;
+         if (!auroraBorealis.startTick) {
+            auroraBorealis.startTick = 0;
+         }
+         break;
+      }
+      case "ChateauFrontenac": {
+         const chateauFrontenac = building as IChateauFrontenacBuildingData;
+         if (!chateauFrontenac.buildings) {
+            chateauFrontenac.buildings = {};
+         }
+         break;
+      }
+      case "DinosaurProvincialPark": {
+         const dinosaurProvincialPark = building as IDinosaurProvincialParkBuildingData;
+         if (!dinosaurProvincialPark.used) {
+            dinosaurProvincialPark.used = false;
+         }
+         break;
+      }
    }
 
    building.stockpileCapacity = clamp(
@@ -361,12 +382,11 @@ export function makeBuilding(data: Pick<IBuildingData, "type"> & Partial<IBuildi
    building.stockpileMax = clamp(building.stockpileMax, STOCKPILE_MAX_MIN, STOCKPILE_MAX_MAX);
    building.productionPriority = clamp(building.productionPriority, PRIORITY_MIN, PRIORITY_MAX);
    building.constructionPriority = clamp(building.constructionPriority, PRIORITY_MIN, PRIORITY_MAX);
-   clearTransportSourceCache();
    return building;
 }
 
 export function getDepositTileCount(deposit: Deposit, gs: GameState): number {
    const city = Config.City[gs.city];
-   const tiles = city.size * city.size;
+   const tiles = getCitySize(gs) ** 2;
    return Math.round(tiles * city.deposits[deposit]);
 }

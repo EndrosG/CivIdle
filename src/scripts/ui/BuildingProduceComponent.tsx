@@ -5,7 +5,7 @@ import { notifyGameStateUpdate } from "../../../shared/logic/GameStateLogic";
 import { getBuildingIO, unlockedResources } from "../../../shared/logic/IntraTickCache";
 import type { IRecyclingBuildingData } from "../../../shared/logic/Tile";
 import { isEmpty, keysOf } from "../../../shared/utilities/Helper";
-import { L, t } from "../../../shared/utilities/i18n";
+import { $t, L } from "../../../shared/utilities/i18n";
 import { playClick } from "../visuals/Sound";
 import { ApplyToAllComponent } from "./ApplyToAllComponent";
 import { BuildingIOTreeViewComponent } from "./BuildingIOTreeViewComponent";
@@ -20,10 +20,10 @@ export function BuildingProduceComponent({ gameState, xy }: IBuildingComponentPr
    }
    return (
       <fieldset>
-         <legend>{t(L.Produce)}</legend>
+         <legend>{$t(L.Produce)}</legend>
          {gameState.tiles.get(xy)?.building?.type === "CloneLab" ? (
             <WarningComponent icon="info" className="mb10 text-small">
-               <RenderHTML html={t(L.CloneLabScienceMultiplierHTML)} />
+               <RenderHTML html={$t(L.CloneLabScienceMultiplierHTML)} />
             </WarningComponent>
          ) : null}
          <ChooseResource gameState={gameState} xy={xy} />

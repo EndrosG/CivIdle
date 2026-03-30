@@ -7,6 +7,7 @@ import {
 import type { City } from "../definitions/CityDefinitions";
 import type { GreatPerson } from "../definitions/GreatPersonDefinitions";
 import type { IUnlockableMultipliers } from "../definitions/ITechDefinition";
+import { CarthaginianIdeas } from "../definitions/IdeaDefinitions";
 import { NoPrice, NoStorage, type Deposit, type Material } from "../definitions/MaterialDefinitions";
 import type { Religion } from "../definitions/ReligionDefinitions";
 import type { Tradition } from "../definitions/TraditionDefinitions";
@@ -31,7 +32,7 @@ import {
 import { srand } from "../utilities/Random";
 import type { PartialSet, PartialTabulate } from "../utilities/TypeDefinitions";
 import { TypedEvent } from "../utilities/TypedEvent";
-import { L, t } from "../utilities/i18n";
+import { $t, L } from "../utilities/i18n";
 import { BetaBuildings } from "./Beta";
 import { Config } from "./Config";
 import { GLOBAL_PARAMS, MANAGED_IMPORT_RANGE, MAX_PETRA_SPEED_UP } from "./Constants";
@@ -105,13 +106,6 @@ export function forEachMultiplier(
       if (stableOnly && m.unstable) return;
       func(m);
    });
-   const b = gs.tiles.get(xy)?.building;
-   if (b) {
-      Tick.current.buildingMultipliers.get(b.type)?.forEach((m) => {
-         if (stableOnly && m.unstable) return;
-         func(m);
-      });
-   }
    AllMultiplierTypes.forEach((type) => {
       getGlobalMultipliers(type).forEach((m) => {
          if (stableOnly && m.unstable) return;
@@ -235,24 +229,29 @@ export function getPetraBaseStorage(petra: IBuildingData): number {
 }
 
 export function getMaxWarpSpeed(gs: GameState): number {
-   const status = findSpecialBuilding("Petra", gs)?.building.status;
+   const status = findSpecialBuildingCached("Petra", gs)?.building.status;
    return status === "completed" || status === "upgrading" ? MAX_PETRA_SPEED_UP : 2;
 }
 
+export const BASE_WARP_HOUR = 4;
+
 export function getMaxWarpStorage(gs: GameState): number {
    const HOUR = 60 * 60;
-   let storage = 4 * HOUR;
-   const petra = findSpecialBuilding("Petra", gs);
+   let storage = BASE_WARP_HOUR * HOUR;
+   const petra = findSpecialBuildingCached("Petra", gs);
    if (petra) {
       // Petra level based warp
       storage += getPetraBaseStorage(petra.building);
       // Zenobia level based warp
       storage += HOUR * getWonderExtraLevel("Petra");
       // Fuji warp
-      const fuji = findSpecialBuilding("MountFuji", gs);
+      const fuji = findSpecialBuildingCached("MountFuji", gs);
       if (fuji && getGrid(gs).distanceTile(fuji.tile, petra.tile) <= 1) {
          storage += HOUR * 8;
       }
+   }
+   if (gs.unlockedUpgrades.IrrigatedEstate) {
+      storage += HOUR * 4;
    }
    return storage;
 }
@@ -290,7 +289,7 @@ export function getStorageFor(xy: Tile, gs: GameState): IStorageResult {
          break;
       }
       case "Petra": {
-         const hq = findSpecialBuilding("Headquarter", gs);
+         const hq = findSpecialBuildingCached("Headquarter", gs);
          if (hq) {
             base = getMaxWarpStorage(gs);
             used = hq.building.resources.Warp ?? 0;
@@ -1050,9 +1049,9 @@ export function canBeElectrified(b: Building): boolean {
 }
 
 export const ElectrificationStatus = {
-   NotActive: () => t(L.ElectrificationStatusNotActive),
-   NoPower: () => t(L.ElectrificationStatusNoPowerV2),
-   Active: () => t(L.ElectrificationStatusActive),
+   NotActive: () => $t(L.ElectrificationStatusNotActive),
+   NoPower: () => $t(L.ElectrificationStatusNoPowerV2),
+   Active: () => $t(L.ElectrificationStatusActive),
 } as const satisfies Record<string, () => string>;
 
 export type ElectrificationStatus = keyof typeof ElectrificationStatus;
@@ -1207,12 +1206,16 @@ export function isBuildingWellStocked(xy: Tile, gs: GameState): boolean {
    );
 }
 
-export function findSpecialBuilding(type: Building, gs: GameState): Required<ITileData> | null {
+export function findSpecialBuildingCached(type: Building, gs: GameState): Required<ITileData> | null {
    if (!isSpecialBuilding(type)) return null;
 
    const result = Tick.current.specialBuildings.get(type);
    if (result) return result;
 
+   return findSpecialBuilding(type, gs);
+}
+
+export function findSpecialBuilding(type: Building, gs: GameState): Required<ITileData> | null {
    for (const tile of gs.tiles.values()) {
       if (tile.building?.type === type) {
          return tile as Required<ITileData>;
@@ -1231,8 +1234,7 @@ export function addPetraOfflineTime(time: number, gs: GameState): number {
       hq.building.resources.Warp = 0;
    }
    const before = hq.building.resources.Warp;
-   hq.building.resources.Warp += time;
-   hq.building.resources.Warp = clamp(hq.building.resources.Warp, 0, storage);
+   hq.building.resources.Warp = clamp(before + time, 0, storage);
    const after = hq.building.resources.Warp;
    console.log("[addPetraOfflineTime]: Before:", before, "After:", after);
    return after - before;
@@ -1506,6 +1508,15 @@ export function getResourceImportBuildingBaseStorageMultiplier(gs: GameState): n
    if (gs.unlockedTech.Enlightenment) {
       ++result;
    }
+   if (gs.unlockedUpgrades.IrrigatedEstate) {
+      ++result;
+   }
+   if (gs.unlockedUpgrades.HarborWarehouse) {
+      ++result;
+   }
+   if (gs.unlockedUpgrades.MediterraneanTrades) {
+      ++result;
+   }
    return result;
 }
 
@@ -1539,4 +1550,161 @@ export function hasNotUsedDinosaurProvincialPark(): boolean {
    }
    const building = dino as IDinosaurProvincialParkBuildingData;
    return !building.used;
+}
+
+export function getCarthageCivilizationIdeas(gs: GameState): {
+   total: number;
+   used: number;
+} {
+   const result = { total: 0, used: 0 };
+   const cothon = Tick.current.specialBuildings.get("CothonOfCarthage");
+   if (cothon?.building) {
+      result.total += cothon.building.level;
+   }
+   forEach(CarthaginianIdeas, (idea, def) => {
+      if (gs.unlockedUpgrades[def.upgrade]) {
+         result.used++;
+      }
+   });
+   return result;
+}
+
+export function getAtlasMountainsRange(gs: GameState): number {
+   let result = 2;
+   if (gs.unlockedUpgrades.SuffeteAdministration) {
+      result += 2;
+   }
+   if (isFestival("AtlasMountains", gs)) {
+      result += 2;
+   }
+   return result;
+}
+
+export function getBuildingRange(xy: Tile, building: IBuildingData, gs: GameState): number {
+   const configBT = Config.Building[building.type];
+   switch (building.type) {
+      // Modified by Lydia
+      case "Caravansary":
+      case "Caravansary2":
+      case "Caravansary3":
+      case "Caravansary4": {
+         const ri = building as IResourceImportBuildingData;
+         if (hasFlag(ri.resourceImportOptions, ResourceImportOptions.ManagedImport)) {
+            return MANAGED_IMPORT_RANGE;
+         }
+         return 0;
+      }
+      case "Warehouse":
+      case "Warehouse2":
+      case "Warehouse3": {
+         const ri = building as IResourceImportBuildingData;
+         if (hasFlag(ri.resourceImportOptions, ResourceImportOptions.ManagedImport)) {
+            return MANAGED_IMPORT_RANGE;
+         }
+         if (hasFeature(GameFeature.WarehouseUpgrade, gs)) {
+            return configBT.range ? configBT.range : 1;
+         }
+         return 0;
+      }
+      // Added by Lydia
+      case "UtrechtDistrict": {
+         const effect3 = Math.floor(building.level * building.stack / 10);
+         if (isFestival(building.type, gs) && effect3 > 0) {
+            return effect3;
+         }
+         return 0;
+      }
+
+      // CivIdle Standard
+      case "ColossusOfRhodes":
+      case "LighthouseOfAlexandria":
+      case "GrandBazaar":
+      case "HangingGarden":
+      case "ChichenItza":
+      case "AngkorWat":
+      case "StatueOfZeus":
+      case "Poseidon":
+      case "EiffelTower":
+      case "SummerPalace":
+      case "MogaoCaves":
+      case "SaintBasilsCathedral":
+      case "NileRiver":
+      case "ZagrosMountains":
+      case "TowerOfBabel":
+      case "StatueOfLiberty": {
+         return 1;
+      }
+      case "GreatSphinx":
+      case "Hollywood":
+      case "Pantheon":
+      case "TheMet":
+      case "WallStreet":
+      case "OsakaCastle":
+      case "RhineGorge":
+      case "Lapland":
+      case "YearOfTheSnake":
+      case "MontSaintMichel":
+      case "MountArarat":
+      case "TopkapiPalace":
+      case "MausoleumAtHalicarnassus":
+      case "ItaipuDam":
+      case "CathedralOfBrasilia":
+      case "Hermitage":
+      case "GoldenGateBridge": {
+         return 2;
+      }
+      case "Elbphilharmonie":
+      case "Cappadocia":
+      case "BranCastle":
+      case "GlassFrog":
+      case "PygmyMarmoset":
+      case "GoldenPavilion": {
+         return 3;
+      }
+
+      // #region Buildings with dynamic range
+      case "YellowCraneTower": {
+         return getYellowCraneTowerRange(xy, gs);
+      }
+      case "GreatWall": {
+         return getGreatWallRange(xy, gs);
+      }
+      case "Capybara":
+      case "GiantOtter":
+      case "Hoatzin":
+      case "RoyalFlycatcher":
+      case "SanchiStupa":
+      case "Uluru": {
+         return isFestival(building.type, gs) ? 3 : 2;
+      }
+      case "RedFort": {
+         return isFestival(building.type, gs) ? 5 : 3;
+      }
+      case "GangesRiver": {
+         return isFestival(building.type, gs) ? 2 : 1;
+      }
+      case "KizhiPogost": {
+         return isFestival(building.type, gs) ? 6 : 3 + Math.floor(building.level * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) / 10);
+      }
+      case "LakeBaikal":
+      case "AuroraBorealis": {
+         return isFestival(building.type, gs) ? 4 : 2;
+      }
+      case "AtlasMountains": {
+         return getAtlasMountainsRange(gs);
+      }
+      case "SagradaFamilia":
+      case "CristoRedentor":
+      case "Atomium": {
+         let result = 2;
+         if (gs.unlockedUpgrades.CothonDockyards) {
+            result += 2;
+         }
+         return result;
+      }
+
+      default: {
+         return 0;
+      }
+   }
 }

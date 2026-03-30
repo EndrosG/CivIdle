@@ -8,7 +8,7 @@ import { notifyGameStateUpdate } from "../../../shared/logic/GameStateLogic";
 import { getBuildingsByType } from "../../../shared/logic/IntraTickCache";
 import { PRIORITY_MAX, PRIORITY_MIN, type IBuildingData, type ITileData } from "../../../shared/logic/Tile";
 import { safeParseInt } from "../../../shared/utilities/Helper";
-import { L, t } from "../../../shared/utilities/i18n";
+import { $t, L } from "../../../shared/utilities/i18n";
 import { useGameState } from "../Global";
 import { WorldScene } from "../scenes/WorldScene";
 import { useShortcut } from "../utilities/Hook";
@@ -80,7 +80,7 @@ export function ConstructionPage({ tile }: { tile: ITileData }): React.ReactNode
             <BuildingConstructionProgressComponent xy={tile.tile} gameState={gs} />
             {isSpecialBuilding(building.type) && !GLOBAL_PARAMS.WONDER_STACKING ? null : (building.status === "stacking") ? (
                <fieldset>
-                  <legend>{t(L.Level)}</legend>
+                  <legend>{$t(L.Level)}</legend>
                   <div className="row text-strong">
                      <div className="f1 text-large">
                         {building.stack > 0 ? building.stack : <div className="m-icon">construction</div>}
@@ -107,7 +107,7 @@ export function ConstructionPage({ tile }: { tile: ITileData }): React.ReactNode
                         >
                            indeterminate_check_box
                         </div>
-                        <Tippy content={t(L.ScrollWheelAdjustLevelTooltip)}>
+                        <Tippy content={$t(L.ScrollWheelAdjustLevelTooltip)}>
                            <div className="text-large text-center" style={{ width: "40px" }}>
                               {building.desiredStack}
                            </div>
@@ -120,7 +120,7 @@ export function ConstructionPage({ tile }: { tile: ITileData }): React.ReactNode
                </fieldset>
             ) : isBuildingUpgradable(building.type) ? (
                <fieldset>
-                  <legend>{t(L.Level)}</legend>
+                  <legend>{$t(L.Level)}</legend>
                   <div className="row text-strong">
                      <div className="f1 text-large">
                         {building.level > 0 ? building.level : <div className="m-icon">construction</div>}
@@ -147,7 +147,7 @@ export function ConstructionPage({ tile }: { tile: ITileData }): React.ReactNode
                         >
                            indeterminate_check_box
                         </div>
-                        <Tippy content={t(L.ScrollWheelAdjustLevelTooltip)}>
+                        <Tippy content={$t(L.ScrollWheelAdjustLevelTooltip)}>
                            <div className="text-large text-center" style={{ width: "40px" }}>
                               {building.desiredLevel}
                            </div>
@@ -161,13 +161,13 @@ export function ConstructionPage({ tile }: { tile: ITileData }): React.ReactNode
             ) : null}
             {!isWorldWonder(building.type) && building.level > 0 ? (
                <WarningComponent className="mb10 text-small" icon="warning">
-                  <RenderHTML html={building.status === "downgrading" || building.status === "downstacking" ? t(L.DowngradeBuildingNotProducingDescV2) : t(L.UpgradeBuildingNotProducingDescV2)} />
+                  <RenderHTML html={building.status === "downgrading" || building.status === "downstacking" ? $t(L.DowngradeBuildingNotProducingDescV2) : $t(L.UpgradeBuildingNotProducingDescV2)} />
                </WarningComponent>
             ) : null}
             {hasFeature(GameFeature.BuildingProductionPriority, gs) ? (
                <fieldset>
                   <legend>
-                     {t(L.ConstructionPriority)}: {building.constructionPriority}
+                     {$t(L.ConstructionPriority)}: {building.constructionPriority}
                   </legend>
                   <input
                      type="range"
@@ -213,11 +213,11 @@ function EndConstructionComponent({ tile }: { tile: ITileData }): React.ReactNod
    return (
       <fieldset>
          <WarningComponent icon="warning" className="mb10 text-small">
-            <RenderHTML html={t(L.EndConstructionDescHTML)} />
+            <RenderHTML html={$t(L.EndConstructionDescHTML)} />
          </WarningComponent>
          <button className="jcc w100 row" onClick={endConstruction}>
             <div className="m-icon small">delete</div>
-            <div className="f1 text-strong">{t(L.EndConstruction)}</div>
+            <div className="f1 text-strong">{$t(L.EndConstruction)}</div>
          </button>
       </fieldset>
    );
@@ -255,14 +255,14 @@ function CancelUpgradeComponent({ building }: { building: IBuildingData }): Reac
    return (
       <fieldset>
          <WarningComponent icon="info" className="mb10 text-small">
-            <RenderHTML html={t(L.CancelUpgradeDesc)} />
+            <RenderHTML html={$t(L.CancelUpgradeDesc)} />
          </WarningComponent>
          <div className="row">
             <button className="jcc w100 row" onClick={cancelUpgrade}>
                <div className="m-icon small">delete</div>
-               <div className="f1 text-strong">{t(L.CancelUpgrade)}</div>
+               <div className="f1 text-strong">{$t(L.CancelUpgrade)}</div>
             </button>
-            <Tippy content={t(L.CancelAllUpgradeDesc, { building: Config.Building[building.type].name() })}>
+            <Tippy content={$t(L.CancelAllUpgradeDesc, { building: Config.Building[building.type].name() })}>
                <button onClick={cancelAllUpgrades}>
                   <div className="m-icon small">delete_forever</div>
                </button>

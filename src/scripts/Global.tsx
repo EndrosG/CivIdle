@@ -6,7 +6,7 @@ import { NoPrice, NoStorage } from "../../shared/definitions/MaterialDefinitions
 import type { TechAge } from "../../shared/definitions/TechDefinitions";
 import {
    exploreTile,
-   findSpecialBuilding,
+   findSpecialBuildingCached,
    getBuildingCost,
    getTotalBuildingCost,
    isWorldOrNaturalWonder,
@@ -43,7 +43,6 @@ import {
    keysOf,
    resolveIn,
    safeAdd,
-   sizeOf,
    uuid4,
 } from "../../shared/utilities/Helper";
 import { TypedEvent } from "../../shared/utilities/TypedEvent";
@@ -57,6 +56,7 @@ import { WorldScene } from "./scenes/WorldScene";
 import { AccountRankUpModal } from "./ui/AccountRankUpModal";
 import { BuildingCompleteModal } from "./ui/BuildingCompleteModal";
 import { showModal } from "./ui/GlobalModal";
+import { IdeaTreeModal } from "./ui/IdeaTreeModal";
 import { OfflineProductionModal } from "./ui/OfflineProductionModal";
 import { SupporterPackModal } from "./ui/SupporterPackModal";
 import { idbClear, idbGet, idbSet } from "./utilities/BrowserStorage";
@@ -296,7 +296,7 @@ if (import.meta.env.DEV) {
       });
    };
    // @ts-expect-error
-   window.saveGame = () => {
+   window.save = () => {
       saveGame().then(() => window.location.reload());
    };
    // @ts-expect-error
@@ -304,7 +304,7 @@ if (import.meta.env.DEV) {
       const gs = getGameState();
       rollPermanentGreatPeople(
          rollCount,
-         clamp(Math.floor(rollCount / sizeOf(Config.GreatPerson)), 1, Number.POSITIVE_INFINITY),
+         clamp(Math.floor(rollCount / 10), 1, Number.POSITIVE_INFINITY),
          getGreatPeopleChoiceCount(gs),
          age,
          gs.city,
@@ -452,7 +452,12 @@ if (import.meta.env.DEV) {
    window.Config = Config;
 
    // @ts-expect-error
-   window.hq = () => findSpecialBuilding("Headquarter", getGameState());
+   window.hq = () => findSpecialBuildingCached("Headquarter", getGameState());
+
+   // @ts-expect-error
+   window.ideaTree = () => {
+      showModal(<IdeaTreeModal />);
+   };
 
    // @ts-expect-error
    window.wonders = async () => {

@@ -5,7 +5,7 @@ import type { GameState } from "../../../shared/logic/GameState";
 import { GlobalMultiplierNames } from "../../../shared/logic/TickLogic";
 import { getDepositTileCount } from "../../../shared/logic/Tile";
 import { formatNumber, mapOf } from "../../../shared/utilities/Helper";
-import { L, t } from "../../../shared/utilities/i18n";
+import { $t, L } from "../../../shared/utilities/i18n";
 import { jsxMapOf } from "../utilities/Helper";
 import { BuildingSpriteComponent } from "./TextureSprites";
 
@@ -23,9 +23,9 @@ export function UnlockableEffectComponent({
             return (
                <fieldset key={d}>
                   <legend>
-                     <b>{t(L.RevealDeposit)}</b> {deposit.name()}
+                     <b>{$t(L.RevealDeposit)}</b> {deposit.name()}
                   </legend>
-                  {t(L.DepositTileCountDesc, {
+                  {$t(L.DepositTileCountDesc, {
                      count: getDepositTileCount(d, gameState),
                      city: Config.City[gameState.city].name(),
                      deposit: deposit.name(),
@@ -38,7 +38,7 @@ export function UnlockableEffectComponent({
             return (
                <fieldset key={b}>
                   <legend>
-                     <b>{t(L.UnlockBuilding)}</b> {building.name()}
+                     <b>{$t(L.UnlockBuilding)}</b> {building.name()}
                   </legend>
                   <div className="row">
                      <BuildingSpriteComponent
@@ -51,7 +51,7 @@ export function UnlockableEffectComponent({
                            return (
                               <div className="row mv5" key={res}>
                                  <div className="f1">
-                                    {t(L.ConsumeResource, { resource: Config.Material[res].name() })}
+                                    {$t(L.ConsumeResource, { resource: Config.Material[res].name() })}
                                  </div>
                                  <div>
                                     <strong>{v}</strong>
@@ -63,7 +63,7 @@ export function UnlockableEffectComponent({
                            return (
                               <div className="row mv5" key={res}>
                                  <div className="f1">
-                                    {t(L.ProduceResource, { resource: Config.Material[res].name() })}
+                                    {$t(L.ProduceResource, { resource: Config.Material[res].name() })}
                                  </div>
                                  <div>
                                     <strong>{v}</strong>
@@ -74,12 +74,12 @@ export function UnlockableEffectComponent({
                         {building.power ? (
                            <div className="row mv5 text-orange text-strong">
                               <div className="m-icon small">bolt</div>
-                              <div className="f1">{t(L.RequirePower)}</div>
+                              <div className="f1">{$t(L.RequirePower)}</div>
                            </div>
                         ) : null}
                         {building.desc ? <div className="row mv5">{building.desc()}</div> : null}
                         <div className="text-desc">
-                           {t(L.ConstructionCost, {
+                           {$t(L.ConstructionCost, {
                               cost: mapOf(
                                  getBuildingCost({ type: b, level: 0 }),
                                  (res, amount) => `${Config.Material[res].name()} x${formatNumber(amount)}`,
@@ -95,41 +95,41 @@ export function UnlockableEffectComponent({
             return (
                <fieldset key={k}>
                   <legend>
-                     <b>{t(L.BuildingMultipliers)}</b> {Config.Building[k].name()}
+                     <b>{$t(L.BuildingMultipliers)}</b> {Config.Building[k].name()}
                   </legend>
                   {v.output && v.output > 0 ? (
                      <div className="row mv5">
-                        <div className="f1">{t(L.ProductionMultiplier)}</div>
+                        <div className="f1">{$t(L.ProductionMultiplier)}</div>
                         <div className="text-strong">+{v.output}</div>
                      </div>
                   ) : null}
                   {v.output && v.output < 0 ? (
                      <div className="row mv5">
-                        <div className="f1">{t(L.ProductionMultiplier)}</div>
+                        <div className="f1">{$t(L.ProductionMultiplier)}</div>
                         <div className="text-strong text-red">{v.output}</div>
                      </div>
                   ) : null}
                   {v.worker && v.worker > 0 ? (
                      <div className="row mv5">
-                        <div className="f1">{t(L.WorkerMultiplier)}</div>
+                        <div className="f1">{$t(L.WorkerMultiplier)}</div>
                         <div className="text-strong">+{v.worker}</div>
                      </div>
                   ) : null}
                   {v.worker && v.worker < 0 ? (
                      <div className="row mv5">
-                        <div className="f1">{t(L.WorkerMultiplier)}</div>
+                        <div className="f1">{$t(L.WorkerMultiplier)}</div>
                         <div className="text-strong text-red">{v.worker}</div>
                      </div>
                   ) : null}
                   {v.storage && v.storage > 0 ? (
                      <div className="row mv5">
-                        <div className="f1">{t(L.StorageMultiplier)}</div>
+                        <div className="f1">{$t(L.StorageMultiplier)}</div>
                         <div className="text-strong">+{v.storage}</div>
                      </div>
                   ) : null}
                   {v.storage && v.storage < 0 ? (
                      <div className="row mv5">
-                        <div className="f1">{t(L.StorageMultiplier)}</div>
+                        <div className="f1">{$t(L.StorageMultiplier)}</div>
                         <div className="text-strong text-red">{v.storage}</div>
                      </div>
                   ) : null}
@@ -139,7 +139,7 @@ export function UnlockableEffectComponent({
          {definition.globalMultiplier ? (
             <fieldset>
                <legend>
-                  <b>{t(L.TechGlobalMultiplier)}</b>
+                  <b>{$t(L.TechGlobalMultiplier)}</b>
                </legend>
                {jsxMapOf(definition.globalMultiplier, (k, v) => {
                   return (
@@ -159,7 +159,7 @@ export function UnlockableEffectComponent({
             return (
                <fieldset key={idx}>
                   <legend>
-                     <b>{t(L.UnlockBuilding)}</b>
+                     <b>{$t(L.UnlockBuilding)}</b>
                   </legend>
                   <div className="mv5">{v}</div>
                </fieldset>

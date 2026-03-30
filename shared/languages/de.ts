@@ -255,6 +255,10 @@ export const DE = {
    MothersDay: "Muttertag",
 
 
+   // CivIdle Standard Backport
+   // ConsumptionMultiplier: "Verbrauchsmultiplikator",
+
+
    // CivIdle Standard
    About: "Über CivIdle",
    AbuSimbelDesc: "Verdoppelt den Effekt von Ramsses II. Alle angrenzenden Wunder generieren +1 Zufriedenheit",

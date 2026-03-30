@@ -16,6 +16,7 @@ import { BroadwayBuildingBody } from "./BroadwayBuildingBody";
 import { CathedralOfBrasiliaBuildingBody } from "./CathedralOfBrasiliaBuildingBody";
 import { CentrePompidouBuildingBody } from "./CentrePompidouBuildingBody";
 import { ChateauFrontenacBuildingBody } from "./ChateauFrontenacBuildingBody";
+import { CothonOfCarthageBuildingBody } from "./CothonOfCarthageBuildingBody";
 import { DefaultBuildingBody } from "./DefaultBuildingBody";
 import { DinosaurProvincialParkBuildingBody } from "./DinosaurProvincialParkBuildingBody";
 import { EastIndiaCompanyBuildingBody } from "./EastIndiaCompanyBuildingBody";
@@ -115,6 +116,7 @@ const BuildingBodyOverride: Partial<Record<Building, FunctionComponent<IBuilding
    DinosaurProvincialPark: DinosaurProvincialParkBuildingBody,
    Habitat67: UpgradableWonderBuildingBody,
    WorldTradeOrganization: WorldTradeOrganizationBuildingBody,
+   CothonOfCarthage: CothonOfCarthageBuildingBody,
 };
 
 export function BuildingPage(props: { tile: ITileData }): React.ReactNode {

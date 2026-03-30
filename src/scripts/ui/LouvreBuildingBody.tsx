@@ -1,11 +1,10 @@
 import type { ILouvreBuildingData } from "../../../shared/logic/Tile";
-import { L, t } from "../../../shared/utilities/i18n";
+import { $t, L } from "../../../shared/utilities/i18n";
 import { BuildingColorComponent } from "./BuildingColorComponent";
 import { BuildingDescriptionComponent } from "./BuildingDescriptionComponent";
 import type { IBuildingComponentProps } from "./BuildingPage";
 import { BuildingValueComponent } from "./BuildingValueComponent";
 import { BuildingWikipediaComponent } from "./BuildingWikipediaComponent";
-import { SpaceshipIdleComponent } from "./SpaceshipIdleComponent";
 
 export function LouvreBuildingBody({ gameState, xy }: IBuildingComponentProps): React.ReactNode {
    const building = gameState.tiles.get(xy)?.building as ILouvreBuildingData;
@@ -14,11 +13,10 @@ export function LouvreBuildingBody({ gameState, xy }: IBuildingComponentProps): 
    }
    return (
       <div className="window-body">
-         <SpaceshipIdleComponent gameState={gameState} type={building.type} />
          <BuildingDescriptionComponent gameState={gameState} xy={xy} />
          <fieldset>
             <div className="row">
-               <div className="f1">{t(L.GreatPeople)}</div>
+               <div className="f1">{$t(L.GreatPeople)}</div>
                <div className="text-strong">{building.greatPeopleCount}</div>
             </div>
          </fieldset>

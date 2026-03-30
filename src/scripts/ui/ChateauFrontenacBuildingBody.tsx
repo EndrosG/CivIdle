@@ -3,14 +3,13 @@ import { Config } from "../../../shared/logic/Config";
 import { notifyGameStateUpdate } from "../../../shared/logic/GameStateLogic";
 import type { IChateauFrontenacBuildingData } from "../../../shared/logic/Tile";
 import { cls, mapOf } from "../../../shared/utilities/Helper";
-import { L, t } from "../../../shared/utilities/i18n";
+import { $t, L } from "../../../shared/utilities/i18n";
 import { playClick, playError } from "../visuals/Sound";
 import { BuildingColorComponent } from "./BuildingColorComponent";
 import { BuildingDescriptionComponent } from "./BuildingDescriptionComponent";
 import type { IBuildingComponentProps } from "./BuildingPage";
 import { BuildingValueComponent } from "./BuildingValueComponent";
 import { BuildingWikipediaComponent } from "./BuildingWikipediaComponent";
-import { SpaceshipIdleComponent } from "./SpaceshipIdleComponent";
 import { UpgradeableWonderComponent } from "./UpgradeableWonderComponent";
 
 export function ChateauFrontenacBuildingBody({ gameState, xy }: IBuildingComponentProps): React.ReactNode {
@@ -20,7 +19,6 @@ export function ChateauFrontenacBuildingBody({ gameState, xy }: IBuildingCompone
    }
    return (
       <div className="window-body">
-         <SpaceshipIdleComponent gameState={gameState} type={building.type} />
          <BuildingDescriptionComponent gameState={gameState} xy={xy} />
          <fieldset>
             {mapOf(building.buildings, (level, data) => {
@@ -30,7 +28,7 @@ export function ChateauFrontenacBuildingBody({ gameState, xy }: IBuildingCompone
                         style={{ width: 100 }}
                         className={cls(data.selected === undefined ? "text-strong" : "")}
                      >
-                        {t(L.LevelX, { level })}
+                        {$t(L.LevelX, { level })}
                      </div>
                      <select
                         disabled={data.selected !== undefined}

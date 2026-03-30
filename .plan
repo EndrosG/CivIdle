@@ -1,5 +1,5 @@
-- Fix a bug where Chateau Frontenac does not include civilization unique buildings (e.g. AI Lab)
-- Fix a bug where World Trade Organization's votes are not refreshed correctly
-- Sputnik 1: This wonder can be upgraded and each level provides +1 level to all Cold War Age great people for this run (excl. Great People that provide level boost) and **+1 Production, Storage Multiplier to Cosmodrome**
-- Kizhi Pogost: All buildings within **3-tile range** get +X Production Multiplier. X = the production multiplier this wonder receives
-- Habitat 67: This wonder can be upgraded and each level provides +1 Production, Worker Capacity and Storage Multiplier to AI Labs. **Provides +1 Production and Storage Multiplier to AI Lab for each level of Information Age Wisdom.** Provides +1 Building Level Boost to AI Labs for every 5 happiness (capped)
+- Petra: Warp from this run (max. 4h) can be carried over to the next run
+- Transport Plan Cache Timeout: Sometimes transport plan cache can become stale. This will force clear the cache after the specified number of seconds
+
+- Atlas Mountains: +5 civilization idea point. All buildings within 3 tile range get +X Production Multiplier. X = number of different resources produced but not consumed within the range
+- Festival of Tanit: Atlas Mountains get +3 range and also provide Building Level Boost

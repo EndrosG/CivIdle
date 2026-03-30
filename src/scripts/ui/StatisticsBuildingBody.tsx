@@ -1,11 +1,14 @@
 import Tippy from "@tippyjs/react";
 import classNames from "classnames";
+import type React from "react";
 import { useState } from "react";
 import { TableVirtuoso } from "react-virtuoso";
 import { BuildingSpecial, type IBuildingDefinition } from "../../../shared/definitions/BuildingDefinitions";
 import { NoPrice, NoStorage, type Material } from "../../../shared/definitions/MaterialDefinitions";
 import {
+   ElectrificationStatus,
    IOFlags,
+   canBeElectrified,
    getElectrificationStatus,
    getScienceFromBuildings,
    getScienceFromWorkers,
@@ -37,7 +40,7 @@ import {
    type Tile,
 } from "../../../shared/utilities/Helper";
 import type { PartialSet } from "../../../shared/utilities/TypeDefinitions";
-import { L, t } from "../../../shared/utilities/i18n";
+import { $t, L } from "../../../shared/utilities/i18n";
 import { useGameState } from "../Global";
 import { TimeSeries } from "../logic/TimeSeries";
 import { LookAtMode, WorldScene } from "../scenes/WorldScene";
@@ -81,13 +84,13 @@ export function StatisticsBuildingBody({
       <div className={`window-body ${extraClass}`}>
          <menu role="tablist">
             <button onClick={() => setCurrentTab("empire")} aria-selected={currentTab === "empire"}>
-               {t(L.StatisticsEmpire)}
+               {$t(L.StatisticsEmpire)}
             </button>
             <button onClick={() => setCurrentTab("resources")} aria-selected={currentTab === "resources"}>
-               {t(L.StatisticsResources)}
+               {$t(L.StatisticsResources)}
             </button>
             <button onClick={() => setCurrentTab("buildings")} aria-selected={currentTab === "buildings"}>
-               {t(L.StatisticsBuildings)}
+               {$t(L.StatisticsBuildings)}
             </button>
          </menu>
          {content}
@@ -116,10 +119,10 @@ function EmpireTab({ gameState, xy }: IBuildingComponentProps): React.ReactNode 
    return (
       <article role="tabpanel" className="f1 col" style={{ padding: "8px", overflow: "hidden" }}>
          <fieldset>
-            <legend>{t(L.TotalEmpireValue)}</legend>
+            <legend>{$t(L.TotalEmpireValue)}</legend>
             <ul className="tree-view">
                <li className="row">
-                  <div className="f1">{t(L.TotalEmpireValue)}</div>
+                  <div className="f1">{$t(L.TotalEmpireValue)}</div>
                   <div className="text-strong">
                      <FormatNumber value={Tick.current.totalValue} />
                   </div>
@@ -127,7 +130,7 @@ function EmpireTab({ gameState, xy }: IBuildingComponentProps): React.ReactNode 
                <li>
                   <details>
                      <summary className="row">
-                        <div className="f1">{t(L.EmpireValueFromResourcesStat)}</div>
+                        <div className="f1">{$t(L.EmpireValueFromResourcesStat)}</div>
                         <div className="text-strong">
                            <FormatNumber value={totalResourceValue} />
                         </div>
@@ -158,7 +161,7 @@ function EmpireTab({ gameState, xy }: IBuildingComponentProps): React.ReactNode 
                <li>
                   <details>
                      <summary className="row">
-                        <div className="f1">{t(L.EmpireValueFromBuildingsStat)}</div>
+                        <div className="f1">{$t(L.EmpireValueFromBuildingsStat)}</div>
                         <div className="text-strong">
                            <FormatNumber value={totalBuildingValue} />
                         </div>
@@ -184,13 +187,13 @@ function EmpireTab({ gameState, xy }: IBuildingComponentProps): React.ReactNode 
             </ul>
             <div className="sep10" />
             <PlotComponent
-               title={t(L.EmpireValueIncrease)}
+               title={$t(L.EmpireValueIncrease)}
                data={[TimeSeries.deltaTick, TimeSeries.empireValueDelta]}
                series={{ stroke: "#fdcb6e", fill: "#ffeaa7" }}
             />
             <div className="sep10" />
             <PlotComponent
-               title={t(L.EmpireValueByHour)}
+               title={$t(L.EmpireValueByHour)}
                data={[
                   getTimeSeriesHour(gameState),
                   gameState.valueTrackers.get(ValueToTrack.EmpireValue)?.history ?? [],
@@ -199,16 +202,16 @@ function EmpireTab({ gameState, xy }: IBuildingComponentProps): React.ReactNode 
             />
          </fieldset>
          <fieldset>
-            <legend>{t(L.Science)}</legend>
+            <legend>{$t(L.Science)}</legend>
             <ul className="tree-view">
                <li className="row">
-                  <div className="f1">{t(L.StatisticsScience)}</div>
+                  <div className="f1">{$t(L.StatisticsScience)}</div>
                   <div className="text-strong">
                      <FormatNumber value={scienceAmount} />
                   </div>
                </li>
                <li className="row">
-                  <div className="f1">{t(L.StatisticsScienceProduction)}</div>
+                  <div className="f1">{$t(L.StatisticsScienceProduction)}</div>
                   <div className="text-strong">
                      <FormatNumber value={sciencePerTick} />
                   </div>
@@ -216,7 +219,7 @@ function EmpireTab({ gameState, xy }: IBuildingComponentProps): React.ReactNode 
                <li>
                   <details>
                      <summary className="row">
-                        <div className="f1">{t(L.StatisticsScienceFromWorkers)}</div>
+                        <div className="f1">{$t(L.StatisticsScienceFromWorkers)}</div>
                         <div className="text-strong">
                            <FormatNumber value={scienceFromWorkers} />
                         </div>
@@ -229,7 +232,7 @@ function EmpireTab({ gameState, xy }: IBuildingComponentProps): React.ReactNode 
                <li>
                   <details>
                      <summary className="row">
-                        <div className="f1">{t(L.StatisticsScienceFromBuildings)}</div>
+                        <div className="f1">{$t(L.StatisticsScienceFromBuildings)}</div>
                         <div className="text-strong">
                            <FormatNumber value={totalBuildingScience} />
                         </div>
@@ -256,22 +259,22 @@ function EmpireTab({ gameState, xy }: IBuildingComponentProps): React.ReactNode 
             </ul>
             <div className="sep10" />
             <PlotComponent
-               title={t(L.StatisticsScienceProduction)}
+               title={$t(L.StatisticsScienceProduction)}
                data={[TimeSeries.deltaTick, TimeSeries.scienceDelta]}
                series={{ stroke: "#0984e3", fill: "#74b9ff" }}
             />
          </fieldset>
          <fieldset>
-            <legend>{t(L.StatisticsTransportation)}</legend>
+            <legend>{$t(L.StatisticsTransportation)}</legend>
             <ul className="tree-view">
                <li className="row">
-                  <div className="f1">{t(L.StatisticsTotalTransportation)}</div>
+                  <div className="f1">{$t(L.StatisticsTotalTransportation)}</div>
                   <div className="text-strong">
                      <FormatNumber value={transportStat.totalTransports} />
                   </div>
                </li>
                <li className="row">
-                  <div className="f1">{t(L.StatisticsStalledTransportation)}</div>
+                  <div className="f1">{$t(L.StatisticsStalledTransportation)}</div>
                   <div className="text-strong">
                      <FormatNumber value={transportStat.stalled} />
                   </div>
@@ -279,18 +282,18 @@ function EmpireTab({ gameState, xy }: IBuildingComponentProps): React.ReactNode 
             </ul>
          </fieldset>
          <fieldset>
-            <legend>{t(L.StatisticsExploration)}</legend>
+            <legend>{$t(L.StatisticsExploration)}</legend>
             <ul className="tree-view">
                <details>
                   <summary className="row">
-                     <div className="f1">{t(L.Explorer)}</div>
+                     <div className="f1">{$t(L.Explorer)}</div>
                      <div className="text-strong">
                         <FormatNumber value={building.resources.Explorer ?? 0} />
                      </div>
                   </summary>
                   <ul>
                      <li className="row text-small">
-                        <div className="f1">{t(L.NextExplorersIn)}</div>
+                        <div className="f1">{$t(L.NextExplorersIn)}</div>
                         {(building.resources.Explorer ?? 0) >= 10 ? (
                            <div>-</div>
                         ) : (
@@ -298,7 +301,7 @@ function EmpireTab({ gameState, xy }: IBuildingComponentProps): React.ReactNode 
                         )}
                      </li>
                      <li className="row text-small">
-                        <div className="f1">{t(L.MaxExplorers)}</div>
+                        <div className="f1">{$t(L.MaxExplorers)}</div>
                         <div>
                            <FormatNumber value={MAX_EXPLORER} />
                         </div>
@@ -326,7 +329,7 @@ function BuildingTab({ gameState }: IBuildingComponentProps): React.ReactNode {
             <input
                type="text"
                style={{ flex: 1 }}
-               placeholder={t(L.StatisticsBuildingsSearchText)}
+               placeholder={$t(L.StatisticsBuildingsSearchText)}
                onChange={(e) => setSearch(e.target.value)}
             />
          </div>
@@ -380,18 +383,23 @@ function BuildingTab({ gameState }: IBuildingComponentProps): React.ReactNode {
                         <th></th>
                         <th></th>
                         <th className="right">
-                           <Tippy content={t(L.BuildingEmpireValue)}>
+                           <Tippy content={$t(L.BuildingEmpireValue)}>
                               <div className="m-icon small">account_balance</div>
                            </Tippy>
                         </th>
                         <th className="right">
-                           <Tippy content={t(L.TransportationWorkers)}>
+                           <Tippy content={$t(L.TransportationWorkers)}>
                               <div className="m-icon small">local_shipping</div>
                            </Tippy>
                         </th>
                         <th className="right">
-                           <Tippy content={t(L.ProductionWorkers)}>
+                           <Tippy content={$t(L.ProductionWorkers)}>
                               <div className="m-icon small">settings</div>
+                           </Tippy>
+                        </th>{" "}
+                        <th className="right">
+                           <Tippy content={$t(L.ProductionWorkers)}>
+                              <div className="m-icon small">bolt</div>
                            </Tippy>
                         </th>
                      </tr>
@@ -409,14 +417,10 @@ function BuildingTab({ gameState }: IBuildingComponentProps): React.ReactNode {
                         icon = <div className="m-icon small text-red">error</div>;
                      }
                   }
+                  const electrificationStatus = getElectrificationStatus(xy, gameState);
                   return (
                      <>
-                        <td>
-                           {icon}
-                           {getElectrificationStatus(xy, gameState) === "Active" ? (
-                              <div className="m-icon small text-orange">bolt</div>
-                           ) : null}
-                        </td>
+                        <td>{icon}</td>
                         <td>
                            <div
                               className="pointer"
@@ -429,7 +433,7 @@ function BuildingTab({ gameState }: IBuildingComponentProps): React.ReactNode {
                               {Config.Building[building.type].name()}
                            </div>
                            <div className="text-small text-desc">
-                              {t(L.LevelX, { level: building.level })}
+                              {$t(L.LevelX, { level: building.level })}
                            </div>
                         </td>
                         <td className="text-small right">
@@ -453,6 +457,15 @@ function BuildingTab({ gameState }: IBuildingComponentProps): React.ReactNode {
                         >
                            <FormatNumber value={Tick.current.workersAssignment.get(xy) ?? 0} />
                         </td>
+                        <td>
+                           <Tippy content={ElectrificationStatus[electrificationStatus]()}>
+                              <div className="row">
+                                 <div className="f1" />
+                                 <ElectrificationIcon status={electrificationStatus} />
+                                 {canBeElectrified(building.type) ? building.electrification : null}
+                              </div>
+                           </Tippy>
+                        </td>
                      </>
                   );
                }}
@@ -460,6 +473,17 @@ function BuildingTab({ gameState }: IBuildingComponentProps): React.ReactNode {
          </div>
       </article>
    );
+}
+
+function ElectrificationIcon({ status }: { status: ElectrificationStatus }): React.ReactNode {
+   switch (status) {
+      case "Active":
+         return <div className="m-icon small text-green">power</div>;
+      case "NoPower":
+         return <div className="m-icon small text-red">power_off</div>;
+      case "NotActive":
+         return null;
+   }
 }
 
 const resourceTabSortingState = { column: 0, asc: true };
@@ -504,7 +528,7 @@ export function ResourcesTab({ gameState }: IBuildingComponentProps): React.Reac
                type="text"
                style={{ flex: 1 }}
                value={savedResourceSearch}
-               placeholder={t(L.StatisticsResourcesSearchText)}
+               placeholder={$t(L.StatisticsResourcesSearchText)}
                onChange={(e) => {
                   savedResourceSearch = e.target.value;
                   setSearch(savedResourceSearch);
@@ -526,7 +550,7 @@ export function ResourcesTab({ gameState }: IBuildingComponentProps): React.Reac
                );
             })}
             <div className="f1"></div>
-            <Tippy content={t(L.PinResourceTab)}>
+            <Tippy content={$t(L.PinResourceTab)}>
                <button
                   className={cls(gs.pinStatPanel ? "active" : null)}
                   style={{ width: 27, padding: 0 }}
@@ -538,7 +562,7 @@ export function ResourcesTab({ gameState }: IBuildingComponentProps): React.Reac
                   <div className="m-icon small">picture_in_picture</div>
                </button>
             </Tippy>
-            <Tippy content={showTheoreticalValue ? t(L.TheoreticalData) : t(L.LiveData)}>
+            <Tippy content={showTheoreticalValue ? $t(L.TheoreticalData) : $t(L.LiveData)}>
                <button
                   className={classNames({
                      active: !showTheoreticalValue,
@@ -556,9 +580,9 @@ export function ResourcesTab({ gameState }: IBuildingComponentProps): React.Reac
             classNames="sticky-header f1"
             header={[
                { name: "", sortable: true },
-               { name: t(L.ResourceAmount), right: true, sortable: true },
-               { name: t(L.StatisticsResourcesDeficit), right: true, sortable: true },
-               { name: t(L.StatisticsResourcesRunOut), right: true, sortable: true },
+               { name: $t(L.ResourceAmount), right: true, sortable: true },
+               { name: $t(L.StatisticsResourcesDeficit), right: true, sortable: true },
+               { name: $t(L.StatisticsResourcesRunOut), right: true, sortable: true },
                { name: "", sortable: false },
             ]}
             sortingState={resourceTabSortingState}
@@ -620,7 +644,7 @@ export function ResourcesTab({ gameState }: IBuildingComponentProps): React.Reac
                   <tr key={res}>
                      <td>
                         <div>{r.name()}</div>
-                        <Tippy content={t(L.EmpireValue)}>
+                        <Tippy content={$t(L.EmpireValue)}>
                            <span className="text-desc text-small">
                               <FormatNumber value={Config.MaterialPrice[res]} />
                            </span>
@@ -634,7 +658,7 @@ export function ResourcesTab({ gameState }: IBuildingComponentProps): React.Reac
                            <FormatNumber value={deficit} />
                         </div>
                         <Tippy
-                           content={t(L.StatisticsResourcesDeficitDesc, {
+                           content={$t(L.StatisticsResourcesDeficitDesc, {
                               output: formatNumber(output),
                               input: formatNumber(input),
                            })}
@@ -655,7 +679,7 @@ export function ResourcesTab({ gameState }: IBuildingComponentProps): React.Reac
                      </td>
                      <td>
                         <Tippy
-                           content={t(
+                           content={$t(
                               L.ToggleWatchForThisResourceWatchedResourcesAreDisplayedInADedicatedTopLeftTab,
                            )}
                         >

@@ -1,5 +1,5 @@
 import { MAX_TECH_COLUMN, type Tech } from "../../../shared/definitions/TechDefinitions";
-import { findSpecialBuilding } from "../../../shared/logic/BuildingLogic";
+import { addPetraOfflineTime, findSpecialBuildingCached } from "../../../shared/logic/BuildingLogic";
 import { Config } from "../../../shared/logic/Config";
 import { notifyGameStateUpdate } from "../../../shared/logic/GameStateLogic";
 import { getGreatPeopleChoiceCount, rollGreatPeopleThisRun } from "../../../shared/logic/RebirthLogic";
@@ -13,7 +13,7 @@ import {
    unlockTech,
 } from "../../../shared/logic/TechLogic";
 import { forEach, formatHMS, SECOND } from "../../../shared/utilities/Helper";
-import { L, t } from "../../../shared/utilities/i18n";
+import { $t, L } from "../../../shared/utilities/i18n";
 import { useGameState } from "../Global";
 import { checkAgeAchievements } from "../logic/Achievement";
 import { TimeSeries } from "../logic/TimeSeries";
@@ -53,7 +53,7 @@ export function TechPage({ id }: { id: Tech }): React.ReactNode {
          unlockTech(tech, true, gs);
          const newAge = getCurrentAge(gs);
          if (oldAge && newAge && oldAge !== newAge) {
-            const status = findSpecialBuilding("YearOfTheSnake", gs)?.building.status;
+            const status = findSpecialBuildingCached("YearOfTheSnake", gs)?.building.status;
             const snake = status === "completed" || status === "upgrading";
             forEach(Config.TechAge, (age, def) => {
                if (def.idx <= Config.TechAge[newAge].idx) {
@@ -79,6 +79,9 @@ export function TechPage({ id }: { id: Tech }): React.ReactNode {
                   }
                }
             }
+            if (gs.unlockedUpgrades.IberianColonies) {
+               addPetraOfflineTime(60 * 60 * 1, gs);
+            }
             checkAgeAchievements(newAge);
          }
 
@@ -102,7 +105,7 @@ export function TechPage({ id }: { id: Tech }): React.ReactNode {
       return <InDevelopmentPage />;
    }
 
-   const unlockScienceCost = getTechUnlockCost(id);
+   const unlockScienceCost = getTechUnlockCost(id, gs);
    const availableScience = getScienceAmount(gs);
    const { prerequisites, totalScience } = getTotalTechUnlockCost(id, gs);
    const canUnlock = () => availableScience >= totalScience;
@@ -116,7 +119,7 @@ export function TechPage({ id }: { id: Tech }): React.ReactNode {
    return (
       <div className="window">
          <TitleBarComponent>
-            {t(L.UnlockBuilding)}: {tech.name()}
+            {$t(L.UnlockBuilding)}: {tech.name()}
          </TitleBarComponent>
          <MenuComponent />
          <div className="window-body">
@@ -124,14 +127,14 @@ export function TechPage({ id }: { id: Tech }): React.ReactNode {
                <div className="m-icon" style={{ margin: "0 5px 0 -5px", fontSize: "18px" }}>
                   arrow_back
                </div>
-               <div className="f1">{t(L.BackToCity)}</div>
+               <div className="f1">{$t(L.BackToCity)}</div>
             </button>
             <fieldset>
-               <legend>{t(L.Science)}</legend>
+               <legend>{$t(L.Science)}</legend>
                {gs.unlockedTech[id] ? (
                   <div className="row">
                      <div className="m-icon small mr5 text-green">check_circle</div>
-                     <div className="f1 text-strong">{t(L.TechHasBeenUnlocked, { tech: tech.name() })}</div>
+                     <div className="f1 text-strong">{$t(L.TechHasBeenUnlocked, { tech: tech.name() })}</div>
                      <div className="text-desc">
                         <FormatNumber value={unlockScienceCost} />
                      </div>
@@ -142,7 +145,7 @@ export function TechPage({ id }: { id: Tech }): React.ReactNode {
                         <li className="row text-strong">
                            <div className="f1">{tech.name()}</div>
                            <div className="ml20">
-                              <FormatNumber value={getTechUnlockCost(id)} />
+                              <FormatNumber value={getTechUnlockCost(id, gs)} />
                            </div>
                         </li>
                         <ul>
@@ -151,14 +154,14 @@ export function TechPage({ id }: { id: Tech }): React.ReactNode {
                                  <li key={tech} className="row text-small">
                                     <div className="f1">{Config.Tech[tech].name()}</div>
                                     <div>
-                                       <FormatNumber value={getTechUnlockCost(tech)} />
+                                       <FormatNumber value={getTechUnlockCost(tech, gs)} />
                                     </div>
                                  </li>
                               );
                            })}
                         </ul>
                         <li className="row text-strong">
-                           <div className="f1">{t(L.TotalScienceRequired)}</div>
+                           <div className="f1">{$t(L.TotalScienceRequired)}</div>
                            {availableScience >= totalScience ? (
                               <div className="m-icon small ml20 mr5 text-green">check_circle</div>
                            ) : (
@@ -172,7 +175,7 @@ export function TechPage({ id }: { id: Tech }): React.ReactNode {
                         </li>
                         <ul>
                            <li className="row text-small">
-                              <div className="f1">{t(L.EstimatedTimeLeft)}</div>
+                              <div className="f1">{$t(L.EstimatedTimeLeft)}</div>
                               {availableScience < totalScience && scienceDelta > 0 ? (
                                  <div>
                                     {formatHMS(((totalScience - availableScience) * SECOND) / scienceDelta)}
@@ -188,7 +191,7 @@ export function TechPage({ id }: { id: Tech }): React.ReactNode {
                         </div>
                         <div style={{ width: "10px" }} />
                         <button disabled={!canUnlock()} onClick={() => unlock()}>
-                           {t(L.UnlockBuilding)}
+                           {$t(L.UnlockBuilding)}
                         </button>
                      </div>
                   </>

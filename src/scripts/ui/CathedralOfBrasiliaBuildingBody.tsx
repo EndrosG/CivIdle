@@ -1,14 +1,13 @@
 import { getCathedralOfBrasiliaResources } from "../../../shared/logic/BuildingLogic";
 import { Config } from "../../../shared/logic/Config";
 import type { ILouvreBuildingData } from "../../../shared/logic/Tile";
-import { L, t } from "../../../shared/utilities/i18n";
+import { $t, L } from "../../../shared/utilities/i18n";
 import { BuildingColorComponent } from "./BuildingColorComponent";
 import { BuildingDescriptionComponent } from "./BuildingDescriptionComponent";
 import type { IBuildingComponentProps } from "./BuildingPage";
 import { BuildingValueComponent } from "./BuildingValueComponent";
 import { BuildingWikipediaComponent } from "./BuildingWikipediaComponent";
 import { RenderHTML } from "./RenderHTMLComponent";
-import { SpaceshipIdleComponent } from "./SpaceshipIdleComponent";
 import { WarningComponent } from "./WarningComponent";
 
 export function CathedralOfBrasiliaBuildingBody({ gameState, xy }: IBuildingComponentProps): React.ReactNode {
@@ -19,11 +18,10 @@ export function CathedralOfBrasiliaBuildingBody({ gameState, xy }: IBuildingComp
    const { input, output, unused } = getCathedralOfBrasiliaResources(xy, gameState);
    return (
       <div className="window-body">
-         <SpaceshipIdleComponent gameState={gameState} type={building.type} />
          <BuildingDescriptionComponent gameState={gameState} xy={xy} />
          <fieldset>
             <WarningComponent icon="info" className="mb10 text-sm">
-               <RenderHTML html={t(L.CathedralOfBrasiliaWarningHTML)} />
+               <RenderHTML html={$t(L.CathedralOfBrasiliaWarningHTML)} />
             </WarningComponent>
             <div className="table-view">
                <table>

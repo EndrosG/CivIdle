@@ -2,6 +2,8 @@ import Tippy from "@tippyjs/react";
 import { useEffect, useState } from "react";
 import type { City } from "../../../shared/definitions/CityDefinitions";
 import {
+   addPetraOfflineTime,
+   BASE_WARP_HOUR,
    findSpecialBuilding,
    getBuildingDescription,
    getMultipliersDescription,
@@ -38,7 +40,7 @@ import {
    safeParseInt,
    uuid4,
 } from "../../../shared/utilities/Helper";
-import { L, t } from "../../../shared/utilities/i18n";
+import { $t, L } from "../../../shared/utilities/i18n";
 import { resetToCity, saveGame, useGameState } from "../Global";
 import { checkRebirthAchievements } from "../logic/Achievement";
 import { clientHeartbeat } from "../logic/Heartbeat";
@@ -100,24 +102,24 @@ export function RebirthModal(): React.ReactNode {
    return (
       <div className="window" style={{ width: "700px" }}>
          <div className="title-bar">
-            <div className="title-bar-text">{t(L.Reborn)}</div>
+            <div className="title-bar-text">{$t(L.Reborn)}</div>
          </div>
          <div className="window-body">
             <div style={{ maxHeight: "75vh", overflowY: "auto", margin: "-8px -8px 0 -8px", padding: 10 }}>
                {tradeCount > 0 ? (
                   <WarningComponent icon="warning" className="mb10 text-small">
-                     <RenderHTML html={t(L.RebornTradeWarning)} />
+                     <RenderHTML html={$t(L.RebornTradeWarning)} />
                   </WarningComponent>
                ) : null}
                {options.rebirthInfo.length <= 0 ? (
                   <WarningComponent icon="info" className="mb10 text-small">
-                     <RenderHTML html={t(L.RebornModalDescV3)} />
+                     <RenderHTML html={$t(L.RebornModalDescV3)} />
                   </WarningComponent>
                ) : null}
                {hasFlag(user?.attr ?? UserAttributes.None, UserAttributes.DLC1) ? null : (
                   <WarningComponent icon="info" className="text-small mb10">
                      <RenderHTML
-                        html={t(L.FreeThisWeekDescHTMLV2, {
+                        html={$t(L.FreeThisWeekDescHTMLV2, {
                            city: Config.City[getFreeCityThisWeek()].name(),
                         })}
                      />
@@ -126,7 +128,7 @@ export function RebirthModal(): React.ReactNode {
                {showPompidouWarning ? (
                   <WarningComponent icon="info" className="text-small mb10">
                      <RenderHTML
-                        html={t(L.CentrePompidouWarningHTML, {
+                        html={$t(L.CentrePompidouWarningHTML, {
                            civ: Config.City[nextCity].name(),
                         })}
                      />
@@ -134,12 +136,12 @@ export function RebirthModal(): React.ReactNode {
                ) : null}
                {hasNotUsedDinosaurProvincialPark() ? (
                   <WarningComponent icon="info" className="text-small mb10">
-                     {html(t(L.DinosaurProvincialParkNotUsedWarningHTML))}
+                     {html($t(L.DinosaurProvincialParkNotUsedWarningHTML))}
                   </WarningComponent>
                ) : null}
                <ul className="tree-view">
                   <li className="row">
-                     <div className="f1">{t(L.GreatPeopleThisRun)}</div>
+                     <div className="f1">{$t(L.GreatPeopleThisRun)}</div>
                      <div className="text-strong">
                         {reduceOf(
                            gs.greatPeople,
@@ -151,16 +153,16 @@ export function RebirthModal(): React.ReactNode {
                      </div>
                   </li>
                   <li className="row">
-                     <div className="f1">{t(L.TotalEmpireValue)}</div>
+                     <div className="f1">{$t(L.TotalEmpireValue)}</div>
                      <div className="text-strong">
                         <FormatNumber value={Tick.current.totalValue} />
                      </div>
                   </li>
                   <li className="row">
-                     <div className="f1">{t(L.ExtraGreatPeopleAtReborn)}</div>
+                     <div className="f1">{$t(L.ExtraGreatPeopleAtReborn)}</div>
                      <div className="text-strong">
                         <TextWithHelp
-                           content={t(L.ClaimedGreatPeopleTooltip, {
+                           content={$t(L.ClaimedGreatPeopleTooltip, {
                               total: greatPeopleAtRebirthCount,
                               claimed: gs.claimedGreatPeople,
                            })}
@@ -178,7 +180,7 @@ export function RebirthModal(): React.ReactNode {
                <fieldset>
                   <div className="row">
                      <div className="f1 row">
-                        <div className="f1">{t(L.GreatPeoplePickPerRoll)}</div>
+                        <div className="f1">{$t(L.GreatPeoplePickPerRoll)}</div>
                         <select
                            value={pickPerRoll}
                            onChange={(e) => {
@@ -194,7 +196,7 @@ export function RebirthModal(): React.ReactNode {
                      </div>
                      <div className="separator-vertical" style={{ height: 30, margin: "-5px 20px" }} />
                      <div className="f1 row">
-                        <div className="f1">{t(L.SelectCivilization)}</div>
+                        <div className="f1">{$t(L.SelectCivilization)}</div>
                         <select
                            value={nextCity}
                            onChange={(e) => {
@@ -215,7 +217,7 @@ export function RebirthModal(): React.ReactNode {
                   <div className="separator" />
                   <div className="row">
                      <div className="row f1">
-                        <div className="f1">{t(L.GreatPersonLevelRequired)}</div>
+                        <div className="f1">{$t(L.GreatPersonLevelRequired)}</div>
                         {permanentGreatPeopleLevel >= Config.City[nextCity].requireGreatPeopleLevel ? (
                            <div className="m-icon small mr5 text-green">check_circle</div>
                         ) : (
@@ -223,7 +225,7 @@ export function RebirthModal(): React.ReactNode {
                         )}
                         <div className="text-strong">
                            <TextWithHelp
-                              content={t(L.GreatPersonLevelRequiredDescV2, {
+                              content={$t(L.GreatPersonLevelRequiredDescV2, {
                                  city: Config.City[nextCity].name(),
                                  required: Config.City[nextCity].requireGreatPeopleLevel,
                                  current: permanentGreatPeopleLevel,
@@ -236,7 +238,7 @@ export function RebirthModal(): React.ReactNode {
                      {Config.City[nextCity].requireSupporterPack ? (
                         <>
                            <div className="separator-vertical" style={{ height: 30, margin: "-5px 20px" }} />
-                           <Tippy content={t(L.SupporterPackRequiredTooltip)}>
+                           <Tippy content={$t(L.SupporterPackRequiredTooltip)}>
                               <div
                                  className="row f1 pointer"
                                  onClick={() => {
@@ -244,14 +246,14 @@ export function RebirthModal(): React.ReactNode {
                                     openUrl(SUPPORTER_PACK_URL);
                                  }}
                               >
-                                 <div className="mr5">{t(L.SupporterPackRequired)}</div>
+                                 <div className="mr5">{$t(L.SupporterPackRequired)}</div>
                                  <MiscTextureComponent name="Supporter" scale={0.2} />
                                  <div className="f1" />
                                  <div>
                                     {hasFlag(user?.attr ?? UserAttributes.None, UserAttributes.DLC1) ? (
                                        <div className="m-icon small text-green">check_circle</div>
                                     ) : getFreeCityThisWeek() === nextCity ? (
-                                       <div className="text-green text-strong">{t(L.FreeThisWeek)}</div>
+                                       <div className="text-green text-strong">{$t(L.FreeThisWeek)}</div>
                                     ) : (
                                        <div className="m-icon small text-red">cancel</div>
                                     )}
@@ -263,12 +265,14 @@ export function RebirthModal(): React.ReactNode {
                   </div>
                </fieldset>
                <div className="row mb5">
-                  <div className="text-strong">{t(L.Deposit)}</div>
+                  <div className="text-strong">{$t(L.Deposit)}</div>
                   <div className="text-desc ml5">
                      ({citySize + extraTileForNextRebirth}x{citySize + extraTileForNextRebirth})
                   </div>
                   {extraTileForNextRebirth > 0 && (
-                     <Tippy content={t(L.ExtraTileForNextRebirthTooltip, { count: extraTileForNextRebirth })}>
+                     <Tippy
+                        content={$t(L.ExtraTileForNextRebirthTooltip, { count: extraTileForNextRebirth })}
+                     >
                         <div className="m-icon small ml5 text-green">info</div>
                      </Tippy>
                   )}
@@ -293,7 +297,7 @@ export function RebirthModal(): React.ReactNode {
                </div>
                {uniqueEffects.length <= 0 ? null : (
                   <>
-                     <div className="text-strong mt5 mb5">{t(L.UniqueEffects)}</div>
+                     <div className="text-strong mt5 mb5">{$t(L.UniqueEffects)}</div>
                      <div className="inset-shallow white">
                         {uniqueEffects.map((effect, i) => {
                            return (
@@ -309,7 +313,7 @@ export function RebirthModal(): React.ReactNode {
                      </div>
                   </>
                )}
-               <div className="text-strong mt5 mb5">{t(L.UniqueBuildings)}</div>
+               <div className="text-strong mt5 mb5">{$t(L.UniqueBuildings)}</div>
                <div className="inset-shallow white">
                   {jsxMapOf(Config.City[nextCity].uniqueBuildings, (building, tech, i) => {
                      return (
@@ -336,7 +340,7 @@ export function RebirthModal(): React.ReactNode {
                      );
                   })}
                </div>
-               <div className="text-strong mt5 mb5">{t(L.NaturalWonders)}</div>
+               <div className="text-strong mt5 mb5">{$t(L.NaturalWonders)}</div>
                <div className="inset-shallow white">
                   {jsxMapOf(Config.City[nextCity].naturalWonders, (building, tech, i) => {
                      return (
@@ -362,7 +366,7 @@ export function RebirthModal(): React.ReactNode {
                </div>
                {isEmpty(Config.City[nextCity].uniqueMultipliers) ? null : (
                   <>
-                     <div className="text-strong mt5 mb5">{t(L.UniqueTechMultipliers)}</div>
+                     <div className="text-strong mt5 mb5">{$t(L.UniqueTechMultipliers)}</div>
                      <div className="inset-shallow white">
                         {jsxMapOf(Config.City[nextCity].uniqueMultipliers, (tech, multipliers, i) => {
                            return (
@@ -381,7 +385,7 @@ export function RebirthModal(): React.ReactNode {
                      </div>
                   </>
                )}
-               <div className="text-strong mt5 mb5">{t(L.GreatPeople)}</div>
+               <div className="text-strong mt5 mb5">{$t(L.GreatPeople)}</div>
                <div className="inset-shallow white">
                   {entriesOf(Config.GreatPerson)
                      .filter(([_, def]) => def.city === nextCity)
@@ -407,7 +411,7 @@ export function RebirthModal(): React.ReactNode {
                         );
                      })}
                </div>
-               <div className="text-strong mt5 mb5">{t(L.Festival)}</div>
+               <div className="text-strong mt5 mb5">{$t(L.Festival)}</div>
                <div className="inset-shallow white">
                   <div className="row p5">
                      <div className="cc mr10" style={{ width: 50, height: 50 }}>
@@ -430,7 +434,7 @@ export function RebirthModal(): React.ReactNode {
                      hideModal();
                   }}
                >
-                  {t(L.Cancel)}
+                  {$t(L.Cancel)}
                </button>
                <div style={{ width: "6px" }} />
                <button
@@ -464,7 +468,7 @@ export function RebirthModal(): React.ReactNode {
                         console.error(error);
                         if (!import.meta.env.DEV && isOnlineUser()) {
                            playError();
-                           showToast(t(L.RebornOfflineWarning));
+                           showToast($t(L.RebornOfflineWarning));
                            return;
                         }
                      }
@@ -490,6 +494,13 @@ export function RebirthModal(): React.ReactNode {
                         gs.rebirthed = true;
                      }
 
+                     let carryOverWarp = 0;
+                     const hq = findSpecialBuilding("Headquarter", getGameState());
+                     const petra = findSpecialBuilding("Petra", getGameState());
+                     if (hq && petra) {
+                        carryOverWarp = clamp(hq.building.resources.Warp ?? 0, 0, BASE_WARP_HOUR * 60 * 60);
+                     }
+
                      checkRebirthAchievements(greatPeopleCount, gs);
 
                      let flags = RebirthFlags.None;
@@ -499,10 +510,10 @@ export function RebirthModal(): React.ReactNode {
 
                      // Added by Lydia: The Big Retreat
                      // only building.level, no building.stack -- dont make it too easy here!
-                     let nextScience = 0;
+                     let carryOverScience = 0;
                      const ascensionLevel = findSpecialBuilding("Retreat2", gs)?.building.level;
                      if (ascensionLevel && ascensionLevel > 0) {
-                        nextScience = Math.floor(getScienceAmount(gs) * ascensionLevel / 1e2);
+                        carryOverScience = Math.floor(getScienceAmount(gs) * ascensionLevel / 1e2);
                      }
 
                      getGameOptions().rebirthInfo.push({
@@ -534,8 +545,13 @@ export function RebirthModal(): React.ReactNode {
                      }
 
                      // Added by Lydia: The Big Retreat
-                     const hq = findSpecialBuilding("Headquarter", getGameState())?.building.resources;
-                     safeAdd(hq, "Science", nextScience);
+                     const hqRes = findSpecialBuilding("Headquarter", getGameState())?.building.resources;
+                     safeAdd(hqRes, "Science", carryOverScience);
+
+                     // introduced in v1.2
+                     if (carryOverWarp > 0) {
+                        addPetraOfflineTime(carryOverWarp, getGameState());
+                     }
 
                      try {
                         await Promise.all([saveGame(), clientHeartbeat()]);
@@ -546,7 +562,7 @@ export function RebirthModal(): React.ReactNode {
                      }
                   }}
                >
-                  {t(L.Reborn)}
+                  {$t(L.Reborn)}
                </button>
             </div>
          </div>

@@ -1,8 +1,8 @@
 import { clamp, isEmpty, mFilterOf, mReduceOf, reduceOf, sizeOf, sum } from "../utilities/Helper";
 import type { PartialTabulate } from "../utilities/TypeDefinitions";
-import { L, t } from "../utilities/i18n";
+import { $t, L } from "../utilities/i18n";
 import {
-   findSpecialBuilding,
+   findSpecialBuildingCached,
    isBuildingWellStocked,
    isNaturalWonder,
    isSpecialBuilding,
@@ -16,13 +16,13 @@ import { getCurrentAge } from "./TechLogic";
 import { Tick } from "./TickLogic";
 
 export const HappinessNames = {
-   fromUnlockedTech: () => t(L.HappinessFromUnlockedTech),
-   fromUnlockedAge: () => t(L.HappinessFromUnlockedAge),
-   fromBuildingTypes: () => t(L.HappinessFromBuildingTypes),
-   fromBuildings: () => t(L.HappinessFromBuilding),
-   fromPollution: () => t(L.HappinessFromPollution),
-   fromWonders: () => t(L.HappinessFromWonders),
-   fromHighestTierBuilding: () => t(L.HappinessFromHighestTierBuilding),
+   fromUnlockedTech: () => $t(L.HappinessFromUnlockedTech),
+   fromUnlockedAge: () => $t(L.HappinessFromUnlockedAge),
+   fromBuildingTypes: () => $t(L.HappinessFromBuildingTypes),
+   fromBuildings: () => $t(L.HappinessFromBuilding),
+   fromPollution: () => $t(L.HappinessFromPollution),
+   fromWonders: () => $t(L.HappinessFromWonders),
+   fromHighestTierBuilding: () => $t(L.HappinessFromHighestTierBuilding),
 } as const;
 
 type HappinessType = keyof typeof HappinessNames;
@@ -58,7 +58,7 @@ export function calculateHappiness(gs: GameState) {
                fromHighestTierBuilding = tier;
             }
          }
-         const hs = findSpecialBuilding("HagiaSophia", gs);
+         const hs = findSpecialBuildingCached("HagiaSophia", gs);
          if (building.capacity <= 0 && hs && hs.building.status === "completed") {
             // Do nothing
          } else if (Tick.current.happinessExemptions.has(xy)) {

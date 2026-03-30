@@ -29,7 +29,7 @@ import {
    reduceOf,
    sizeOf,
 } from "../../../shared/utilities/Helper";
-import { L, t } from "../../../shared/utilities/i18n";
+import { $t, L } from "../../../shared/utilities/i18n";
 import { useGameOptions } from "../Global";
 import { TimeSeries } from "../logic/TimeSeries";
 import { TechTreeScene } from "../scenes/TechTreeScene";
@@ -91,38 +91,38 @@ export function HeadquarterBuildingBody({
          <BuildingStorageComponent xy={xy} gameState={gameState} />
          <HappinessComponent open={expandHappiness ?? false} />
          <fieldset>
-            <legend>{t(L.Census)}</legend>
+            <legend>{$t(L.Census)}</legend>
             <ul className="tree-view">
                <li>
                   <details>
                      <summary className="row">
-                        <div className="f1">{t(L.TotalWorkers)}</div>
+                        <div className="f1">{$t(L.TotalWorkers)}</div>
                         <div className="text-strong">
                            <FormatNumber value={workersAfterHappiness} />
                         </div>
                      </summary>
                      <ul>
                         <li className="row">
-                           <div className="f1">{t(L.WorkersAvailableBeforeHappinessMultiplier)}</div>
+                           <div className="f1">{$t(L.WorkersAvailableBeforeHappinessMultiplier)}</div>
                            <div className="text-strong">
                               <FormatNumber value={workersBeforeHappiness} />
                            </div>
                         </li>
                         <li className="row">
-                           <div className="f1">{t(L.WorkerHappinessPercentage)}</div>
+                           <div className="f1">{$t(L.WorkerHappinessPercentage)}</div>
                            <div className="text-strong">{formatPercent(happinessPercentage)}</div>
                         </li>
                      </ul>
                   </details>
                </li>
                <li className="row">
-                  <div className="f1">{t(L.WorkersBusy)}</div>
+                  <div className="f1">{$t(L.WorkersBusy)}</div>
                   <div className="text-strong">
                      <FormatNumber value={workersBusy} />
                   </div>
                </li>
                <li className="row">
-                  <div className="f1">{t(L.StatisticsTransportationPercentage)}</div>
+                  <div className="f1">{$t(L.StatisticsTransportationPercentage)}</div>
                   <div className="text-strong">
                      {formatPercent(workersBusy > 0 ? transportStat.totalFuel / workersBusy : 0)}
                   </div>
@@ -130,7 +130,7 @@ export function HeadquarterBuildingBody({
                <li>
                   <details>
                      <summary className="row">
-                        <div className="f1">{t(L.ConstructionBuilderMultiplierFull)}</div>
+                        <div className="f1">{$t(L.ConstructionBuilderMultiplierFull)}</div>
                         <div className="text-strong">
                            <FormatNumber
                               value={Tick.current.globalMultipliers.builderCapacity.reduce(
@@ -157,7 +157,7 @@ export function HeadquarterBuildingBody({
                <li>
                   <details>
                      <summary className="row">
-                        <div className="f1">{t(L.TransportCapacityMultiplier)}</div>
+                        <div className="f1">{$t(L.TransportCapacityMultiplier)}</div>
                         <div className="text-strong">
                            <FormatNumber
                               value={Tick.current.globalMultipliers.transportCapacity.reduce(
@@ -191,13 +191,13 @@ export function HeadquarterBuildingBody({
             </legend>
             <ul className="tree-view">
                <li className="row">
-                  <div className="f1">{t(L.Science)}</div>
+                  <div className="f1">{$t(L.Science)}</div>
                   <div className="text-strong">
                      <FormatNumber value={scienceAmount} />
                   </div>
                </li>
                <li className="row">
-                  <div className="f1">{t(L.WorkerScienceProduction)}</div>
+                  <div className="f1">{$t(L.WorkerScienceProduction)}</div>
                   <div className="text-strong">
                      <FormatNumber value={scienceFromWorkers} />
                   </div>
@@ -206,23 +206,23 @@ export function HeadquarterBuildingBody({
             </ul>
             <div className="sep10" />
             <div className="separator has-title">
-               <div>{t(L.UnlockableResearch)}</div>
+               <div>{$t(L.UnlockableResearch)}</div>
             </div>
             <div className="sep5" />
             <div className="table-view">
                <table>
                   <thead>
                      <tr>
-                        <th>{t(L.Name)}</th>
-                        <th className="right">{t(L.Science)}</th>
-                        <th className="right">{t(L.UnlockTechProgress)}</th>
-                        <th className="right">{t(L.EstimatedTimeLeftShort)}</th>
+                        <th>{$t(L.Name)}</th>
+                        <th className="right">{$t(L.Science)}</th>
+                        <th className="right">{$t(L.UnlockTechProgress)}</th>
+                        <th className="right">{$t(L.EstimatedTimeLeftShort)}</th>
                         <th />
                      </tr>
                   </thead>
                   <tbody>
                      {unlockableTechs(gameState).map((k) => {
-                        const unlockCost = getTechUnlockCost(k);
+                        const unlockCost = getTechUnlockCost(k, gameState);
                         return (
                            <tr key={k}>
                               <td>{Config.Tech[k].name()}</td>
@@ -250,7 +250,7 @@ export function HeadquarterBuildingBody({
                                           ?.selectNode(k, "jump", true);
                                     }}
                                  >
-                                    {t(L.View)}
+                                    {$t(L.View)}
                                  </span>
                               </td>
                            </tr>
@@ -264,14 +264,14 @@ export function HeadquarterBuildingBody({
          <GreatPeopleComponent gameState={gameState} options={options} />
          <WonderComponent gameState={gameState} />
          <fieldset>
-            <legend>{t(L.SteamAchievement)}</legend>
+            <legend>{$t(L.SteamAchievement)}</legend>
             <button onClick={() => Singleton().routeTo(SteamAchievementPage, {})} className="jcc w100 row">
                <div className="m-icon small">emoji_events</div>
-               <div className="f1 text-strong">{t(L.SteamAchievementDetails)}</div>
+               <div className="f1 text-strong">{$t(L.SteamAchievementDetails)}</div>
             </button>
             <button onClick={() => showModal(<HallOfFameModal />)} className="mt5 jcc w100 row">
                <div className="m-icon small">workspace_premium</div>
-               <div className="f1 text-strong">{t(L.HallOfFame)}</div>
+               <div className="f1 text-strong">{$t(L.HallOfFame)}</div>
             </button>
          </fieldset>
          <BuildingColorComponent gameState={gameState} xy={xy} />
@@ -285,7 +285,7 @@ function GreatPeopleComponent({
 }: { gameState: GameState; options: GameOptions }): React.ReactNode {
    return (
       <fieldset>
-         <legend>{t(L.GreatPeople)}</legend>
+         <legend>{$t(L.GreatPeople)}</legend>
          {gameState.greatPeopleChoicesV2.length > 0 ? (
             <WarningComponent className="mb10 text-small" icon="info">
                <div
@@ -297,7 +297,7 @@ function GreatPeopleComponent({
                      }
                   }}
                >
-                  <RenderHTML html={t(L.UnclaimedGreatPersonThisRun)} />
+                  <RenderHTML html={$t(L.UnclaimedGreatPersonThisRun)} />
                </div>
             </WarningComponent>
          ) : null}
@@ -312,7 +312,7 @@ function GreatPeopleComponent({
                      }
                   }}
                >
-                  <RenderHTML html={t(L.UnclaimedGreatPersonPermanent)} />
+                  <RenderHTML html={$t(L.UnclaimedGreatPersonPermanent)} />
                </div>
             </WarningComponent>
          ) : null}
@@ -320,7 +320,7 @@ function GreatPeopleComponent({
             <li>
                <details>
                   <summary className="row">
-                     <div className="f1">{t(L.GreatPeopleThisRun)}</div>
+                     <div className="f1">{$t(L.GreatPeopleThisRun)}</div>
                      <div className="text-strong">
                         {reduceOf(
                            gameState.greatPeople,
@@ -362,19 +362,19 @@ function GreatPeopleComponent({
                <details>
                   <summary className="row">
                      <div className="f1">
-                        <TextWithHelp content={t(L.EffectiveGreatPeopleLevelDesc)}>
-                           {t(L.EffectiveGreatPeopleLevel)}
+                        <TextWithHelp content={$t(L.EffectiveGreatPeopleLevelDesc)}>
+                           {$t(L.EffectiveGreatPeopleLevel)}
                         </TextWithHelp>
                      </div>
                      <div className="text-strong">{getPermanentGreatPeopleLevel(options)}</div>
                   </summary>
                   <ul>
                      <li className="row text-small">
-                        <div className="f1">{t(L.GreatPeopleShardsAcquired)}</div>
+                        <div className="f1">{$t(L.GreatPeopleShardsAcquired)}</div>
                         <div className="text-strong">{getPermanentGreatPeopleCount(options)}</div>
                      </li>
                      <li className="row text-small">
-                        <div className="f1">{t(L.UniquePermanentGreatPeople)}</div>
+                        <div className="f1">{$t(L.UniquePermanentGreatPeople)}</div>
                         <div className="text-strong">
                            {sizeOf(filterOf(options.greatPeople, (k, v) => v.level > 0))}
                         </div>
@@ -411,11 +411,11 @@ function GreatPeopleComponent({
             onClick={() => showModal(<ManagePermanentGreatPersonModal adaptiveOnly={false} />)}
          >
             <div className="m-icon small">person_celebrate</div>
-            <div className="f1 text-center">{t(L.ManageGreatPeople)}</div>
+            <div className="f1 text-center">{$t(L.ManageGreatPeople)}</div>
          </button>
          <button className="row w100 mt5 text-strong" onClick={() => showModal(<ManageAgeWisdomModal />)}>
             <div className="m-icon small">emoji_objects</div>
-            <div className="f1 text-center">{t(L.ManageAgeWisdom)}</div>
+            <div className="f1 text-center">{$t(L.ManageAgeWisdom)}</div>
          </button>
       </fieldset>
    );
@@ -424,16 +424,16 @@ function GreatPeopleComponent({
 function WonderComponent({ gameState }: { gameState: GameState }): React.ReactNode {
    return (
       <fieldset>
-         <legend>{t(L.Wonder)}</legend>
+         <legend>{$t(L.Wonder)}</legend>
          <ul className="tree-view">
             <li className="row">
-               <div className="f1">{t(L.WondersUnlocked)}</div>
+               <div className="f1">{$t(L.WondersUnlocked)}</div>
                <div className="text-strong">
                   {reduceOf(unlockedBuildings(gameState), (prev, b) => prev + (isWorldWonder(b) ? 1 : 0), 0)}
                </div>
             </li>
             <li className="row">
-               <div className="f1">{t(L.WondersBuilt)}</div>
+               <div className="f1">{$t(L.WondersBuilt)}</div>
                <div className="text-strong">
                   {mReduceOf(
                      getXyBuildings(gameState),
@@ -445,7 +445,7 @@ function WonderComponent({ gameState }: { gameState: GameState }): React.ReactNo
          </ul>
          <button className="mt10 jcc w100 row" onClick={() => Singleton().routeTo(WonderPage, {})}>
             <div className="m-icon small">account_balance</div>
-            <div className="f1 text-strong">{t(L.ManageWonders)}</div>
+            <div className="f1 text-strong">{$t(L.ManageWonders)}</div>
          </button>
       </fieldset>
    );
@@ -455,10 +455,10 @@ function RebirthComponent({ gameState }: { gameState: GameState }): ReactNode {
    const extraGreatPeople = getRebirthGreatPeopleCount();
    return (
       <fieldset>
-         <legend>{t(L.Reborn)}</legend>
+         <legend>{$t(L.Reborn)}</legend>
          <ul className="tree-view">
             <li className="row">
-               <div className="f1">{t(L.GreatPeopleThisRun)}</div>
+               <div className="f1">{$t(L.GreatPeopleThisRun)}</div>
                <div className="text-strong">
                   {reduceOf(
                      gameState.greatPeople,
@@ -471,7 +471,7 @@ function RebirthComponent({ gameState }: { gameState: GameState }): ReactNode {
             </li>
             <details>
                <summary className="row">
-                  <div className="f1">{t(L.TotalEmpireValue)}</div>
+                  <div className="f1">{$t(L.TotalEmpireValue)}</div>
                   <div className="text-strong">
                      <FormatNumber value={Tick.current.totalValue} />
                   </div>
@@ -481,7 +481,7 @@ function RebirthComponent({ gameState }: { gameState: GameState }): ReactNode {
             <li>
                <details>
                   <summary className="row">
-                     <div className="f1">{t(L.ExtraGreatPeopleAtReborn)}</div>
+                     <div className="f1">{$t(L.ExtraGreatPeopleAtReborn)}</div>
                      <div className="text-strong">{extraGreatPeople}</div>
                   </summary>
                   <ul>
@@ -489,7 +489,7 @@ function RebirthComponent({ gameState }: { gameState: GameState }): ReactNode {
                         const gp = extraGreatPeople + i;
                         return (
                            <li key={i} className="text-small row">
-                              <div className="f1">{t(L.ExtraGreatPeople, { count: gp })}</div>
+                              <div className="f1">{$t(L.ExtraGreatPeople, { count: gp })}</div>
                               <div>
                                  <FormatNumber value={getValueRequiredForGreatPeople(extraGreatPeople + i)} />
                               </div>
@@ -501,7 +501,7 @@ function RebirthComponent({ gameState }: { gameState: GameState }): ReactNode {
             </li>
             {gameState.claimedGreatPeople > 0 ? (
                <li className="row">
-                  <div className="f1">{t(L.ClaimedGreatPeople)}</div>
+                  <div className="f1">{$t(L.ClaimedGreatPeople)}</div>
                   <div className="text-strong">{gameState.claimedGreatPeople}</div>
                </li>
             ) : null}
@@ -509,17 +509,17 @@ function RebirthComponent({ gameState }: { gameState: GameState }): ReactNode {
          <div className="sep10"></div>
          <button className="row w100 jcc" onClick={() => showModal(<RebirthModal />)}>
             <div className="m-icon small">stroller</div>
-            <div className="f1 text-strong">{t(L.Reborn)}</div>
+            <div className="f1 text-strong">{$t(L.Reborn)}</div>
          </button>{" "}
          <div className="sep5"></div>
          <button className="row w100 jcc" onClick={() => makeGreatPeopleFromThisRunPermanent()}>
             <div className="m-icon small">person_celebrate</div>
-            <div className="f1 text-strong">{t(L.MakeGreatPeopleFromThisRunPermanent)}</div>
+            <div className="f1 text-strong">{$t(L.MakeGreatPeopleFromThisRunPermanent)}</div>
          </button>{" "}
          <div className="sep5"></div>
          <button className="row w100 jcc" onClick={() => showModal(<RebirthHistoryModal />)}>
             <div className="m-icon small">history</div>
-            <div className="f1 text-strong">{t(L.RebirthHistory)}</div>
+            <div className="f1 text-strong">{$t(L.RebirthHistory)}</div>
          </button>
       </fieldset>
    );

@@ -14,14 +14,9 @@ import {
 import {
    applyBuildingDefaults,
    checkBuildingMax,
-   findSpecialBuilding,
-   getGreatWallRange,
-   getYellowCraneTowerRange,
-   isFestival,
+   findSpecialBuildingCached,
+   getBuildingRange,
 } from "../../../shared/logic/BuildingLogic";
-import { Config } from "../../../shared/logic/Config";
-import { GLOBAL_PARAMS, MANAGED_IMPORT_RANGE } from "../../../shared/logic/Constants";
-import { GameFeature, hasFeature } from "../../../shared/logic/FeatureLogic";
 import {
    DarkTileTextures,
    getTextColor,
@@ -30,15 +25,10 @@ import {
 } from "../../../shared/logic/GameState";
 import { getGameOptions, getGameState, notifyGameStateUpdate } from "../../../shared/logic/GameStateLogic";
 import { getGrid } from "../../../shared/logic/IntraTickCache";
-import {
-   ResourceImportOptions,
-   makeBuilding,
-   type IResourceImportBuildingData,
-} from "../../../shared/logic/Tile";
+import { makeBuilding } from "../../../shared/logic/Tile";
 import { Transports } from "../../../shared/logic/Transports";
 import {
    clamp,
-   hasFlag,
    isNullOrUndefined,
    lerp,
    lookAt,
@@ -88,7 +78,7 @@ function lastClickedCityTile() {
 }
 globalThis.lastClickedCityTile = lastClickedCityTile;
 function getHQ() {
-   return findSpecialBuilding("Headquarter", getGameState());
+   return findSpecialBuildingCached("Headquarter", getGameState());
 }
 globalThis.getHQ = getHQ;
 function getGS() {
@@ -200,7 +190,7 @@ export class WorldScene extends Scene {
 
    override onEnable(): void {
       this.restoreViewport();
-      const hq = findSpecialBuilding("Headquarter", getGameState());
+      const hq = findSpecialBuildingCached("Headquarter", getGameState());
       if (hq) {
          this.selectGrid(tileToPoint(hq.tile));
       }
@@ -413,134 +403,9 @@ export class WorldScene extends Scene {
       const building = tile?.building;
       const grid = tileToPoint(xy);
       if (building) {
-         const configBT = Config.Building[building.type];
-         switch (building.type) {
-            case "Caravansary":
-            case "Caravansary2":
-            case "Caravansary3":
-            case "Caravansary4": {
-               const ri = building as IResourceImportBuildingData;
-               if (hasFlag(ri.resourceImportOptions, ResourceImportOptions.ManagedImport)) {
-                  this.highlightRange(grid, MANAGED_IMPORT_RANGE);
-               }
-               break;
-            }
-            case "Warehouse":
-            case "Warehouse2":
-            case "Warehouse3": {
-               const ri = building as IResourceImportBuildingData;
-               if (hasFlag(ri.resourceImportOptions, ResourceImportOptions.ManagedImport)) {
-                  this.highlightRange(grid, MANAGED_IMPORT_RANGE);
-                  break;
-               }
-               if (hasFeature(GameFeature.WarehouseUpgrade, gs)) {
-                  this.highlightRange(grid, configBT.range ? configBT.range : 1);
-               }
-               break;
-            }
-            case "UtrechtDistrict": {
-               const effect = Math.floor((building.level * building.stack) / 10);
-               if (isFestival(building.type, gs) && effect > 0) {
-                  this.highlightRange(grid, effect);
-               }
-               break;
-            }
-            case "ColossusOfRhodes":
-            case "LighthouseOfAlexandria":
-            case "GrandBazaar":
-            case "HangingGarden":
-            case "ChichenItza":
-            case "AngkorWat":
-            case "StatueOfZeus":
-            case "Poseidon":
-            case "EiffelTower":
-            case "SummerPalace":
-            case "MogaoCaves":
-            case "SaintBasilsCathedral":
-            case "NileRiver":
-            case "ZagrosMountains":
-            case "TowerOfBabel":
-            case "StatueOfLiberty": {
-               this.highlightRange(grid, 1);
-               break;
-            }
-            case "GreatSphinx":
-            case "Hollywood":
-            case "SagradaFamilia":
-            case "Pantheon":
-            case "CristoRedentor":
-            case "Atomium":
-            case "TheMet":
-            case "WallStreet":
-            case "OsakaCastle":
-            case "RhineGorge":
-            case "Lapland":
-            case "YearOfTheSnake":
-            case "MontSaintMichel":
-            case "MountArarat":
-            case "TopkapiPalace":
-            case "MausoleumAtHalicarnassus":
-            case "ItaipuDam":
-            case "CathedralOfBrasilia":
-            case "Hermitage":
-            case "GoldenGateBridge": {
-               this.highlightRange(grid, 2);
-               break;
-            }
-            case "Elbphilharmonie":
-            case "Cappadocia":
-            case "BranCastle":
-            case "GlassFrog":
-            case "PygmyMarmoset":
-            case "GoldenPavilion": {
-               this.highlightRange(grid, 3);
-               break;
-            }
-            // #region Buildings with dynamic range
-            case "YellowCraneTower": {
-               this.highlightRange(grid, getYellowCraneTowerRange(xy, gs));
-               break;
-            }
-            case "GreatWall": {
-               this.highlightRange(grid, getGreatWallRange(xy, gs));
-               break;
-            }
-            case "Capybara":
-            case "GiantOtter":
-            case "Hoatzin":
-            case "RoyalFlycatcher": {
-               this.highlightRange(grid, isFestival(building.type, gs) ? 3 : 2);
-               break;
-            }
-            case "RedFort": {
-               this.highlightRange(grid, isFestival(building.type, gs) ? 5 : 3);
-               break;
-            }
-            case "SanchiStupa": {
-               this.highlightRange(grid, isFestival(building.type, gs) ? 3 : 2);
-               break;
-            }
-            case "GangesRiver": {
-               this.highlightRange(grid, isFestival(building.type, gs) ? 2 : 1);
-               break;
-            }
-            case "Uluru": {
-               this.highlightRange(grid, isFestival(building.type, gs) ? 3 : 2);
-               break;
-            }
-            case "KizhiPogost": {
-               this.highlightRange(grid, isFestival(building.type, gs) ? 6 : 3 + Math.floor(building.level * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) / 10));
-               break;
-            }
-            case "LakeBaikal": {
-               this.highlightRange(grid, isFestival(building.type, gs) ? 4 : 2);
-               break;
-            }
-            case "AuroraBorealis": {
-               this.highlightRange(grid, isFestival(building.type, gs) ? 4 : 2);
-               break;
-            }
-            // #endregion
+         const range = getBuildingRange(xy, building, gs);
+         if (range > 0) {
+            this.highlightRange(grid, range);
          }
       }
    }

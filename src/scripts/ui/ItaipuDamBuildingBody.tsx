@@ -1,13 +1,12 @@
 import { getWonderExtraLevel } from "../../../shared/logic/BuildingLogic";
 import { notifyGameStateUpdate } from "../../../shared/logic/GameStateLogic";
 import type { IItaipuDamBuildingData } from "../../../shared/logic/Tile";
-import { L, t } from "../../../shared/utilities/i18n";
+import { $t, L } from "../../../shared/utilities/i18n";
 import { BuildingColorComponent } from "./BuildingColorComponent";
 import { BuildingDescriptionComponent } from "./BuildingDescriptionComponent";
 import type { IBuildingComponentProps } from "./BuildingPage";
 import { BuildingValueComponent } from "./BuildingValueComponent";
 import { BuildingWikipediaComponent } from "./BuildingWikipediaComponent";
-import { SpaceshipIdleComponent } from "./SpaceshipIdleComponent";
 import { UpgradeableWonderComponent } from "./UpgradeableWonderComponent";
 
 export function ItaipuDamBuildingBody({ gameState, xy }: IBuildingComponentProps): React.ReactNode {
@@ -18,13 +17,12 @@ export function ItaipuDamBuildingBody({ gameState, xy }: IBuildingComponentProps
    const itaipuDam = building as IItaipuDamBuildingData;
    return (
       <div className="window-body">
-         <SpaceshipIdleComponent gameState={gameState} type={building.type} />
          <BuildingDescriptionComponent gameState={gameState} xy={xy} />
          <fieldset>
             <div className="row">
-               <div>{t(L.BuildingLevelBoost)}</div>
+               <div>{$t(L.BuildingLevelBoost)}</div>
                <div className="f1"></div>
-               <div>{t(L.ProductionMultiplier)}</div>
+               <div>{$t(L.ProductionMultiplier)}</div>
             </div>
             <div className="row">
                <div className="m-icon" style={{ marginLeft: -8 }}>

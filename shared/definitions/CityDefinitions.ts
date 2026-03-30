@@ -1,5 +1,5 @@
 import type { PartialSet } from "../utilities/TypeDefinitions";
-import { L, t } from "../utilities/i18n";
+import { $t, L } from "../utilities/i18n";
 import type { Building } from "./BuildingDefinitions";
 import type { IUnlockableMultipliers } from "./ITechDefinition";
 import type { Deposit } from "./MaterialDefinitions";
@@ -10,7 +10,7 @@ export const ROME_CITY_SIZE = 45;
 export class CityDefinitions {
    // Lydia
    Dutch: ICityDefinition = {
-      name: () => t(L.Dutch),
+      name: () => $t(L.Dutch),
       deposits: {
          Water: 0.05,
          Copper: 0.02,
@@ -26,7 +26,7 @@ export class CityDefinitions {
       },
       size: 30,
       buildingNames: {
-         Headquarter: () => t(L.NoordeindePalace),
+         Headquarter: () => $t(L.NoordeindePalace),
       },
       uniqueBuildings: {
          TulipField: "Exploration",
@@ -40,12 +40,12 @@ export class CityDefinitions {
       naturalWonders: { DeltaWorks: true },
       requireGreatPeopleLevel: 10,
       requireSupporterPack: false,
-      festivalDesc: () => t(L.BicycleCulture),
+      festivalDesc: () => $t(L.BicycleCulture),
       uniqueEffects: () => [],
       hidden: true,
    };
    Belgian: ICityDefinition = {
-      name: () => t(L.Belgian),
+      name: () => $t(L.Belgian),
       deposits: {
          Water: 0.05,
          Copper: 0.02,
@@ -61,7 +61,7 @@ export class CityDefinitions {
       },
       size: 25,
       buildingNames: {
-         Headquarter: () => t(L.NoordeindePalace),
+         Headquarter: () => $t(L.NoordeindePalace),
       },
       uniqueBuildings: {
          BelgianChocolate: "ChocolateIndustry",
@@ -71,42 +71,12 @@ export class CityDefinitions {
       naturalWonders: { DeltaWorks: true },
       requireGreatPeopleLevel: 10,
       requireSupporterPack: false,
-      festivalDesc: () => t(L.BicycleCulture),
-      uniqueEffects: () => [],
-      hidden: true,
-   };
-   Israel: ICityDefinition = {
-      name: () => t(L.Israel),
-      deposits: {
-         Water: 0.05,
-         Copper: 0.02,
-         Iron: 0.02,
-         Wood: 0.03,
-         Stone: 0.02,
-         Gold: 0.01,
-         Coal: 0.01,
-         Oil: 0.03,
-         Aluminum: 0.02,
-         NaturalGas: 0.03,
-         Uranium: 0.01,
-      },
-      size: 25,
-      buildingNames: {
-         Headquarter: () => t(L.NoordeindePalace),
-      },
-      uniqueBuildings: {
-         IronDome: "ModernTactics",
-      },
-      uniqueMultipliers: {},
-      naturalWonders: { DeltaWorks: true },
-      requireGreatPeopleLevel: 10,
-      requireSupporterPack: false,
-      festivalDesc: () => t(L.BicycleCulture),
+      festivalDesc: () => $t(L.BicycleCulture),
       uniqueEffects: () => [],
       hidden: true,
    };
    Ukraine: ICityDefinition = {
-      name: () => t(L.Ukraine),
+      name: () => $t(L.Ukraine),
       deposits: {
          Water: 0.02,
          Copper: 0.02,
@@ -122,7 +92,7 @@ export class CityDefinitions {
       },
       size: 30,
       buildingNames: {
-         Headquarter: () => t(L.MariinskyiPalace),
+         Headquarter: () => $t(L.MariinskyiPalace),
       },
       uniqueBuildings: {
          CryptoFund: "Blockchain",
@@ -131,12 +101,43 @@ export class CityDefinitions {
       naturalWonders: { DeltaWorks: true },
       requireGreatPeopleLevel: 10,
       requireSupporterPack: false,
-      festivalDesc: () => t(L.BicycleCulture),
+      festivalDesc: () => $t(L.BicycleCulture),
       uniqueEffects: () => [],
       hidden: true,
    };
+   Israel: ICityDefinition = {
+      name: () => $t(L.Israel),
+      deposits: {
+         Water: 0.05,
+         Copper: 0.02,
+         Iron: 0.02,
+         Wood: 0.03,
+         Stone: 0.02,
+         Gold: 0.01,
+         Coal: 0.01,
+         Oil: 0.03,
+         Aluminum: 0.02,
+         NaturalGas: 0.03,
+         Uranium: 0.01,
+      },
+      size: 25,
+      buildingNames: {
+         Headquarter: () => $t(L.NoordeindePalace),
+      },
+      uniqueBuildings: {
+         IronDome: "ModernTactics",
+      },
+      uniqueMultipliers: {},
+      naturalWonders: { DeltaWorks: true },
+      requireGreatPeopleLevel: 10,
+      requireSupporterPack: false,
+      festivalDesc: () => $t(L.BicycleCulture),
+      uniqueEffects: () => [],
+      hidden: true,
+   };
+
    Rome: ICityDefinition = {
-      name: () => t(L.Roman),
+      name: () => $t(L.Roman),
       deposits: {
          Water: 0.02,
          Copper: 0.02,
@@ -153,7 +154,7 @@ export class CityDefinitions {
       sizeOld: 40,
       size: ROME_CITY_SIZE,
       buildingNames: {
-         Headquarter: () => t(L.RomanForum),
+         Headquarter: () => $t(L.RomanForum),
       },
       uniqueBuildings: {
          CircusMaximus: "CivilService",
@@ -163,11 +164,11 @@ export class CityDefinitions {
       naturalWonders: { Alps: true, GrottaAzzurra: true },
       requireGreatPeopleLevel: 0,
       requireSupporterPack: false,
-      festivalDesc: () => t(L.SaturnaliaV2),
+      festivalDesc: () => $t(L.SaturnaliaV2),
       uniqueEffects: () => [],
    };
    Athens: ICityDefinition = {
-      name: () => t(L.Greek),
+      name: () => $t(L.Greek),
       deposits: {
          Water: 0.01,
          Copper: 0.03,
@@ -183,18 +184,18 @@ export class CityDefinitions {
       },
       size: 40,
       buildingNames: {
-         Headquarter: () => t(L.Acropolis),
+         Headquarter: () => $t(L.Acropolis),
       },
       uniqueBuildings: { StatueOfZeus: "Theater", Parthenon: "Democracy" },
       uniqueMultipliers: {},
       naturalWonders: { Aphrodite: true, Poseidon: true },
       requireGreatPeopleLevel: 5,
       requireSupporterPack: false,
-      festivalDesc: () => t(L.Panathenaea),
+      festivalDesc: () => $t(L.Panathenaea),
       uniqueEffects: () => [],
    };
    Memphis: ICityDefinition = {
-      name: () => t(L.Egyptian),
+      name: () => $t(L.Egyptian),
       deposits: {
          Water: 0.01,
          Copper: 0.01,
@@ -211,7 +212,7 @@ export class CityDefinitions {
       sizeOld: 50,
       size: 40,
       buildingNames: {
-         Headquarter: () => t(L.TempleOfPtah),
+         Headquarter: () => $t(L.TempleOfPtah),
       },
       uniqueBuildings: {
          AbuSimbel: "Housing",
@@ -221,11 +222,11 @@ export class CityDefinitions {
       naturalWonders: { NileRiver: true, MountSinai: true },
       requireGreatPeopleLevel: 10,
       requireSupporterPack: false,
-      festivalDesc: () => t(L.OpetV2),
+      festivalDesc: () => $t(L.OpetV2),
       uniqueEffects: () => [],
    };
    Beijing: ICityDefinition = {
-      name: () => t(L.Chinese),
+      name: () => $t(L.Chinese),
       deposits: {
          Water: 0.01,
          Copper: 0.02,
@@ -241,7 +242,7 @@ export class CityDefinitions {
       },
       size: 50,
       buildingNames: {
-         Headquarter: () => t(L.HallOfSupremeHarmony),
+         Headquarter: () => $t(L.HallOfSupremeHarmony),
       },
       uniqueBuildings: {
          GreatWall: "LandTrade",
@@ -252,11 +253,11 @@ export class CityDefinitions {
       naturalWonders: { MountTai: true, YangtzeRiver: true },
       requireGreatPeopleLevel: 15,
       requireSupporterPack: false,
-      festivalDesc: () => t(L.LunarNewYear),
+      festivalDesc: () => $t(L.LunarNewYear),
       uniqueEffects: () => [],
    };
    NewYork: ICityDefinition = {
-      name: () => t(L.American),
+      name: () => $t(L.American),
       deposits: {
          Water: 0.03,
          Copper: 0.03,
@@ -273,7 +274,7 @@ export class CityDefinitions {
       sizeOld: 30,
       size: 50,
       buildingNames: {
-         Headquarter: () => t(L.TheWhiteHouse),
+         Headquarter: () => $t(L.TheWhiteHouse),
       },
       uniqueBuildings: {
          Broadway: "Railway",
@@ -291,11 +292,11 @@ export class CityDefinitions {
       naturalWonders: { Shenandoah: true, NiagaraFalls: true },
       requireGreatPeopleLevel: 20,
       requireSupporterPack: true,
-      festivalDesc: () => t(L.Thanksgiving),
+      festivalDesc: () => $t(L.Thanksgiving),
       uniqueEffects: () => [],
    };
    Babylon: ICityDefinition = {
-      name: () => t(L.Babylonian),
+      name: () => $t(L.Babylonian),
       deposits: {
          Water: 0.01,
          Copper: 0.025,
@@ -312,7 +313,7 @@ export class CityDefinitions {
       sizeOld: 35,
       size: 40,
       buildingNames: {
-         Headquarter: () => t(L.Babylonian),
+         Headquarter: () => $t(L.Babylonian),
       },
       uniqueBuildings: {
          WallOfBabylon: "LandTrade",
@@ -323,11 +324,11 @@ export class CityDefinitions {
       naturalWonders: { EuphratesRiver: true, ZagrosMountains: true },
       requireGreatPeopleLevel: 30,
       requireSupporterPack: true,
-      festivalDesc: () => t(L.Akitu),
+      festivalDesc: () => $t(L.Akitu),
       uniqueEffects: () => [],
    };
    Kyoto: ICityDefinition = {
-      name: () => t(L.Japanese),
+      name: () => $t(L.Japanese),
       deposits: {
          Water: 0.03,
          Copper: 0.025,
@@ -344,7 +345,7 @@ export class CityDefinitions {
       sizeOld: 35,
       size: 40,
       buildingNames: {
-         Headquarter: () => t(L.ImperialPalace),
+         Headquarter: () => $t(L.ImperialPalace),
       },
       uniqueBuildings: {
          ItsukushimaShrine: "Religion",
@@ -355,11 +356,11 @@ export class CityDefinitions {
       naturalWonders: { Kanagawa: true, MountFuji: true },
       requireGreatPeopleLevel: 40,
       requireSupporterPack: true,
-      festivalDesc: () => t(L.AoiMatsuri),
+      festivalDesc: () => $t(L.AoiMatsuri),
       uniqueEffects: () => [],
    };
    German: ICityDefinition = {
-      name: () => t(L.German),
+      name: () => $t(L.German),
       deposits: {
          Water: 0.025,
          Copper: 0.025,
@@ -375,7 +376,7 @@ export class CityDefinitions {
       },
       size: 40,
       buildingNames: {
-         Headquarter: () => t(L.Reichstag),
+         Headquarter: () => $t(L.Reichstag),
       },
       uniqueBuildings: {
          WirecardAG: "FinancialArbitrage",		// FinancialLeverage geht leider nicht wegen Software und so ... da knall die Prüfung der Daten.
@@ -387,12 +388,12 @@ export class CityDefinitions {
       naturalWonders: { Zugspitze: true, RhineGorge: true, BlackForest: true },
       requireGreatPeopleLevel: 50,
       requireSupporterPack: true,
-      festivalDesc: () => t(L.Oktoberfest),
+      festivalDesc: () => $t(L.Oktoberfest),
       uniqueEffects: () => [],
    };
 
    English: ICityDefinition = {
-      name: () => t(L.English),
+      name: () => $t(L.English),
       deposits: {
          Water: 0.02,
          Copper: 0.03,
@@ -408,7 +409,7 @@ export class CityDefinitions {
       },
       size: 40,
       buildingNames: {
-         Headquarter: () => t(L.Westminster),
+         Headquarter: () => $t(L.Westminster),
       },
       uniqueBuildings: {
          BritishMuseum: "Combustion",
@@ -422,12 +423,12 @@ export class CityDefinitions {
       },
       requireGreatPeopleLevel: 60,
       requireSupporterPack: true,
-      festivalDesc: () => t(L.GuyFawkesNightV2),
+      festivalDesc: () => $t(L.GuyFawkesNightV2),
       uniqueEffects: () => [],
    };
 
    French: ICityDefinition = {
-      name: () => t(L.French),
+      name: () => $t(L.French),
       deposits: {
          Water: 0.03,
          Copper: 0.02,
@@ -444,7 +445,7 @@ export class CityDefinitions {
       sizeOld: 50,
       size: 40,
       buildingNames: {
-         Headquarter: () => t(L.ElyseePalace),
+         Headquarter: () => $t(L.ElyseePalace),
       },
       uniqueBuildings: {
          ArcDeTriomphe: "Electricity",
@@ -458,12 +459,12 @@ export class CityDefinitions {
       },
       requireGreatPeopleLevel: 70,
       requireSupporterPack: true,
-      festivalDesc: () => t(L.BastilleDay),
+      festivalDesc: () => $t(L.BastilleDay),
       uniqueEffects: () => [],
    };
 
    Ottoman: ICityDefinition = {
-      name: () => t(L.Ottoman),
+      name: () => $t(L.Ottoman),
       deposits: {
          Water: 0.02,
          Copper: 0.03,
@@ -479,7 +480,7 @@ export class CityDefinitions {
       },
       size: 50,
       buildingNames: {
-         Headquarter: () => t(L.DolmabahcePalace),
+         Headquarter: () => $t(L.DolmabahcePalace),
       },
       uniqueBuildings: {
          Penthouse: "FinancialLeverage",
@@ -490,12 +491,12 @@ export class CityDefinitions {
       naturalWonders: { Cappadocia: true, MountArarat: true, Pamukkale: true },
       requireGreatPeopleLevel: 80,
       requireSupporterPack: true,
-      festivalDesc: () => t(L.Culus),
+      festivalDesc: () => $t(L.Culus),
       uniqueEffects: () => [],
    };
 
    Brazilian: ICityDefinition = {
-      name: () => t(L.Brazilian),
+      name: () => $t(L.Brazilian),
       deposits: {
          Water: 0.04,
          Copper: 0.01,
@@ -511,7 +512,7 @@ export class CityDefinitions {
       },
       size: 50,
       buildingNames: {
-         Headquarter: () => t(L.Brasilia),
+         Headquarter: () => $t(L.Brasilia),
       },
       uniqueBuildings: { ItaipuDam: "Hydroelectricity", CathedralOfBrasilia: "Aviation" },
       uniqueMultipliers: {},
@@ -525,12 +526,12 @@ export class CityDefinitions {
       },
       requireGreatPeopleLevel: 90,
       requireSupporterPack: true,
-      festivalDesc: () => t(L.Carnival),
+      festivalDesc: () => $t(L.Carnival),
       uniqueEffects: () => [],
    };
 
    Indian: ICityDefinition = {
-      name: () => t(L.Indian),
+      name: () => $t(L.Indian),
       deposits: {
          Water: 0.03,
          Copper: 0.02,
@@ -547,19 +548,19 @@ export class CityDefinitions {
       sizeOld: 40,
       size: 45,
       buildingNames: {
-         Headquarter: () => t(L.RashtrapatiBhavan),
+         Headquarter: () => $t(L.RashtrapatiBhavan),
       },
       uniqueBuildings: { RedFort: "RapidFire", SanchiStupa: "Physics", QutbMinar: "Banking" },
       uniqueMultipliers: {},
       naturalWonders: { GangesRiver: true, Sundarbans: true },
       requireGreatPeopleLevel: 100,
       requireSupporterPack: true,
-      festivalDesc: () => t(L.DiwaliV2),
+      festivalDesc: () => $t(L.DiwaliV2),
       uniqueEffects: () => [],
    };
 
    Australian: ICityDefinition = {
-      name: () => t(L.Australian),
+      name: () => $t(L.Australian),
       deposits: {
          Water: 0.01,
          Copper: 0.01,
@@ -575,7 +576,7 @@ export class CityDefinitions {
       },
       size: 45,
       buildingNames: {
-         Headquarter: () => t(L.CanberraParliamentHouse),
+         Headquarter: () => $t(L.CanberraParliamentHouse),
       },
       uniqueBuildings: {
          FusionFuelPlant: "Software",
@@ -588,12 +589,12 @@ export class CityDefinitions {
       naturalWonders: { GreatBarrierReef: true, Uluru: true },
       requireGreatPeopleLevel: 110,
       requireSupporterPack: true,
-      festivalDesc: () => t(L.Moomba),
-      uniqueEffects: () => [t(L.AustralianUniqueEffectHTML)],
+      festivalDesc: () => $t(L.Moomba),
+      uniqueEffects: () => [$t(L.AustralianUniqueEffectHTML)],
    };
 
    Russian: ICityDefinition = {
-      name: () => t(L.Russian),
+      name: () => $t(L.Russian),
       deposits: {
          Water: 0.02,
          Copper: 0.01,
@@ -609,7 +610,7 @@ export class CityDefinitions {
       },
       size: 50,
       buildingNames: {
-         Headquarter: () => t(L.Kremlin),
+         Headquarter: () => $t(L.Kremlin),
       },
       uniqueBuildings: {
          Cosmodrome: "SpaceProgram",
@@ -624,12 +625,12 @@ export class CityDefinitions {
       },
       requireGreatPeopleLevel: 120,
       requireSupporterPack: true,
-      festivalDesc: () => t(L.Maslenitsa),
+      festivalDesc: () => $t(L.Maslenitsa),
       uniqueEffects: () => [],
    };
 
    Canadian: ICityDefinition = {
-      name: () => t(L.Canadian),
+      name: () => $t(L.Canadian),
       deposits: {
          Water: 0.02,
          Copper: 0.01,
@@ -645,7 +646,7 @@ export class CityDefinitions {
       },
       size: 50,
       buildingNames: {
-         Headquarter: () => t(L.ParliamentHill),
+         Headquarter: () => $t(L.ParliamentHill),
       },
       uniqueBuildings: {
          AILab: "ArtificialIntelligence",
@@ -660,7 +661,39 @@ export class CityDefinitions {
       },
       requireGreatPeopleLevel: 130,
       requireSupporterPack: true,
-      festivalDesc: () => t(L.WinterCarnival),
+      festivalDesc: () => $t(L.WinterCarnival),
+      uniqueEffects: () => [],
+   };
+
+   Carthaginian: ICityDefinition = {
+      name: () => $t(L.Carthaginian),
+      deposits: {
+         Water: 0.025,
+         Copper: 0.015,
+         Iron: 0.025,
+         Wood: 0.015,
+         Stone: 0.025,
+         Gold: 0.015,
+         Coal: 0.025,
+         Oil: 0.015,
+         Aluminum: 0.025,
+         NaturalGas: 0.015,
+         Uranium: 0.02,
+      },
+      size: 40,
+      buildingNames: {
+         Headquarter: () => $t(L.Carthage),
+      },
+      uniqueBuildings: {
+         CothonOfCarthage: "Architecture",
+      },
+      uniqueMultipliers: {},
+      naturalWonders: {
+         AtlasMountains: true,
+      },
+      requireGreatPeopleLevel: 130,
+      requireSupporterPack: true,
+      festivalDesc: () => $t(L.FestivalOfTanit),
       uniqueEffects: () => [],
    };
 }
