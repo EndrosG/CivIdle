@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { Config } from "../../../shared/logic/Config";
-import { formatHMS, reverseMap } from "../../../shared/utilities/Helper";
+import { RebirthFlags } from "../../../shared/logic/GameState";
+import { formatHMS, hasFlag, reverseMap } from "../../../shared/utilities/Helper";
 import { $t, L } from "../../../shared/utilities/i18n";
 import { useGameOptions } from "../Global";
 import { hideModal } from "./GlobalModal";
@@ -46,6 +47,10 @@ export function RebirthHistoryModal(): React.ReactNode {
                            <td className="text-right text-strong">{rebirth.greatPeopleAtRebirth}</td>
                         </tr>
                         <tr>
+                           <td>{$t(L.AscensionPoints)}</td>
+                           <td className="text-right text-strong">{rebirth.ascensionPoints}</td>
+                        </tr>
+                        <tr>
                            <td>{$t(L.TotalEmpireValue)}</td>
                            <td className="text-right text-strong">
                               <FormatNumber value={rebirth.totalEmpireValue} />
@@ -73,6 +78,12 @@ export function RebirthHistoryModal(): React.ReactNode {
                               <FormatNumber value={rebirth.totalEmpireValue / rebirth.totalSeconds} />
                            </td>
                         </tr>
+                        {hasFlag(rebirth.flags, RebirthFlags.EasterBunny) ? (
+                           <tr>
+                              <td>{$t(L.EasterBunnyConstructed)}</td>
+                              <td className="text-right text-strong">{$t(L.ConfirmYes)}</td>
+                           </tr>
+                        ) : null}
                      </tbody>
                   </table>
                </div>

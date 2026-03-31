@@ -39,6 +39,7 @@ export const TextureAliases = {
     "Building_CocoaPlantation": "Building_CocoaBean",
     "Building_SugarPlantation": "Building_SugarBeetFarm",
     "Building_DrinksMarket": "Building_Supermarket",
+    "Building_Tenement": "Building_Condo",
 
     "Building_WorldChildrensDay": "Building_ChildrensDay",
 

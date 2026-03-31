@@ -138,6 +138,20 @@ export const GlobalMultiplierNames: Record<keyof GlobalMultipliers, () => string
    levelBoost: () => $t(L.BuildingLevelBoost),
 };
 
+// Added by Lydia, subject to change while balancing
+export const AscensionMultipliers: Record<keyof GlobalMultipliers, number> = {
+   sciencePerBusyWorker: 100,     // this might be strong, but ascension is more expensive than just reaching a regular GP or Age Wisdom
+   sciencePerIdleWorker: 100,
+   builderCapacity: 50,          // this should always be stronger than the strongest single GP which has +7 or +8 ; doubling that seemed "okay" in the first place but it needs to be stronger because AP are rare
+   happiness: 25,
+   transportCapacity: 5,         // currently there exist two GP with +1 each, WuZetian and HannoTheNavigator (new)
+   input: 0,
+   output: 5,
+   worker: 1,
+   storage: 5,
+   levelBoost: 4,
+};
+
 export function freezeTickData(t: ITickData): ITickData {
    let key: keyof ITickData;
    for (key in t) {

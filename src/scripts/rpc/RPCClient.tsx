@@ -118,10 +118,13 @@ export const client = rpcClient<ServerImpl>({
 });
 
 function getServerAddress(): string {
+   // Lydia @ 2026-04-04: always try real server
+   /*
    if (import.meta.env.DEV) {
       const url = new URLSearchParams(window.location.search);
       return url.get("server") ?? "ws://localhost:8000";
    }
+   */
    if (getGameOptions().useMirrorServer) {
       return "wss://us.cividle.com";
    }

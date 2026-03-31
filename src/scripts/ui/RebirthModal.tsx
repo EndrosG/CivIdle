@@ -513,12 +513,14 @@ export function RebirthModal(): React.ReactNode {
                      let carryOverScience = 0;
                      const ascensionLevel = findSpecialBuilding("Retreat2", gs)?.building.level;
                      if (ascensionLevel && ascensionLevel > 0) {
+                        getGameOptions().totalAscensionPoints += ascensionLevel;
                         carryOverScience = Math.floor(getScienceAmount(gs) * ascensionLevel / 1e2);
                      }
 
                      getGameOptions().rebirthInfo.push({
                         greatPeopleAtRebirth: greatPeopleAtRebirthCount,
                         greatPeopleThisRun: gs.cementedGreatPeople - gs.claimedGreatPeople,
+                        ascensionPoints: ascensionLevel ?? 0,
                         totalEmpireValue: Tick.current.totalValue,
                         totalTicks: gs.tick,
                         totalSeconds: gs.seconds,

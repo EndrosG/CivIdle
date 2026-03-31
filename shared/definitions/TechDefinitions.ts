@@ -743,7 +743,7 @@ export class TechDefinitions {
       name: () => $t(L.MotionPicture),
       column: 18,
       requireTech: ["Urbanization"],
-      unlockBuilding: ["MovieStudio", "Hollywood"],
+      unlockBuilding: ["MovieStudio", "Hollywood", "Frauenwahlrecht"],
    };
 
    // Added by Lydia
@@ -876,7 +876,7 @@ export class TechDefinitions {
       name: () => $t(L.Skyscraper),
       column: 21,
       requireTech: ["UnitedNations", "Hydroelectricity", "Supermarket"],
-      unlockBuilding: ["Condo"],
+      unlockBuilding: ["Condo", "Tenement"],
       buildingMultiplier: {
          Library: { output: 1 },
          School: { output: 1 },

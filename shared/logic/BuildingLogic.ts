@@ -756,7 +756,7 @@ export function getBuildingLevelLabel(xy: Tile, gs: GameState): string {
 
    // We don't show level boost for wonders (as it does not apply to them), except for the Swiss Bank!
    if (isWorldOrNaturalWonder(b.type)) {
-      if (b.type === "SwissBank") {
+      if (b.type === "SwissBank" || b.type === "RecyclingPlantWo") {
          // Swiss Bank is a special case, we show the level boost (below)
       } else if (b.type === "BranCastle") {
          return String(LogicResult.branCastleLevel);
@@ -809,6 +809,9 @@ export function getStackingTargetLevels(b: IBuildingData): number[] {
 
 // Added by Lydia
 export function getDownstackingTargetLevels(b: IBuildingData): number[] {
+   if (b.stack > 20) {
+      return [b.stack - 1, b.stack - 2, Math.floor((b.stack - 3) / 5) * 5, Math.floor(b.stack / 2)];
+   }
    return [b.stack - 1, b.stack - 2, Math.floor((b.stack - 3) / 5) * 5];
 }
 
@@ -1606,17 +1609,25 @@ export function getBuildingRange(xy: Tile, building: IBuildingData, gs: GameStat
             return MANAGED_IMPORT_RANGE;
          }
          if (hasFeature(GameFeature.WarehouseUpgrade, gs)) {
-            return configBT.range ? configBT.range : 1;
+            return configBT.range ?? 1;
          }
          return 0;
       }
       // Added by Lydia
       case "UtrechtDistrict": {
-         const effect3 = Math.floor(building.level * building.stack / 10);
-         if (isFestival(building.type, gs) && effect3 > 0) {
-            return effect3;
+         const effect = Math.floor(building.level * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) / 10);
+         if (isFestival(building.type, gs) && effect > 0) {
+            return effect;
          }
          return 0;
+      }
+      case "WindPark": {
+         return Math.floor(1 + (building.level + totalLevelBoostFor(xy)) * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) / 20);
+      }
+
+      case "KotiRepository":
+      case "NuclearWasteRepository": {
+         return 1 + Math.floor(building.level * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) / 10);
       }
 
       // CivIdle Standard
@@ -1654,8 +1665,9 @@ export function getBuildingRange(xy: Tile, building: IBuildingData, gs: GameStat
       case "ItaipuDam":
       case "CathedralOfBrasilia":
       case "Hermitage":
+      case "AkademikLomonosov":
       case "GoldenGateBridge": {
-         return 2;
+         return 2 + Math.floor(building.level * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) / 20);
       }
       case "Elbphilharmonie":
       case "Cappadocia":
@@ -1663,7 +1675,7 @@ export function getBuildingRange(xy: Tile, building: IBuildingData, gs: GameStat
       case "GlassFrog":
       case "PygmyMarmoset":
       case "GoldenPavilion": {
-         return 3;
+         return 3 + Math.floor(building.level * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) / 20);
       }
 
       // #region Buildings with dynamic range
@@ -1700,7 +1712,7 @@ export function getBuildingRange(xy: Tile, building: IBuildingData, gs: GameStat
       case "SagradaFamilia":
       case "CristoRedentor":
       case "Atomium": {
-         let result = 2;
+         let result = 2 + Math.floor(building.level * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) / 20);
          if (gs.unlockedUpgrades.CothonDockyards) {
             result += 2;
          }

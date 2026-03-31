@@ -1,4 +1,4 @@
-import { BuildingIsCaravan, BuildingIsMilitaryDefense, BuildingIsMilitaryOffense, BuildingIsTrading, type Building } from "../../../shared/definitions/BuildingDefinitions";
+import { BuildingIsAlcoholIndustry, BuildingIsCakeIndustry, BuildingIsCaravan, BuildingIsChocolateIndustry, BuildingIsMilitaryDefense, BuildingIsMilitaryOffense, BuildingIsTrading, type Building } from "../../../shared/definitions/BuildingDefinitions";
 import { GreatPersonTickFlag, type GreatPerson } from "../../../shared/definitions/GreatPersonDefinitions";
 import type { Material } from "../../../shared/definitions/MaterialDefinitions";
 import {
@@ -7,18 +7,15 @@ import {
    saviorOnSpilledBloodProductionMultiplier as auroraBorealisProductionMultiplier,
    forEachMultiplier,
    generateScienceFromFaith,
-   getAtlasMountainsRange,
    getAvailableWorkers,
    getBranCastleRequiredWorkers,
    getBuildingCost,
    getBuildingRange,
    getCathedralOfBrasiliaResources,
-   getGreatWallRange,
    getMaxWarpStorage,
    getScienceFromWorkers,
    getWonderExtraLevel,
    getWorkingBuilding,
-   getYellowCraneTowerRange,
    isBuildingWellStocked,
    isFestival,
    isSpecialBuilding,
@@ -133,6 +130,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
    const buildingName = Config.Building[building.type].name();
 
    // Added by Lydia, makes code below easier to read etc.
+   const buildingRange = getBuildingRange(xy, building, gs);
    const buildingLevelStack = building.level * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1);
    const OWSmulti = { output: buildingLevelStack, worker: buildingLevelStack, storage: buildingLevelStack };
    const OSmulti = { output: buildingLevelStack, storage: buildingLevelStack };
@@ -783,7 +781,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "GreatSphinx": {
-         for (const point of grid.getRange(tileToPoint(xy), 2 * buildingLevelStack)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const tileXy = pointToTile(point);
             const b = gs.tiles.get(tileXy)?.building;
             if (b && (Config.BuildingTier[b.type] ?? 0) > 1) {
@@ -810,7 +808,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       }
       case "Hollywood": {
          let count = 0;
-         for (const point of grid.getRange(tileToPoint(xy), 2 * buildingLevelStack)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const tileXy = pointToTile(point);
             const b = gs.tiles.get(tileXy)?.building;
             if (
@@ -830,13 +828,13 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                addMultiplier(b, { output: buildingLevelStack }, buildingName);
             }
          });
-         for (const point of grid.getRange(tileToPoint(xy), Math.floor(2 * buildingLevelStack))) {
-            Tick.next.powerPlants.add(pointToTile(point));
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
+            Tick.next.powerGrid.add(pointToTile(point));
          }
          break;
       }
       case "CristoRedentor": {
-         for (const point of grid.getRange(tileToPoint(xy), getBuildingRange(xy, building, gs))) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             Tick.next.happinessExemptions.add(pointToTile(point));
          }
          break;
@@ -856,7 +854,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          }
          const diff = maxTier - minTier;
          if (diff > 0) {
-            for (const point of grid.getRange(tileToPoint(xy), getBuildingRange(xy, building, gs))) {
+            for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
                mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {
                   output: diff,
                   storage: diff,
@@ -868,7 +866,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "YellowCraneTower": {
-         for (const point of grid.getRange(tileToPoint(xy), getYellowCraneTowerRange(xy, gs))) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {
                output: buildingLevelStack,
                storage: buildingLevelStack,
@@ -964,7 +962,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "GreatWall": {
-         for (const point of grid.getRange(tileToPoint(xy), getGreatWallRange(xy, gs))) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const building = getWorkingBuilding(pointToTile(point), gs);
             if (!building || isSpecialBuilding(building.type)) continue;
             let count = Math.abs(
@@ -1019,7 +1017,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       }
       case "Atomium": {
          let science = 0;
-         for (const point of grid.getRange(tileToPoint(xy), getBuildingRange(xy, building, gs))) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const nxy = pointToTile(point);
             if (nxy !== xy) {
                science += Tick.current.scienceProduced.get(nxy) ?? 0;
@@ -1154,7 +1152,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          if (gs.tick % TELEPORT_SECONDS === 0 && (building.resources?.Teleport ?? 0) < MAX_TELEPORT) {
             safeAdd(building.resources, "Teleport", 1);
          }
-         for (const point of grid.getRange(tileToPoint(xy), 2)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {
                output: buildingLevelStack,
                worker: buildingLevelStack,
@@ -1165,7 +1163,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "WallStreet": {
-         for (const point of grid.getRange(tileToPoint(xy), 2)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const t = pointToTile(point);
             const b = gs.tiles.get(t)?.building;
             if (b && b.status === "completed") {
@@ -1278,7 +1276,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "Pantheon": {
-         for (const point of grid.getRange(tileToPoint(xy), 2)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const tileXy = pointToTile(point);
             mapSafePush(Tick.next.tileMultipliers, tileXy, {
                worker: buildingLevelStack,
@@ -1311,7 +1309,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       }
       case "TowerOfBabel": {
          const buildings = new Set<Building>();
-         for (const point of grid.getRange(tileToPoint(xy), 1)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const tileXy = pointToTile(point);
             const building = getWorkingBuilding(tileXy, gs);
             if (building && !Tick.current.notProducingReasons.has(tileXy)) {
@@ -1333,7 +1331,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       }
       case "ZagrosMountains": {
          // natural wonder: cannot be upgraded
-         for (const point of grid.getRange(tileToPoint(xy), 1)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const tileXy = pointToTile(point);
             // Include base multiplier (1)
             let multiplier = 1;
@@ -1409,13 +1407,13 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
 
       // Lydia: Dutch
       case "UtrechtDistrict": {
-         const effect = Math.floor(buildingLevelStack / 10);
+         const effect = buildingRange;    // Math.floor(buildingLevelStack / 10);
          if (isFestival(building.type, gs) === true && effect > 0) {
             // addMultiplier("BicycleFactory", { levelBoost: effect, storage: effect / 2 }, buildingName);
             // addMultiplier("LocomotiveFactory", { levelBoost: effect, storage: effect / 2 }, buildingName);
-            for (const point of grid.getRange(tileToPoint(xy), effect)) {
+            for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
                const b = gs.tiles.get(pointToTile(point))?.building;
-               if (b && (b.type === "BicycleFactory" || b.type === "LocomotiveFactory" || b.type === "CheeseMaker")) {
+               if (b && (b.type === "BicycleFactory" || b.type === "LocomotiveFactory" || b.type === "CheeseMaker" || b.type === "TulipField")) {
                   mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {
                      output: effect,
                      storage: effect / 2,
@@ -1460,7 +1458,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
             value: -3 * buildingLevelStack,
             source: buildingName,
          });
-         for (const point of grid.getRange(tileToPoint(xy), 1)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {
                levelBoost: -buildingLevelStack,
                source: buildingName,
@@ -1473,7 +1471,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
             value: -3 * buildingLevelStack,
             source: buildingName,
          });
-         for (const point of grid.getRange(tileToPoint(xy), 1)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {
                output: -buildingLevelStack,
                storage: -2 * buildingLevelStack,
@@ -1533,7 +1531,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "MightMakesRight": {
          // Military Focus Strategy
          Tick.next.globalMultipliers.happiness.push({
-            value: -buildingLevelStack / 2,
+            value: -buildingLevelStack,
             source: buildingName,
          });
          Tick.next.globalMultipliers.output.push({
@@ -1548,6 +1546,55 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
             // effectively +2 = -1 (global) +3 (building)
             addMultiplier(btype, { output: 3 * buildingLevelStack, storage: 2.5 * buildingLevelStack }, buildingName);
          }
+         break;
+      }
+
+      // Lydia: more food
+      case "ValentinesDay":
+      case "WomensDay": {
+         Tick.next.globalMultipliers.happiness.push({
+            value: (1 + buildingLevelStack) / 2,
+            source: buildingName,
+         });
+         addMultiplier("Floriculture", OSmulti, buildingName);
+         addMultiplier("TulipField", OSmulti, buildingName);
+         for (const btype of BuildingIsChocolateIndustry) {
+            addMultiplier(btype, OSmulti, buildingName);
+         }
+         break;
+      }
+      case "ChildrensDay":
+      case "WorldChildrensDay":
+      case "MothersDay": {
+         Tick.next.globalMultipliers.happiness.push({
+            value: (1 + buildingLevelStack) / 2,
+            source: buildingName,
+         });
+         for (const btype of BuildingIsCakeIndustry) {
+            addMultiplier(btype, OSmulti, buildingName);
+         }
+         break;
+      }
+      case "LabourDay":
+      case "FathersDay": {
+         Tick.next.globalMultipliers.levelBoost.push({
+            value: 1 + (buildingLevelStack - 1) / 5,
+            source: buildingName,
+         });
+         addMultiplier("PoultryFarm", OSmulti, buildingName);
+         for (const btype of BuildingIsAlcoholIndustry) {
+            addMultiplier(btype, OSmulti, buildingName);
+         }
+         break;
+      }
+
+      case "Frauenwahlrecht": {
+         // not upgradeable
+         Tick.next.globalMultipliers.happiness.push({
+            value: 2,
+            source: buildingName,
+         });
+         addMultiplier("Parliament", { levelBoost: 2 }, buildingName);
          break;
       }
 
@@ -1630,9 +1677,10 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          });
          break;
       }
-      case "OsakaCastle": {
-         for (const point of grid.getRange(tileToPoint(xy), buildingLevelStack)) {
-            Tick.next.powerPlants.add(pointToTile(point));
+      case "OsakaCastle":
+      case "WindPark": {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
+            Tick.next.powerGrid.add(pointToTile(point));
          }
          break;
       }
@@ -1667,7 +1715,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "GoldenPavilion": {
-         grid.getRange(tileToPoint(xy), 3).forEach((point) => {
+         grid.getRange(tileToPoint(xy), buildingRange).forEach((point) => {
             const tile = pointToTile(point);
             const building = gs.tiles.get(tile)?.building;
             if (!building) {
@@ -1699,7 +1747,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "RhineGorge": {
          // natural wonder: cannot be upgraded
          let count = 0;
-         for (const point of grid.getRange(tileToPoint(xy), 2)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const targetXy = pointToTile(point);
             if (targetXy === xy) {
                continue;
@@ -1713,7 +1761,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "Elbphilharmonie": {
-         for (const point of grid.getRange(tileToPoint(xy), 3)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const xy = pointToTile(point);
             const building = getWorkingBuilding(xy, gs);
             if (!building) {
@@ -1784,7 +1832,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "Lapland": {
          // natural wonder: cannot be upgraded
          const multiplier = Config.TechAge[getCurrentAge(gs)].idx + 1;
-         for (const neighbor of grid.getRange(tileToPoint(xy), 2)) {
+         for (const neighbor of grid.getRange(tileToPoint(xy), buildingRange)) {
             mapSafePush(Tick.next.tileMultipliers, pointToTile(neighbor), {
                output: multiplier,
                source: buildingName,
@@ -1799,7 +1847,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "YearOfTheSnake": {
-         for (const point of grid.getRange(tileToPoint(xy), 2)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {
                // Modified by Lydia
                output: buildingLevelStack,
@@ -1832,7 +1880,8 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          let hasGreatPeople = false;
          let count = 0;
          let countAuto = 0;
-         while ((building.resources.Cycle ?? 0) >= TOWER_BRIDGE_GP_PER_CYCLE) {
+         while ((building.resources.Cycle ?? 0) >= TOWER_BRIDGE_GP_PER_CYCLE && count < 1000) {
+            // 02.04.2026: performance limit to 1000 GP per cycle
             safeAdd(building.resources, "Cycle", -TOWER_BRIDGE_GP_PER_CYCLE);
             count++;
             const candidates1 = rollGreatPeopleThisRun(
@@ -1914,7 +1963,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          if ((building.resources.Culture ?? 0) < (value.Culture ?? 0)) {
             safeAdd(building.resources, "Culture", culture * (isFestival("MontSaintMichel", gs) ? 2 : 1));
          }
-         for (const point of grid.getRange(tileToPoint(xy), 2)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {
                storage: buildingLevelStack,
                source: buildingName,
@@ -1990,7 +2039,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          const level = isFestival("MountArarat", gs)
             ? Math.floor(Math.sqrt(getPermanentGreatPeopleLevel(options)))
             : Math.floor(Math.cbrt(getPermanentGreatPeopleLevel(options)));
-         for (const point of grid.getRange(tileToPoint(xy), 2)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {
                output: level,
                worker: level,
@@ -2002,7 +2051,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       }
       case "Cappadocia": {
          // natural wonder: cannot be upgraded
-         for (const point of grid.getRange(tileToPoint(xy), 3)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const building = gs.tiles.get(pointToTile(point))?.building;
             const factor = isFestival("Cappadocia", gs) ? 2 : 1;
             if (building && !isWorldOrNaturalWonder(building.type) && building.level > 30) {
@@ -2017,7 +2066,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "TopkapiPalace": {
-         for (const point of grid.getRange(tileToPoint(xy), 2)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const tile = pointToTile(point);
             const pm = buildingLevelStack * totalMultiplierFor(tile, "output", 1, true, gs);
             mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {
@@ -2062,7 +2111,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          const multiplier = itaipuDam.productionMultiplier;
          const levelBoost = building.level + getWonderExtraLevel(building.type) - multiplier;
 
-         for (const point of grid.getRange(tileToPoint(xy), 2)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const t = pointToTile(point);
             if (multiplier > 0) {
                mapSafePush(Tick.next.tileMultipliers, t, {
@@ -2084,15 +2133,14 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "GiantOtter": {
          // natural wonder: cannot be upgraded
          let emptyTiles = 0;
-         const range = isFestival(building.type, gs) ? 3 : 2;
-         for (const point of grid.getRange(tileToPoint(xy), range)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const t = pointToTile(point);
             const building = gs.tiles.get(t)?.building;
             if (!building) {
                emptyTiles++;
             }
          }
-         for (const point of grid.getRange(tileToPoint(xy), range)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const t = pointToTile(point);
             mapSafePush(Tick.next.tileMultipliers, t, {
                output: emptyTiles,
@@ -2105,15 +2153,14 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "RoyalFlycatcher": {
          // natural wonder: cannot be upgraded
          let emptyTiles = 0;
-         const range = isFestival(building.type, gs) ? 3 : 2;
-         for (const point of grid.getRange(tileToPoint(xy), range)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const t = pointToTile(point);
             const building = gs.tiles.get(t)?.building;
             if (!building) {
                emptyTiles++;
             }
          }
-         for (const point of grid.getRange(tileToPoint(xy), range)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const t = pointToTile(point);
             mapSafePush(Tick.next.levelBoost, t, {
                value: emptyTiles,
@@ -2126,14 +2173,14 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "PygmyMarmoset": {
          // natural wonder: cannot be upgraded
          let emptyTiles = 0;
-         for (const point of grid.getRange(tileToPoint(xy), 3)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const t = pointToTile(point);
             const building = gs.tiles.get(t)?.building;
             if (!building) {
                emptyTiles++;
             }
          }
-         for (const point of grid.getRange(tileToPoint(xy), 3)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const t = pointToTile(point);
             mapSafePush(Tick.next.tileMultipliers, t, {
                storage: emptyTiles,
@@ -2164,7 +2211,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       }
       case "RedFort": {
          const levelBoost = building.level + getWonderExtraLevel(building.type);
-         for (const point of grid.getRange(tileToPoint(xy), isFestival("RedFort", gs) ? 5 : 3)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             mapSafePush(Tick.next.levelBoost, pointToTile(point), {
                value: levelBoost,
                source: buildingName,
@@ -2175,7 +2222,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "GangesRiver": {
          // natural wonder: cannot be upgraded
          const buildings = new Set<Building>();
-         for (const point of grid.getRange(tileToPoint(xy), isFestival("GangesRiver", gs) ? 2 : 1)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const tile = pointToTile(point);
             const targetBuilding = gs.tiles.get(tile)?.building;
             if (targetBuilding) {
@@ -2217,7 +2264,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       }
       case "BranCastle": {
          let workers = 0;
-         for (const point of grid.getRange(tileToPoint(xy), 3)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const targetXy = pointToTile(point);
             if (
                gs.tiles.get(targetXy)?.building?.status === "completed" &&
@@ -2304,9 +2351,8 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "Uluru": {
-         const range = isFestival(building.type, gs) ? 3 : 2;
          const greatPeople = sizeOf(gs.greatPeople);
-         for (const point of grid.getRange(tileToPoint(xy), range)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const t = pointToTile(point);
             const building = gs.tiles.get(t)?.building;
             if (building && !Config.Building[building.type].output.Worker) {
@@ -2319,9 +2365,8 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "KizhiPogost": {
-         const range = (isFestival(building.type, gs) ? 6 : 3) + Math.floor(buildingLevelStack / 10);
          const multiplier = totalMultiplierFor(xy, "output", 0, false, gs);
-         for (const point of grid.getRange(tileToPoint(xy), range)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const targetXy = pointToTile(point);
             if (targetXy === xy) {
                continue;
@@ -2334,9 +2379,8 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "LakeBaikal": {
-         const range = isFestival(building.type, gs) ? 4 : 2;
          let level = 0;
-         for (const point of grid.getRange(tileToPoint(xy), range)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const targetXy = pointToTile(point);
             if (targetXy === xy) {
                continue;
@@ -2354,7 +2398,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       }
       case "Hermitage": {
          const buildings = new Set<Building>();
-         for (const point of grid.getRange(tileToPoint(xy), 2)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const tile = pointToTile(point);
             const targetBuilding = gs.tiles.get(tile)?.building;
             if (targetBuilding) {
@@ -2385,7 +2429,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "AkademikLomonosov": {
-         for (const point of grid.getRange(tileToPoint(xy), 2)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             Tick.next.powerGrid.add(pointToTile(point));
          }
          const multiplier = isFestival(building.type, gs) ? 2 : 1;
@@ -2395,9 +2439,8 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "AuroraBorealis": {
          const auroraBorealis = building as IAuroraBorealisBuildingData;
          const hours = Math.floor((gs.tick - auroraBorealis.startTick) / 3600);
-         const range = isFestival(building.type, gs) ? 4 : 2;
          const multiplier = auroraBorealisProductionMultiplier(hours);
-         for (const point of grid.getRange(tileToPoint(xy), range)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const targetXy = pointToTile(point);
             if (targetXy === xy) {
                continue;
@@ -2454,11 +2497,10 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "AtlasMountains": {
-         const range = getAtlasMountainsRange(gs);
          const resourcesProduced = new Set<Material>();
          const resourcesConsumed = new Set<Material>();
          const targets = new Set<Tile>();
-         for (const point of grid.getRange(tileToPoint(xy), range)) {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const targetXy = pointToTile(point);
             if (targetXy === xy) {
                continue;

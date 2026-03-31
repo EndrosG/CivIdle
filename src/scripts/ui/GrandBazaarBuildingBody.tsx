@@ -25,7 +25,6 @@ import { BuildingDescriptionComponent } from "./BuildingDescriptionComponent";
 import { BuildingElectricityComponent } from "./BuildingElectricityComponent";
 import type { IBuildingComponentProps } from "./BuildingPage";
 import { BuildingStorageComponent } from "./BuildingStorageComponent";
-import { BuildingUpgradeComponent } from "./BuildingUpgradeComponent";
 import { BuildingValueComponent } from "./BuildingValueComponent";
 import { BuildingWikipediaComponent } from "./BuildingWikipediaComponent";
 import { FormatNumber } from "./HelperComponents";
@@ -492,7 +491,6 @@ export function GrandBazaarBuildingBody({ gameState, xy }: IBuildingComponentPro
          </div>
 
          <div className="sep10"></div>
-         <BuildingUpgradeComponent gameState={gameState} xy={xy} key={xy} />
          <UpgradeableWonderComponent gameState={gameState} xy={xy} />
          <BuildingStorageComponent gameState={gameState} xy={xy} />
          <BuildingElectricityComponent gameState={gameState} xy={xy} />

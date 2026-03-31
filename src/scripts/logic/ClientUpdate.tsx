@@ -15,8 +15,10 @@ import { clearIntraTickCache, getBuildingsByType } from "../../../shared/logic/I
 import { getGreatPeopleForWisdom, getGreatPersonThisRunLevel } from "../../../shared/logic/RebirthLogic";
 import { RequestResetTile, getCurrentAge } from "../../../shared/logic/TechLogic";
 import {
+   AscensionMultipliers,
    CurrentTickChanged,
    EmptyTickData,
+   GlobalMultiplierNames,
    Tick,
    calculateCurrentTick,
    freezeTickData,
@@ -131,6 +133,36 @@ export function tickEverySecond(gs: GameState, offline: boolean) {
    );
    if (currentSessionTick % options.transportSourceCacheTimeout === 0) {
       clearTransportSourceCache();
+   }
+
+   // Added by Lydia @ 2026-04-04: for some reasons FishPond always adds to "Tick.next", even after just starting the new tick
+   // placed upfront for clarity
+   // Version 1: specific assignment of AscensionPoints to GlobalMultipliers similar as assigning wildcard GP to specific GP
+   let usedAscensionPoints = 0;
+   forEach(options.ascensionPoints, (key, amount) => {
+      if (amount > 0) {
+         if (usedAscensionPoints + amount > options.totalAscensionPoints) {
+            delete options.ascensionPoints[key];
+         } else {
+            usedAscensionPoints += amount;
+            Tick.next.globalMultipliers[key].push({
+               value: (1 + Math.log2(amount)) * AscensionMultipliers[key],
+               source: `${$t(L.AscensionEffect)} : ${GlobalMultiplierNames[key]()}`,
+            });
+         }
+      }
+   });
+   // Version 2: simple, but strong effect ; also: changed to Math.sqrt() instead of log2() to make it stronger - you wont get as many AP as GP
+   if (options.totalAscensionPoints > 0 && options.totalAscensionPoints - usedAscensionPoints > 0) {
+      const ascensionEffet = options.totalAscensionPoints - usedAscensionPoints;
+      forEach(AscensionMultipliers, (key, multiplier) => {
+         if (multiplier !== 0) {
+            Tick.next.globalMultipliers[key].push({
+               value: Math.sqrt(ascensionEffet) * multiplier,
+               source: $t(L.AscensionEffect),
+            });
+         }
+      });
    }
 
    forEach(gs.unlockedTech, (tech) => {

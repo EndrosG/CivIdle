@@ -34,6 +34,8 @@ export const DE = {
    FutureAge: "Zeitalter der Zukunft",
    Ascension: "Aufstieg",
    AscensionAge: "Zeitalter des Aufstiegs",
+   AscensionEffect: "Durch Aufstiegspunkte",
+   AscensionPoints: "Aufstiegspunkte",
    AscensionTheory: "Theorie des Aufstiegs",
    Retreat1: "Kleine Auszeit",
    Retreat1Desc: "Ein Ort des Rückzugs, der Stille und der Einkehr.",
@@ -219,7 +221,7 @@ export const DE = {
    FruitFlan: "Obsttorte",
    FruitMilk: "Fruchtmilch",
    Juice: "Saft",
-   Spirits: "Sprituosen",
+   Spirits: "Spirituosen",
    Groceries: "Lebensmittel",
 
    IndustrialWheatFarm: "Industrielle Weizenfarm",
@@ -246,6 +248,7 @@ export const DE = {
    SoftDrinkFactory: "Getränkefabrik",
    Destillery: "Destillery",
    DrinksMarket: "Getränkemarkt",
+   Tenement: "Mietshaus",
 
    ValentinesDay: "Valentinstag",
    WomensDay: "Frauentag",
@@ -254,6 +257,9 @@ export const DE = {
    LabourDay: "Tag der Arbeit",
    FathersDay: "Vatertag",
    MothersDay: "Muttertag",
+
+   Frauenwahlrecht: "Frauenwahlrecht",
+   FrauenwahlrechtDesc: "Die Einführung des Frauenwahlrechts erhöht die Zufriedenheit um +2 und das Gebäudelevel aller Parlamente um +2.",
 
 
    // CivIdle Standard Backport
@@ -1646,6 +1652,7 @@ export const DE = {
    DuneOfPilat: "Dune du Pilat",
    DuneOfPilatDesc: "Verdoppele in jedem Zeitalter die Altersweisheit des vorherigen Zeitalters",
    EasterBunny: "Osterhase",
+   EasterBunnyConstructed: "Osterhase errichtet",
    EasterBunnyDesc: "Nach der Errichtung werden 10 % der zusätzlichen Großen Persönlichkeiten aus diesem Durchgang in den nächsten Durchgang übernommen und dort nach dem Bau des Osterhasen geboren. Dieses Weltwunder kann nur im April errichtet werden",
    EastIndiaCompany: "Ostindien Kompanie",
    EastIndiaCompanyDescV2:

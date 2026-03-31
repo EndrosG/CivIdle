@@ -34,6 +34,8 @@ export const EN = {
    FutureAge: "Future Age",
    Ascension: "Ascension",
    AscensionAge: "Ascension Age",
+   AscensionEffect: "From Ascension Points",
+   AscensionPoints: "Ascension Points",
    AscensionTheory: "Theory of Ascension",
    Retreat1: "A place of retreat",
    Retreat1Desc: "A place of retreat and calmness.",
@@ -244,6 +246,7 @@ export const EN = {
    SoftDrinkFactory: "Soft Drink Factory",
    Destillery: "Destillery",
    DrinksMarket: "Drinks Market",
+   Tenement: "Tenement",
 
    ValentinesDay: "Valentines Day",
    WomensDay: "Womens Day",
@@ -252,6 +255,9 @@ export const EN = {
    LabourDay: "Labour Day",
    FathersDay: "Fathers Day",
    MothersDay: "Mothers Day",
+
+   Frauenwahlrecht: "Women's Suffrage",
+   FrauenwahlrechtDesc: "+2 Happiness. Grants +2 Building Level Boost for Parliaments",
 
 
    // CivIdle Standard Backport
@@ -766,6 +772,7 @@ export const EN = {
    DysonSphere: "Dyson Sphere",
    DysonSphereDesc: "All buildings get +5 Production Multiplier. This wonder can be upgraded and each additional upgrade provides +1 Production Multiplier to all buildings",
    EasterBunny: "Easter Bunny",
+   EasterBunnyConstructed: "Easter Bunny constructed in that run",
    EasterBunnyDesc: "Once constructed, 10% of the extra Great People at Rebirth from this run will carry forward to the next run and are born after building the Easter Bunny in the new run. This wonder can only be constructed during April",
    EastIndiaCompany: "East India Company",
    EastIndiaCompanyDescV2:

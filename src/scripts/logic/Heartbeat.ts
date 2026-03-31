@@ -7,6 +7,10 @@ import { totalEmpireValue } from "../../../shared/logic/TickLogic";
 import { addSystemMessage, client, getUser } from "../rpc/RPCClient";
 
 export async function clientHeartbeat(): Promise<void> {
+   // Lydia @ 2026-04-04: avoid this whole client stuff in DEV-Mode with no server connection
+   if (import.meta.env.DEV) {
+      return;
+   }
    const user = getUser();
    const gs = getGameState();
    const options = getGameOptions();

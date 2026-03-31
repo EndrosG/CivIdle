@@ -24,6 +24,7 @@ import { $t, L } from "../utilities/i18n";
 import { SAVE_FILE_VERSION } from "./Constants";
 import { getGameOptions, notifyGameOptionsUpdate } from "./GameStateLogic";
 import type { IShortcutConfig, Shortcut } from "./Shortcut";
+import type { GlobalMultipliers } from "./TickLogic";
 import type { IBuildingData, ITileData } from "./Tile";
 
 export interface IValueTracker {
@@ -286,6 +287,8 @@ export class GameOptions {
    greatPeople: Partial<Record<GreatPerson, { level: number; amount: number }>> = {};
    ageWisdom: PartialTabulate<TechAge> = {};
    greatPeopleChoicesV2: GreatPeopleChoiceV2[] = [];
+   totalAscensionPoints = 0;
+   ascensionPoints: Partial<Record<keyof GlobalMultipliers, number>> = {};
    language: keyof typeof Languages = "en";
    disabledTutorials = new Set<Advisor>();
    buildNumber = 0;
@@ -328,6 +331,7 @@ export enum RebirthFlags {
 export interface RebirthInfo {
    greatPeopleAtRebirth: number;
    greatPeopleThisRun: number;
+   ascensionPoints: number,
    totalEmpireValue: number;
    totalTicks: number;
    totalSeconds: number;

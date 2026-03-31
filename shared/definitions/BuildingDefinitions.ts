@@ -1489,22 +1489,31 @@ export class BuildingDefinitions {
       construction: { Brick: 20, Steel: 10, Engine: 2 },
    };
    CheesecakeFactory: IBuildingDefinition = {
+      // https://www.einfachbacken.de/rezepte/kaesekuchen-so-cremig-und-lecker
+      // Entscheidung: Milk: 1 entspricht hier 200ml, obwohl es bei Käse/Butter eine andere Menge ist
+      // Entscheidung: Egg: 1 entspricht 4 Eiern, nicht 6 -- d.h. 2 Eier = 0.5 Egg
+      // später mal noch 1 Speiseöl, z.B. Olivenöl
       name: () => $t(L.CheesecakeFactory),
-      input: { CocoaBean: 2, Milk: 3, Sugar: 1, Wheat: 1 },
+      input: { Cheese: 5, Milk: 3, Sugar: 1.25, Wheat: 1, Butter: 1, Egg: 0.5 },
       inputMultiplier: BuildingInputMultiplier.High,
       output: { Cheesecake: 1 },
       construction: { Brick: 10, Steel: 5, Engine: 1 },
    };
    ChocolateCakeFactory: IBuildingDefinition = {
+      // https://www.einfachbacken.de/rezepte/schoko-sahne-torte-einfach-selber-machen
+      // https://www.oetker.de/rezepte/r/schokotorte --> hier käme noch ", Butter: 0.25" dazu
+      // Entscheidung: Schokolade: 1 entspricht einer 200g Tafel
       name: () => $t(L.ChocolateCakeFactory),
-      input: { CocoaBean: 2, Milk: 3, Sugar: 1, Wheat: 1 },
+      input: { Chocolate: 2, Milk: 4, Egg: 1.5, Sugar: 1, Wheat: 1 },
       inputMultiplier: BuildingInputMultiplier.High,
       output: { ChocolateCake: 1 },
       construction: { Brick: 10, Steel: 5, Engine: 1 },
    };
    FruitFlanFactory: IBuildingDefinition = {
+      // https://www.einfachbacken.de/rezepte/obsttorte-so-gelingt-sie-garantiert
+      // https://www.oetker.de/rezepte/r/obsttorte
       name: () => $t(L.FruitFlanFactory),
-      input: { CocoaBean: 2, Milk: 3, Sugar: 1, Wheat: 1 },
+      input: { Fruit: 5, Milk: 1.5, Sugar: 1, Wheat: 1.25, Butter: 0.5, Egg: 1 },
       inputMultiplier: BuildingInputMultiplier.High,
       output: { FruitFlan: 1 },
       construction: { Brick: 10, Steel: 5, Engine: 1 },
@@ -1559,11 +1568,19 @@ export class BuildingDefinitions {
       construction: { Brick: 10, Steel: 10, Glass: 10, Lumber: 5 },
       power: true,
    };
+   Tenement: IBuildingDefinition = {
+      name: () => $t(L.Tenement),
+      input: { Groceries: 4 },
+      inputMultiplier: BuildingInputMultiplier.Medium,
+      output: { Worker: 274 * 4 * 2 },    // Faktor 2 ist FishPonds Standard-Faktor für Arbeiter, 274 ist der EV von Lebensmitteln
+      construction: { ReinforcedConcrete: 3, Steel: 1, Glass: 1, Furniture: 1 },
+      power: true,
+   };
 
 
    ValentinesDay: IBuildingDefinition = {
       name: () => $t(L.ValentinesDay),
-      desc: () => $t(L.IronDomeDesc),
+      desc: () => $t(L.EmptyWonderDesc),
       input: {},
       output: {},
       construction: { Flower: 1, ChocolateCandy: 10, ChocolateCake: 1 },
@@ -1573,7 +1590,7 @@ export class BuildingDefinitions {
    };
    WomensDay: IBuildingDefinition = {
       name: () => $t(L.WomensDay),
-      desc: () => $t(L.IronDomeDesc),
+      desc: () => $t(L.EmptyWonderDesc),
       input: {},
       output: {},
       construction: { Flower: 1, ChocolateCandy: 10, ChocolateCake: 1 },
@@ -1583,7 +1600,7 @@ export class BuildingDefinitions {
    };
    ChildrensDay: IBuildingDefinition = {
       name: () => $t(L.ChildrensDay),
-      desc: () => $t(L.IronDomeDesc),
+      desc: () => $t(L.EmptyWonderDesc),
       input: {},
       output: {},
       construction: { Chocolate: 2, ChocolateCake: 2, Cheesecake: 2, FruitFlan: 2 },
@@ -1593,7 +1610,7 @@ export class BuildingDefinitions {
    };
    WorldChildrensDay: IBuildingDefinition = {
       name: () => $t(L.WorldChildrensDay),
-      desc: () => $t(L.IronDomeDesc),
+      desc: () => $t(L.EmptyWonderDesc),
       input: {},
       output: {},
       construction: { Chocolate: 2, ChocolateCake: 2, Cheesecake: 2, FruitFlan: 2 },
@@ -1603,7 +1620,7 @@ export class BuildingDefinitions {
    };
    LabourDay: IBuildingDefinition = {
       name: () => $t(L.LabourDay),
-      desc: () => $t(L.IronDomeDesc),
+      desc: () => $t(L.EmptyWonderDesc),
       input: {},
       output: {},
       construction: { Meat: 1, Alcohol: 1, Spirits: 3 },
@@ -1613,7 +1630,7 @@ export class BuildingDefinitions {
    };
    FathersDay: IBuildingDefinition = {
       name: () => $t(L.FathersDay),
-      desc: () => $t(L.IronDomeDesc),
+      desc: () => $t(L.EmptyWonderDesc),
       input: {},
       output: {},
       construction: { Meat: 1, Alcohol: 1, Spirits: 3 },
@@ -1623,13 +1640,24 @@ export class BuildingDefinitions {
    };
    MothersDay: IBuildingDefinition = {
       name: () => $t(L.MothersDay),
-      desc: () => $t(L.IronDomeDesc),
+      desc: () => $t(L.EmptyWonderDesc),
       input: {},
       output: {},
       construction: { ChocolateCandy: 2, ChocolateCake: 2, Cheesecake: 2 },
       max: 1,
       special: BuildingSpecial.WorldWonder,
       wikipedia: "Mother's_Day",
+   };
+
+   Frauenwahlrecht: IBuildingDefinition = {
+      name: () => $t(L.Frauenwahlrecht),
+      desc: () => $t(L.FrauenwahlrechtDesc),
+      input: {},
+      output: {},
+      construction: { Politics: 100, Law: 10 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      wikipedia: "Women's_suffrage",
    };
 
 
@@ -3404,7 +3432,28 @@ export const BuildingIsMilitaryDefense = new Set<Building>([
    "ModernFighterFactory",
 ] satisfies Building[]);
 
+export const BuildingIsChocolateIndustry = new Set<Building>([
+   "SugarFactory",
+   "ChocolateFactory",
+   "PralineFactory",
+   "BelgianChocolate",
+] satisfies Building[]);
+export const BuildingIsCakeIndustry = new Set<Building>([
+   "SugarFactory",
+   "ChocolateFactory",
+   "CheesecakeFactory",
+   "ChocolateCakeFactory",
+   "FruitFlanFactory",
+] satisfies Building[]);
+export const BuildingIsAlcoholIndustry = new Set<Building>([
+   "Brewery",
+   "EggNog",
+   "FruitBrandy",
+   "DrinksMarket",
+] satisfies Building[]);
 
+
+// CivIdle Standard
 // This controls whether we allow upgrade for multiple levels. e.g. Tradition/Religion/Ideology wonders should NOT allow this!
 export const UpgradableWorldWonders = new Set<Building>([
    // Added by Lydia

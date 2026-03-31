@@ -17,6 +17,7 @@ import {
    findSpecialBuildingCached,
    getBuildingRange,
 } from "../../../shared/logic/BuildingLogic";
+import { Config } from "../../../shared/logic/Config";
 import {
    DarkTileTextures,
    getTextColor,
@@ -85,6 +86,21 @@ function getGS() {
    return getGameState();
 }
 globalThis.getGS = getGS;
+function getGO() {
+   return getGameOptions();
+}
+globalThis.getGO = getGO;
+function getConfig() {
+   return Config;
+}
+globalThis.getConfig = getConfig;
+/*
+// result of the TEST: It took about 47.75T PGP to reach 10k EGPL
+function addPGP() {
+   forEach(getGameOptions().greatPeople, (k) => { addPermanentGreatPerson(k, 1e9); });
+}
+globalThis.addPGP = addPGP;
+*/
 
 export class WorldScene extends Scene {
    private _width!: number;

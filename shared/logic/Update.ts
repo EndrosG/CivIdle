@@ -486,6 +486,10 @@ export function transportAndConsumeResources(
 
    // Added by Lydia
    if (building.status === "downgrading") {
+      // 2026-04-03: Added to prevent outages while downgrading or downstacking since upgrading keeps Wonders working
+      if (isWorldWonder(building.type)) {
+         OnBuildingProductionComplete.emit({ xy, offline });
+      }
       if (building.desiredLevel < 0) {
          building.desiredLevel = 1;
       }
@@ -633,6 +637,10 @@ export function transportAndConsumeResources(
       return;
    }
    if (building.status === "downstacking") {
+      // 2026-04-03: Added to prevent outages while downgrading or downstacking since upgrading keeps Wonders working
+      if (isWorldWonder(building.type)) {
+         OnBuildingProductionComplete.emit({ xy, offline });
+      }
       if (building.desiredStack < 0) {
          building.desiredStack = 1;
       }
@@ -645,9 +653,14 @@ export function transportAndConsumeResources(
          if (Config.Building[building.type].power && building.level >= GLOBAL_PARAMS.BUILDINGS_HIGH_LEVEL) {
             Tick.next.powerBuildings.add(xy);
          }
-         building.stack--;
+         // 2026-04-03: QuickPath for large downscalings
+         let delta = building.stack - building.desiredStack;
+         if (delta < 10) {
+            delta = 1;
+         }
+         building.stack -= delta;
          const prevCost = getTotalBuildingCost(building, 0, building.level, building.stack);
-         const newCost = getTotalBuildingCost(building, 0, building.level, building.stack + 1);
+         const newCost = getTotalBuildingCost(building, 0, building.level, building.stack + delta);
          const cost = {};
          forEach(newCost, (res, amount) => safeAdd(cost, res, amount));
          forEach(prevCost, (res, amount) => safeAdd(cost, res, -amount));
