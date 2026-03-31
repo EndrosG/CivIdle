@@ -62,6 +62,8 @@ const createWindow = async () => {
       checksum = "d93a5abc29a4374ada743ee4dc1a9443725c68bd521d0cf6c1d8ce47e99cf564";
       // build 911
       checksum = "6e1f6d5d5acd61f4a373a992b65d9c7a5b585aca03017e2ac57b93a3147c5173";
+      // build 913
+      checksum = "e620f8eeae109ebf4a9815a22113b0edb11b7ece97fe75aefefcc6afc2402793";
 
       if (app.isPackaged) {
          const archive = path.join(process.resourcesPath, "app.asar");
@@ -74,6 +76,8 @@ const createWindow = async () => {
             checksum = "d93a5abc29a4374ada743ee4dc1a9443725c68bd521d0cf6c1d8ce47e99cf564";
             // build 911
             checksum = "6e1f6d5d5acd61f4a373a992b65d9c7a5b585aca03017e2ac57b93a3147c5173";
+            // build 913
+            checksum = "e620f8eeae109ebf4a9815a22113b0edb11b7ece97fe75aefefcc6afc2402793";
          }
          mainWindow.loadFile(path.join(__dirname, "..", "dist", "index.html"));
       } else {
