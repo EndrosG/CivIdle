@@ -4,6 +4,7 @@ import type { IItaipuDamBuildingData } from "../../../shared/logic/Tile";
 import { $t, L } from "../../../shared/utilities/i18n";
 import { BuildingColorComponent } from "./BuildingColorComponent";
 import { BuildingDescriptionComponent } from "./BuildingDescriptionComponent";
+import { BuildingMoveComponent } from "./BuildingMoveComponent";
 import type { IBuildingComponentProps } from "./BuildingPage";
 import { BuildingValueComponent } from "./BuildingValueComponent";
 import { BuildingWikipediaComponent } from "./BuildingWikipediaComponent";
@@ -55,6 +56,7 @@ export function ItaipuDamBuildingBody({ gameState, xy }: IBuildingComponentProps
             </div>
          </fieldset>
          <UpgradeableWonderComponent gameState={gameState} xy={xy} />
+         <BuildingMoveComponent gameState={gameState} xy={xy} />
          <BuildingValueComponent gameState={gameState} xy={xy} />
          <BuildingWikipediaComponent gameState={gameState} xy={xy} />
          <BuildingColorComponent gameState={gameState} xy={xy} />

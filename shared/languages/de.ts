@@ -262,6 +262,24 @@ export const DE = {
    FrauenwahlrechtDesc: "Die Einführung des Frauenwahlrechts erhöht die Zufriedenheit um +2 und das Gebäudelevel aller Parlamente um +2.",
 
 
+   // Lydia: cloud services
+   ComputerGame: "Computerspiel",
+   GameStudio: "Spiele-Entwickler",
+
+   CloudService: "Cloud-Dienst",
+   CloudServices: "Cloud-Dienste",
+   CloudEcosystem: "Cloud-Landschaft (Ökosystem)",
+   CloudEcosystemDesc: "Die Cloud-Landschaft vereint verschiedene Cloud-Dienste in einem Ökosystem und fördert die Monetarisierung der Cloud-Nutzung.",
+
+   CloudAI: "KI-Dienste (Sprachmodelle)",
+   CloudAppStore: "App Store",
+   CloudGames: "Steam Spiele-Plattform",
+   CloudMusic: "Streaming-Dienste (Musik)",
+   CloudSearch: "Suchmaschinen",
+   CloudShop: "Shopping-Angebote",
+   CloudSocial: "Soziale Netzwerke (Cloud-Dienste)",
+
+
    // CivIdle Standard Backport
    // ConsumptionMultiplier: "Verbrauchsmultiplikator",
 

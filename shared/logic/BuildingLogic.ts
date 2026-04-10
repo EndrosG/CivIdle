@@ -674,7 +674,9 @@ export function getMaxInputDistance(building: IBuildingData, gs: GameState): num
    if (building.status === "completed" && "resourceImports" in building) {
       const ri = building as IResourceImportBuildingData;
       if (hasFlag(ri.resourceImportOptions, ResourceImportOptions.ManagedImport)) {
-         return MANAGED_IMPORT_RANGE;
+         // return MANAGED_IMPORT_RANGE;
+         // Lydia @ 2026-04-12 : respect increased range of warehouse 3.0 and cara 3.0 / 4.0
+         return getBuildingRange(0, building, gs);
       }
    }
    return building.maxInputDistance;
@@ -755,8 +757,11 @@ export function getBuildingLevelLabel(xy: Tile, gs: GameState): string {
    }
 
    // We don't show level boost for wonders (as it does not apply to them), except for the Swiss Bank!
+   // Lydia: plus except for RecyclingPlant-Wonder plus for any wonder with output
+   // reverted: added Windmill because it consumes input according to levelBoost
+   // colosseum consumes input according to levelBoost too, but I dont want to increase its happiness output right now
    if (isWorldOrNaturalWonder(b.type)) {
-      if (b.type === "SwissBank" || b.type === "RecyclingPlantWo") {
+      if (b.type === "SwissBank" || b.type === "RecyclingPlantWo" || sizeOf(Config.Building[b.type].output) > 0) {
          // Swiss Bank is a special case, we show the level boost (below)
       } else if (b.type === "BranCastle") {
          return String(LogicResult.branCastleLevel);
@@ -1028,7 +1033,7 @@ export function canBeElectrified(b: Building): boolean {
       return true;
    }
    // Added by Lydia
-   if (b.match("Recycling")) {
+   if (b.match("Recycling") || b.match("Cloud")) {
       return true;
    }
 
@@ -1596,17 +1601,18 @@ export function getBuildingRange(xy: Tile, building: IBuildingData, gs: GameStat
       case "Caravansary3":
       case "Caravansary4": {
          const ri = building as IResourceImportBuildingData;
+         let extraImportRange = 0;
          if (hasFlag(ri.resourceImportOptions, ResourceImportOptions.ManagedImport)) {
-            return MANAGED_IMPORT_RANGE;
+            extraImportRange = MANAGED_IMPORT_RANGE - 1;
          }
-         return 0;
+         return Math.floor((configBT.range ?? 1) + extraImportRange + GLOBAL_PARAMS.CARAVANSARIES_EXTRA_RANGE + building.level / 20);
       }
       case "Warehouse":
       case "Warehouse2":
       case "Warehouse3": {
          const ri = building as IResourceImportBuildingData;
          if (hasFlag(ri.resourceImportOptions, ResourceImportOptions.ManagedImport)) {
-            return MANAGED_IMPORT_RANGE;
+            return Math.floor((configBT.range ?? 1) + (MANAGED_IMPORT_RANGE - 1));
          }
          if (hasFeature(GameFeature.WarehouseUpgrade, gs)) {
             return configBT.range ?? 1;
@@ -1620,6 +1626,9 @@ export function getBuildingRange(xy: Tile, building: IBuildingData, gs: GameStat
             return effect;
          }
          return 0;
+      }
+      case "WindMill": {
+         return 1;
       }
       case "WindPark": {
          return Math.floor(1 + (building.level + totalLevelBoostFor(xy)) * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) / 20);

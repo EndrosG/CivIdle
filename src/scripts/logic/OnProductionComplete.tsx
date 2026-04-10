@@ -1,4 +1,4 @@
-import { BuildingIsAlcoholIndustry, BuildingIsCakeIndustry, BuildingIsCaravan, BuildingIsChocolateIndustry, BuildingIsMilitaryDefense, BuildingIsMilitaryOffense, BuildingIsTrading, type Building } from "../../../shared/definitions/BuildingDefinitions";
+import { BuildingIsAlcoholIndustry, BuildingIsCakeIndustry, BuildingIsCaravan, BuildingIsChocolateIndustry, BuildingIsCloudService, BuildingIsMilitaryDefense, BuildingIsMilitaryOffense, BuildingIsTrading, type Building } from "../../../shared/definitions/BuildingDefinitions";
 import { GreatPersonTickFlag, type GreatPerson } from "../../../shared/definitions/GreatPersonDefinitions";
 import type { Material } from "../../../shared/definitions/MaterialDefinitions";
 import {
@@ -134,6 +134,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
    const buildingLevelStack = building.level * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1);
    const OWSmulti = { output: buildingLevelStack, worker: buildingLevelStack, storage: buildingLevelStack };
    const OSmulti = { output: buildingLevelStack, storage: buildingLevelStack };
+   const LSmulti = { levelBoost: buildingLevelStack, storage: buildingLevelStack / 2 };
    // HAPPImulti: decides for wonders which provide happiness whether this grows per level or not
    // exceptions: Alderson Disk is upgradable by default / by purpose, as well as Koti Repository and Nuclear Waste Repository
    const HAPPImulti = GLOBAL_PARAMS.WONDER_LEVEL_HAPPINESS ? buildingLevelStack : 1;
@@ -1425,24 +1426,47 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
       case "WindMill": {
+         // const extraLevel = totalLevelBoostFor(xy);
+         // const effect = (building.level + extraLevel) * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1);
+         // I reverted this change - it becomes too powerful in late game???
+         // exclude Cloud Services, the windpark shall take care of those
          for (const neighbor of grid.getNeighbors(tileToPoint(xy))) {
-            mapSafePush(Tick.next.tileMultipliers, pointToTile(neighbor), {
-               levelBoost: buildingLevelStack,
-               storage: buildingLevelStack / 2,
-               source: buildingName,
-            });
+            const b = gs.tiles.get(pointToTile(neighbor))?.building;
+            if (!b?.type.match("Cloud")) {
+               mapSafePush(Tick.next.tileMultipliers, pointToTile(neighbor), {
+                  levelBoost: buildingLevelStack,
+                  storage: buildingLevelStack / 2,
+                  source: buildingName,
+               });
+            }
+         }
+         break;
+      }
+      case "WindPark": {
+         for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
+            Tick.next.powerGrid.add(pointToTile(point));
+         }
+         for (const neighbor of grid.getNeighbors(tileToPoint(xy))) {
+            const b = gs.tiles.get(pointToTile(neighbor))?.building;
+            if (b?.type.match("Cloud")) {
+               mapSafePush(Tick.next.tileMultipliers, pointToTile(neighbor), {
+                  levelBoost: buildingLevelStack,
+                  storage: buildingLevelStack / 2,
+                  source: buildingName,
+               });
+            }
          }
          break;
       }
       case "VanGoghMuseum": {
          // const extraLevel = getWonderExtraLevel(building.type);
          // addMultiplier("PaintersGuild", { levelBoost: (building.level + extraLevel) * building.stack, storage: 1 }, buildingName);
-         addMultiplier("PaintersGuild", { levelBoost: buildingLevelStack, storage: buildingLevelStack / 2 }, buildingName);
-         addMultiplier("Museum", { levelBoost: buildingLevelStack, storage: buildingLevelStack / 2 }, buildingName);
+         addMultiplier("PaintersGuild", LSmulti, buildingName);
+         addMultiplier("Museum", LSmulti, buildingName);
          break;
       }
       case "InternationalCriminalCourt": {
-         addMultiplier("Courthouse", { levelBoost: buildingLevelStack, storage: buildingLevelStack / 2 }, buildingName);
+         addMultiplier("Courthouse", LSmulti, buildingName);
          break;
       }
       case "DeltaWorks": {
@@ -1598,6 +1622,27 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
 
+      // Lydia: cloud services
+      case "CivIdle": {
+         addMultiplier("GameStudio", LSmulti, buildingName);
+         break;
+      }
+      case "CloudSearch":
+      case "CloudShop":
+      case "CloudMusic":
+      case "CloudGames":
+      case "CloudAI":
+      case "CloudSocial": {
+         addMultiplier("CloudEcosystem", LSmulti, buildingName);
+         break;
+      }
+      case "CloudEcosystem": {
+         for (const btype of BuildingIsCloudService) {
+            addMultiplier(btype, LSmulti, buildingName);
+         }
+         break;
+      }
+
 
       // CivIdle Standard, Modified by Lydia for stacking
       case "InternationalSpaceStation": {
@@ -1677,8 +1722,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          });
          break;
       }
-      case "OsakaCastle":
-      case "WindPark": {
+      case "OsakaCastle": {
          for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             Tick.next.powerGrid.add(pointToTile(point));
          }
@@ -1911,8 +1955,9 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
             let caraRange = 1;
             // Modified by Lydia with respect to multiple caravansary building types
             for (const cara of BuildingIsCaravan) {
-               caraRange = Config.Building[cara].range ?? 1;
+               // caraRange = Math.floor((Config.Building[cara].range ?? 1) + GLOBAL_PARAMS.CARAVANSARIES_EXTRA_RANGE + building.level / 20);
                getBuildingsByType(cara, gs)?.forEach((tile, xy) => {
+                  caraRange = getBuildingRange(xy, tile.building, gs);
                   if (!getWorkingBuilding(xy, gs)) {
                      return;
                   }

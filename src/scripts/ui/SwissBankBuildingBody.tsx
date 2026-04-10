@@ -13,6 +13,7 @@ import { playClick } from "../visuals/Sound";
 import { BuildingColorComponent } from "./BuildingColorComponent";
 import { BuildingDescriptionComponent } from "./BuildingDescriptionComponent";
 import { BuildingElectricityComponent } from "./BuildingElectricityComponent";
+import { BuildingMoveComponent } from "./BuildingMoveComponent";
 import type { IBuildingComponentProps } from "./BuildingPage";
 import { BuildingStorageComponent } from "./BuildingStorageComponent";
 import { BuildingValueComponent } from "./BuildingValueComponent";
@@ -59,6 +60,7 @@ export function SwissBankBuildingBody({ gameState, xy }: IBuildingComponentProps
    return (
       <div className="window-body">
          <UpgradeableWonderComponent gameState={gameState} xy={xy} />
+         <BuildingMoveComponent gameState={gameState} xy={xy} />
          <fieldset>
             <SelectComp
                data={selectData}

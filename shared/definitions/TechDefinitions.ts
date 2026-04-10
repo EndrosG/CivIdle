@@ -1036,7 +1036,7 @@ export class TechDefinitions {
       name: () => $t(L.CloudComputing),
       column: 25,
       requireTech: ["Software", "WorldWideWeb"],
-      unlockBuilding: ["SupercomputerLab", "SmartphoneFactory"],
+      unlockBuilding: ["SupercomputerLab", "SmartphoneFactory", "GameStudio"],
    };
    SocialNetwork: ITechDefinition = {
       name: () => $t(L.SocialNetwork),
@@ -1071,6 +1071,14 @@ export class TechDefinitions {
       unlockBuilding: ["CivGPT"],
       requireTech: ["CloudComputing", "Genetics"],
    };
+   // Added by Lydia
+   CloudServices: ITechDefinition = {
+      name: () => $t(L.CloudServices),
+      column: 26,
+      requireTech: ["CloudComputing"],
+      unlockBuilding: ["CivIdle", "CloudSearch", "CloudShop", "CloudMusic", "CloudGames", "CloudAI", "CloudSocial", "CloudEcosystem"],
+      // unlockBuilding: ["CloudSearch", "CloudShop", "CloudMusic", "CloudGames", "CloudAI", "CloudSocial", "CloudAppStore", "CloudEcosystem"],
+   };
    VirtualReality: ITechDefinition = {
       name: () => $t(L.VirtualReality),
       column: 26,
@@ -1101,7 +1109,7 @@ export class TechDefinitions {
    Future: ITechDefinition = {
       name: () => $t(L.Future),
       column: 27,
-      requireTech: ["Blockchain", "VirtualReality", "Robotics", "ArtificialIntelligence"],
+      requireTech: ["Blockchain", "VirtualReality", "Robotics", "ArtificialIntelligence", "CloudServices"],
       unlockBuilding: ["AldersonDisk", "DysonSphere", "MatrioshkaBrain", "DysonHabitat"],
    };
 

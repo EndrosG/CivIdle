@@ -14,6 +14,7 @@ export enum BuildingInputMultiplier {
    Low = 0.01,
    Medium = 0.05,
    High = 0.10,
+   Full = 1,
 }
 
 export const DinosaurProvincialParkPercent = 0.15;
@@ -999,7 +1000,7 @@ export class BuildingDefinitions {
    NuclearArmsRace: IBuildingDefinition = {
       name: () => $t(L.NuclearArmsRace),
       desc: () => $t(L.NuclearArmsRaceDesc),
-      input: {},
+      input: { NuclearMissile: 10 },
       output: {},
       construction: { AircraftCarrier: 10, NuclearSubmarine: 10, NuclearMissile: 10, Satellite: 30, FighterJet: 100, AtomicBomb: 100, Rocket: 200, Artillery: 300, Tank: 400 },
       max: 1,
@@ -1100,7 +1101,7 @@ export class BuildingDefinitions {
    VanGoghMuseum: IBuildingDefinition = {
       name: () => $t(L.VanGoghMuseum),
       desc: () => $t(L.VanGoghMuseumDesc),
-      input: {},
+      input: { Painting: 1 },
       output: {},
       construction: { Painting: 0.5, Culture: 5 },
       max: 1,
@@ -1110,7 +1111,7 @@ export class BuildingDefinitions {
    InternationalCriminalCourt: IBuildingDefinition = {
       name: () => $t(L.InternationalCriminalCourt),
       desc: () => $t(L.InternationalCriminalCourtDesc),
-      input: {},
+      input: { Law: 1 },
       output: {},
       construction: { Law: 20, Politics: 20, Diplomacy: 20 },
       max: 1,
@@ -1245,7 +1246,7 @@ export class BuildingDefinitions {
    DefenseCapability: IBuildingDefinition = {
       name: () => $t(L.DefenseCapability),
       desc: () => $t(L.DefenseCapabilityDesc),
-      input: {},
+      input: { InterceptorMissile: 10 },
       output: {},
       construction: { Computer: 1, Software: 1, Radio: 2, Satellite: 2, InterceptorMissile: 25, Drone: 50, Artillery: 4, Tank: 5, GuidedMissile: 25, CombatDrone: 100, CruiseMissile: 50, ModernFighter: 10 },
       max: 1,
@@ -1256,7 +1257,7 @@ export class BuildingDefinitions {
    IronDome: IBuildingDefinition = {
       name: () => $t(L.IronDome),
       desc: () => $t(L.IronDomeDesc),
-      input: {},
+      input: { InterceptorMissile: 2 },
       output: {},
       construction: { InterceptorMissile: 25, Software: 5 },
       max: 1,
@@ -1291,7 +1292,7 @@ export class BuildingDefinitions {
    ContainerPortRotterdam: IBuildingDefinition = {
       name: () => $t(L.ContainerPortRotterdam),
       desc: () => $t(L.ContainerPortDesc),
-      input: {},
+      input: { Container: 13.5 },
       output: {},
       construction: { Container: 13.5 },
       max: 1,
@@ -1302,7 +1303,7 @@ export class BuildingDefinitions {
    ContainerPortAntwerp: IBuildingDefinition = {
       name: () => $t(L.ContainerPortAntwerp),
       desc: () => $t(L.ContainerPortDesc),
-      input: {},
+      input: { Container: 12.5 },
       output: {},
       construction: { Container: 12.5 },
       max: 1,
@@ -1313,7 +1314,7 @@ export class BuildingDefinitions {
    ContainerPortHamburg: IBuildingDefinition = {
       name: () => $t(L.ContainerPortHamburg),
       desc: () => $t(L.ContainerPortDesc),
-      input: {},
+      input: { Container: 7.7 },
       output: {},
       construction: { Container: 7.7 },
       max: 1,
@@ -1324,7 +1325,7 @@ export class BuildingDefinitions {
    ContainerPortValencia: IBuildingDefinition = {
       name: () => $t(L.ContainerPortValencia),
       desc: () => $t(L.ContainerPortDesc),
-      input: {},
+      input: { Container: 4.8 },
       output: {},
       construction: { Container: 4.8 },
       max: 1,
@@ -1581,7 +1582,7 @@ export class BuildingDefinitions {
    ValentinesDay: IBuildingDefinition = {
       name: () => $t(L.ValentinesDay),
       desc: () => $t(L.EmptyWonderDesc),
-      input: {},
+      input: { Flower: 10, ChocolateCandy: 10 },
       output: {},
       construction: { Flower: 1, ChocolateCandy: 10, ChocolateCake: 1 },
       max: 1,
@@ -1591,7 +1592,7 @@ export class BuildingDefinitions {
    WomensDay: IBuildingDefinition = {
       name: () => $t(L.WomensDay),
       desc: () => $t(L.EmptyWonderDesc),
-      input: {},
+      input: { Flower: 10, ChocolateCandy: 10 },
       output: {},
       construction: { Flower: 1, ChocolateCandy: 10, ChocolateCake: 1 },
       max: 1,
@@ -1601,7 +1602,7 @@ export class BuildingDefinitions {
    ChildrensDay: IBuildingDefinition = {
       name: () => $t(L.ChildrensDay),
       desc: () => $t(L.EmptyWonderDesc),
-      input: {},
+      input: { Chocolate: 10 },
       output: {},
       construction: { Chocolate: 2, ChocolateCake: 2, Cheesecake: 2, FruitFlan: 2 },
       max: 1,
@@ -1611,7 +1612,7 @@ export class BuildingDefinitions {
    WorldChildrensDay: IBuildingDefinition = {
       name: () => $t(L.WorldChildrensDay),
       desc: () => $t(L.EmptyWonderDesc),
-      input: {},
+      input: { Chocolate: 10 },
       output: {},
       construction: { Chocolate: 2, ChocolateCake: 2, Cheesecake: 2, FruitFlan: 2 },
       max: 1,
@@ -1621,7 +1622,7 @@ export class BuildingDefinitions {
    LabourDay: IBuildingDefinition = {
       name: () => $t(L.LabourDay),
       desc: () => $t(L.EmptyWonderDesc),
-      input: {},
+      input: { Groceries: 10 },
       output: {},
       construction: { Meat: 1, Alcohol: 1, Spirits: 3 },
       max: 1,
@@ -1631,7 +1632,7 @@ export class BuildingDefinitions {
    FathersDay: IBuildingDefinition = {
       name: () => $t(L.FathersDay),
       desc: () => $t(L.EmptyWonderDesc),
-      input: {},
+      input: { Groceries: 10 },
       output: {},
       construction: { Meat: 1, Alcohol: 1, Spirits: 3 },
       max: 1,
@@ -1641,7 +1642,7 @@ export class BuildingDefinitions {
    MothersDay: IBuildingDefinition = {
       name: () => $t(L.MothersDay),
       desc: () => $t(L.EmptyWonderDesc),
-      input: {},
+      input: { ChocolateCandy: 10 },
       output: {},
       construction: { ChocolateCandy: 2, ChocolateCake: 2, Cheesecake: 2 },
       max: 1,
@@ -1652,13 +1653,109 @@ export class BuildingDefinitions {
    Frauenwahlrecht: IBuildingDefinition = {
       name: () => $t(L.Frauenwahlrecht),
       desc: () => $t(L.FrauenwahlrechtDesc),
-      input: {},
+      input: { Politics: 5 },
       output: {},
       construction: { Politics: 100, Law: 10 },
       max: 1,
       special: BuildingSpecial.WorldWonder,
       wikipedia: "Women's_suffrage",
    };
+
+   // Lydia: cloud services
+   GameStudio: IBuildingDefinition = {
+      name: () => $t(L.GameStudio),
+      input: { Software: 2, Music: 10, Painting: 10 },
+      inputMultiplier: BuildingInputMultiplier.Medium,
+      output: { ComputerGame: 1 },
+      construction: { Computer: 2, Software: 1, Internet: 1 },
+      power: true,
+   };
+   CivIdle: IBuildingDefinition = {
+      name: () => $t(L.CivIdle),
+      desc: () => $t(L.CivIdleInfo),
+      input: { ComputerGame: 5 },
+      output: {},
+      construction: { ComputerGame: 10, Computer: 1, Internet: 5 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      power: true,
+   };
+
+   //      unlockBuilding: ["CloudSearch", "CloudShop", "CloudMusic", "CloudGames", "CloudAI", "CloudSocial", "CloudAppStore", "CloudEcosystem"],
+   CloudSearch: IBuildingDefinition = {
+      name: () => $t(L.CloudSearch),
+      input: { Supercomputer: 10, Internet: 10, Software: 10 },
+      inputMultiplier: BuildingInputMultiplier.Medium,
+      output: { CloudService: 5 },
+      construction: { Computer: 2, Software: 5, Internet: 20 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      power: true,
+   };
+   CloudShop: IBuildingDefinition = {
+      name: () => $t(L.CloudShop),
+      input: { Supercomputer: 10, Internet: 10, Car: 50 },
+      inputMultiplier: BuildingInputMultiplier.Medium,
+      output: { CloudService: 5 },
+      construction: { Internet: 2, Car: 1, Book: 0.03, Garment: 0.02, Tool: 0.005, Computer: 1, Smartphone: 100, ComputerGame: 10, Software: 2 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      power: true,
+   };
+   CloudMusic: IBuildingDefinition = {
+      name: () => $t(L.CloudMusic),
+      input: { Supercomputer: 5, Internet: 10, Software: 15, Music: 100, Movie: 20 },
+      inputMultiplier: BuildingInputMultiplier.Medium,
+      output: { CloudService: 5 },
+      construction: { Computer: 1, Software: 5, Internet: 5, Music: 0.01, Movie: 1 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      power: true,
+   };
+   CloudGames: IBuildingDefinition = {
+      name: () => $t(L.CloudGames),
+      input: { Supercomputer: 5, Internet: 10, Software: 10, ComputerGame: 5 },
+      inputMultiplier: BuildingInputMultiplier.Medium,
+      output: { CloudService: 5 },
+      construction: { Computer: 1, Software: 5, Internet: 5, ComputerGame: 10 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      power: true,
+   };
+   CloudAI: IBuildingDefinition = {
+      name: () => $t(L.CloudAI),
+      input: { Supercomputer: 10, Internet: 10, Software: 10 },
+      inputMultiplier: BuildingInputMultiplier.Medium,
+      output: { CloudService: 5 },
+      construction: { Computer: 1, Software: 5, Internet: 5, CivGPT: 100 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      power: true,
+   };
+   CloudSocial: IBuildingDefinition = {
+      name: () => $t(L.CloudSocial),
+      input: { Supercomputer: 10, Internet: 10, Software: 10 },
+      inputMultiplier: BuildingInputMultiplier.Medium,
+      output: { CloudService: 5 },
+      construction: { Computer: 1, Software: 5, Internet: 5, CivTok: 25 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      power: true,
+   };
+
+   CloudEcosystem: IBuildingDefinition = {
+      name: () => $t(L.CloudEcosystem),
+      desc: () => $t(L.CloudEcosystemDesc),
+      input: { CloudService: 10 },
+      inputMultiplier: BuildingInputMultiplier.Full,
+      output: { Koti: 1 },
+      construction: { CloudService: 100, Supercomputer: 10 },
+      max: 1,
+      special: BuildingSpecial.WorldWonder,
+      power: true,
+      wikipedia: "Cloud_computing",
+   };
+
 
 
 
@@ -3450,6 +3547,14 @@ export const BuildingIsAlcoholIndustry = new Set<Building>([
    "EggNog",
    "FruitBrandy",
    "DrinksMarket",
+] satisfies Building[]);
+export const BuildingIsCloudService = new Set<Building>([
+   "CloudSearch",
+   "CloudShop",
+   "CloudMusic",
+   "CloudGames",
+   "CloudAI",
+   "CloudSocial",
 ] satisfies Building[]);
 
 

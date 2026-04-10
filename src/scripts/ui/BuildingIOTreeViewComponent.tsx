@@ -2,6 +2,7 @@ import Tippy from "@tippyjs/react";
 import classNames from "classnames";
 import { IOFlags, getMultipliersFor, totalMultiplierFor } from "../../../shared/logic/BuildingLogic";
 import { Config } from "../../../shared/logic/Config";
+import { GLOBAL_PARAMS } from "../../../shared/logic/Constants";
 import type { GameState } from "../../../shared/logic/GameState";
 import { getBuildingIO, getCloneLabScienceOutput } from "../../../shared/logic/IntraTickCache";
 import { NotProducingReason, Tick } from "../../../shared/logic/TickLogic";
@@ -81,6 +82,12 @@ export function BuildingIOTreeViewComponent({
                            <div className="f1">{$t(L.IntrinsicRatio)}</div>
                            <div className="text-strong">x{formatNumber(baseValue)}</div>
                         </li>
+                        { GLOBAL_PARAMS.SHOW_STACKING && building.stack > 1 ? (
+                           <li className="row">
+                              <div className="f1">{$t(L.Stack)}</div>
+                              <div className="text-strong">x{formatNumber(building.stack)}</div>
+                           </li>
+                        ) : null}
                         <li className="row">
                            <div className="f1">
                               {type === "input" ? $t(L.BaseConsumption) : $t(L.BaseProduction)}
@@ -88,7 +95,7 @@ export function BuildingIOTreeViewComponent({
                            <div className="text-strong">
                               <FormatNumber
                                  value={
-                                    v / (isCloneOutput ? 1 + totalMultiplier : totalMultiplier) / baseValue
+                                    v / (isCloneOutput ? 1 + totalMultiplier : totalMultiplier) / baseValue / building.stack
                                  }
                               />
                            </div>

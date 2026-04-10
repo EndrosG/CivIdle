@@ -45,6 +45,9 @@ export class MaterialDefinitions {
    Spirits = { name: () => $t(L.Spirits) };
    Groceries = { name: () => $t(L.Groceries) };
 
+   ComputerGame = { name: () => $t(L.ComputerGame) };
+   CloudService = { name: () => $t(L.CloudService) };
+
 
 
    Worker: IMaterialDefinition = { name: () => $t(L.Worker) };

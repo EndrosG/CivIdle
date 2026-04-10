@@ -260,6 +260,24 @@ export const EN = {
    FrauenwahlrechtDesc: "+2 Happiness. Grants +2 Building Level Boost for Parliaments",
 
 
+   // Lydia: cloud services
+   ComputerGame: "Computer Game",
+   GameStudio: "Game Studio",
+
+   CloudService: "Cloud Service",
+   CloudServices: "Cloud Services",
+   CloudEcosystem: "Cloud Services Ecosystem",
+   CloudEcosystemDesc: "The cloud ecosystem brings together different cloud services to foster the monetization of cloud consumption.",
+
+   CloudAI: "AI: LLMs",
+   CloudAppStore: "App Store",
+   CloudGames: "Steam Gaming Platform",
+   CloudMusic: "Music Streaming",
+   CloudSearch: "Search Engines",
+   CloudShop: "Shopping Services",
+   CloudSocial: "Social Networks (Cloud Services)",
+
+
    // CivIdle Standard Backport
    ConsumptionMultiplier: "Consumption Multiplier",
 
