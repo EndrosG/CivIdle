@@ -89,9 +89,15 @@ export const EN = {
    EnvironmentalMovement: "Environmental Movement",
    Recycling: "Recycling",
    RecyclingPlant: "Recycling Plant",
-   RecyclingPlantDesc: "In der Recycling-Anlage können Rohstoffe zurückgewonnen werden. Die Verarbeitungskapazität beträgt 100K EV pro Zyklus (bis zu 80% Wirkungsgrad), sämtliche Multiplikatoren (Gebäudestufe, Elektrifizierung, Produktion) werden angewendet.",
+   RecyclingPlantDesc: "Primarily used to recycle goods into raw materials. The processing capacity is 100k EV per cycle with up to 80% efficiency; all multipliers for building level, electrification, and production are applied.",
    LargeScaleRecyclingPlant: "Large-scale Recycling Plant",
-   LargeScaleRecyclingPlantDesc: "In der großen Recycling-Anlage können Rohstoffe zurückgewonnen werden. Die Verarbeitungskapazität beträgt 10M EV pro Zyklus (bis zu 90% Wirkungsgrad), sämtliche Multiplikatoren (Gebäudestufe, Elektrifizierung, Produktion) werden angewendet.",
+   LargeScaleRecyclingPlantDesc: "Primarily used to recycle goods into raw materials. The processing capacity is 10M EV per cycle with up to 90% efficiency; all multipliers for building level, electrification, and production are applied.",
+   PublicTransport: "Public Transport",
+   PublicTransportLD: "Long-Distance Public Transport",
+   TrainStationLocal: "Local Train Station",
+   TrainStationLocalDesc: "All nearby buildings get +1 Production Multiplier per level of the Local Train Station. Range depends on level, 1-3 tiles. Turns off other Trains Stations within its range.",
+   TrainStationCentral: "Central Station",
+   TrainStationCentralDesc: "All nearby buildings get +1 LevelBoost and +0.5 Storage Multiplier per level of the Central Station. Range depends on level, 3-5 tiles. Turns off other Trains Stations within its range.",
 
    // Lydia: more culture
    HuldrychZwingli: "Huldrych Zwingli",
@@ -168,6 +174,23 @@ export const EN = {
    ContainerPortHamburg: "Container Port of Hamburg",
    ContainerPortValencia: "Container Port of Valencia (APV)",
    ContainerPortDesc: "The introduction of modern TEU Containers / ISO Containers in 1956 has revolutionized global transportation and trading. This wonder can be upgraded and increases Production Multiplier depending on Port name / construction cost (slightly). Also: Manage all your markets. All markets get different trades.",
+   // 2016-04-18: more of those ports
+   ContainerPortShanghai: "Container Port of Shanghai",
+   ContainerPortSingapore: "Container Port of Singapore",
+   ContainerPortNingboZhoushan: "Container Port of Ningbo-Zhoushan",
+   ContainerPortLosAngeles: "Container Port of Los Angeles",
+   ContainerPortMundra: "Container Port of Mundra",
+   ContainerPortPiraeus: "Container Port of Piraeus",
+   ContainerPortSantos: "Container Port of Santos",
+   ContainerPortTokyo: "Container Port of Tokyo",
+   ContainerPortGioiaTauro: "Container Port of Gioia Tauro",
+   ContainerPortPortSaid: "Container Port of Port Said",
+   ContainerPortFelixstowe: "Container Port of Felixstowe",
+   ContainerPortVancouver: "Container Port of Vancouver",
+   ContainerPortAmbarli: "Container Port of Ambarli",
+   ContainerPortMelbourne: "Container Port of Melbourne",
+   ContainerPort: "Container Port",
+
 
    ModernFighter: "Modern Fighter Jet",
    StealthFighter: "Stealth Fighter",
@@ -258,6 +281,24 @@ export const EN = {
 
    Frauenwahlrecht: "Women's Suffrage",
    FrauenwahlrechtDesc: "+2 Happiness. Grants +2 Building Level Boost for Parliaments",
+
+
+   // Lydia: cloud services
+   ComputerGame: "Computer Game",
+   GameStudio: "Game Studio",
+
+   CloudService: "Cloud Service",
+   CloudServices: "Cloud Services",
+   CloudEcosystem: "Cloud Services Ecosystem",
+   CloudEcosystemDesc: "The cloud ecosystem brings together different cloud services to foster the monetization of cloud consumption.",
+
+   CloudAI: "AI: LLMs",
+   CloudAppStore: "App Store",
+   CloudGames: "Steam Gaming Platform",
+   CloudMusic: "Music Streaming",
+   CloudSearch: "Search Engines",
+   CloudShop: "Shopping Services",
+   CloudSocial: "Social Networks (Cloud Services)",
 
 
    // CivIdle Standard Backport

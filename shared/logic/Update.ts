@@ -1,4 +1,4 @@
-import type { Building } from "../definitions/BuildingDefinitions";
+import { BuildingIsCaravan, type Building } from "../definitions/BuildingDefinitions";
 import type { IUnlockable } from "../definitions/ITechDefinition";
 import { NoPrice, NoStorage, type Material } from "../definitions/MaterialDefinitions";
 import type { Tech } from "../definitions/TechDefinitions";
@@ -40,6 +40,7 @@ import {
    getAvailableWorkers,
    getBuilderCapacity,
    getBuildingCost,
+   getBuildingRange,
    getBuildingValue,
    getCurrentPriority,
    getElectrificationLevel,
@@ -70,7 +71,7 @@ import {
    useWorkers,
 } from "./BuildingLogic";
 import { Config } from "./Config";
-import { GLOBAL_PARAMS, MANAGED_IMPORT_RANGE } from "./Constants";
+import { GLOBAL_PARAMS } from "./Constants";
 import { GameFeature, hasFeature } from "./FeatureLogic";
 import type { GameState } from "./GameState";
 import { getGameOptions } from "./GameStateLogic";
@@ -693,12 +694,15 @@ export function transportAndConsumeResources(
    }
 
    // Modified by Lydia using match() function and range from Building
+   // 2026-04-12: finally changed to the array.has function - just in case I add another building with cara function but different name like a wonder
    const configBT = Config.Building[building.type];
-   if (building.type.match("Caravansary")) {
+   if (BuildingIsCaravan.has(building.type)) {
       Tick.next.playerTradeBuildings.set(xy, building);
-      const range = (configBT.range ?? 1) + GLOBAL_PARAMS.CARAVANSARIES_EXTRA_RANGE;
+      // const range = (configBT.range ?? 1) + GLOBAL_PARAMS.CARAVANSARIES_EXTRA_RANGE;
+      // const range = Math.floor((configBT.range ?? 1) + GLOBAL_PARAMS.CARAVANSARIES_EXTRA_RANGE + building.level / 20);
+      const buildingRange = getBuildingRange(xy, building, gs);
       if (hasFeature(GameFeature.WarehouseExtension, gs)) {
-         for (const point of getGrid(gs).getRange(tileToPoint(xy), range)) {
+         for (const point of getGrid(gs).getRange(tileToPoint(xy), buildingRange)) {
             const nxy = pointToTile(point);
             const b = gs.tiles.get(nxy)?.building;
             if (b) {
@@ -706,6 +710,9 @@ export function transportAndConsumeResources(
                   Tick.next.playerTradeBuildings.set(nxy, b);
                   // adapted from lmc (liliannes modded client)
                } else if (GLOBAL_PARAMS.CARAVANSARIES_USE_EVERYTHING && !isSpecialBuilding(b.type)) {
+                  Tick.next.playerTradeBuildings.set(nxy, b);
+               } else if (GLOBAL_PARAMS.CARAVANSARIES_USE_WONDERS && isSpecialBuilding(b.type)
+                  && (GLOBAL_PARAMS.CARAVANSARIES_USE_SWISSBANK || b.type !== "SwissBank")) {
                   Tick.next.playerTradeBuildings.set(nxy, b);
                }
             }
@@ -742,7 +749,8 @@ export function transportAndConsumeResources(
 
          const result = new Map<Material, number>();
          let total = 0;
-         for (const point of getGrid(gs).getRange(tileToPoint(xy), MANAGED_IMPORT_RANGE)) {
+         // Lydia @ 2026-04-12 : respect increased range of warehouse 3.0 and cara 3.0 / 4.0
+         for (const point of getGrid(gs).getRange(tileToPoint(xy), getBuildingRange(xy, building, gs))) {
             const nxy = pointToTile(point);
             const b = getWorkingBuilding(nxy, gs);
             if (!b) continue;
@@ -942,7 +950,13 @@ export function transportAndConsumeResources(
    ////////// Input
    const hasEnoughInput = hasEnoughResources(building.resources, input);
    if (!hasEnoughInput) {
-      Tick.next.notProducingReasons.set(xy, NotProducingReason.NotEnoughResources);
+      if (building.type === "CloudEcosystem") {
+         // Lydia @ 2026-04-10: Tests showed that CloudEcosystem can convert more Cloud Service into Koti than the Services produce ...
+         // ... but I want the wonder to have it's wonder effect even if there is not enough Cloud Service as input
+         OnBuildingProductionComplete.emit({ xy, offline });
+      } else {
+         Tick.next.notProducingReasons.set(xy, NotProducingReason.NotEnoughResources);
+      }
       return;
    }
 
@@ -1266,17 +1280,18 @@ export function transportResource(
          workerCapacity +
          Tick.current.globalMultipliers.transportCapacity.reduce((prev, curr) => prev + curr.value, 0);
 
-      const fromBuildingType = gs.tiles.get(from)?.building?.type;
-      const toBuildingType = gs.tiles.get(targetXy)?.building?.type;
+      const fromBuildingType = sourceBuilding.type;
+      const toBuildingType = targetBuilding.type;
 
-      if (fromBuildingType?.match("Warehouse") || toBuildingType?.match("Warehouse")) {
+      if (fromBuildingType.match("Warehouse") || toBuildingType.match("Warehouse")) {
          if (gs.unlockedUpgrades.Liberalism3) {
             transportCapacity = Number.POSITIVE_INFINITY;
          } else if (hasFeature(GameFeature.WarehouseUpgrade, gs)) {
             const point = tileToPoint(from);
-            const configBT = Config.Building[sourceBuilding.type];
+            // const configBT = fromBuildingType.match("Warehouse") ? Config.Building[fromBuildingType] : Config.Building[toBuildingType];
+            const warehouseRange = fromBuildingType.match("Warehouse") ? getBuildingRange(0, sourceBuilding, gs) : getBuildingRange(0, targetBuilding, gs);
             const distance = getGrid(gs).distance(point.x, point.y, targetPoint.x, targetPoint.y);
-            if (distance <= (configBT.range ?? 1)) {
+            if (distance <= warehouseRange) {
                transportCapacity = Number.POSITIVE_INFINITY;
             }
          }

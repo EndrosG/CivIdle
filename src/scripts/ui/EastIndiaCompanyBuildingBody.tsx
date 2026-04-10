@@ -9,6 +9,7 @@ import { $t, L } from "../../../shared/utilities/i18n";
 import { playClick, playError } from "../visuals/Sound";
 import { BuildingColorComponent } from "./BuildingColorComponent";
 import { BuildingDescriptionComponent } from "./BuildingDescriptionComponent";
+import { BuildingMoveComponent } from "./BuildingMoveComponent";
 import type { IBuildingComponentProps } from "./BuildingPage";
 import { BuildingValueComponent } from "./BuildingValueComponent";
 import { BuildingWikipediaComponent } from "./BuildingWikipediaComponent";
@@ -82,6 +83,7 @@ export function EastIndiaCompanyBuildingBody({ gameState, xy }: IBuildingCompone
                </Tippy>
             </button>
          </fieldset>
+         <BuildingMoveComponent gameState={gameState} xy={xy} />
          <BuildingDescriptionComponent gameState={gameState} xy={xy} />
          <BuildingValueComponent gameState={gameState} xy={xy} />
          <BuildingWikipediaComponent gameState={gameState} xy={xy} />

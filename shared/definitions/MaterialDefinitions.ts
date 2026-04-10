@@ -13,6 +13,8 @@ export class MaterialDefinitions {
    NuclearWaste = { name: () => $t(L.NuclearWaste) };
    Pollution = { name: () => $t(L.Pollution) };
    Smartphone = { name: () => $t(L.Smartphone) };
+   PublicTransport = { name: () => $t(L.PublicTransport) };
+   PublicTransportLD = { name: () => $t(L.PublicTransportLD) };
 
    InterceptorMissile = { name: () => $t(L.InterceptorMissile) };
    GuidedMissile = { name: () => $t(L.GuidedMissile) };
@@ -44,6 +46,9 @@ export class MaterialDefinitions {
    Juice = { name: () => $t(L.Juice) };
    Spirits = { name: () => $t(L.Spirits) };
    Groceries = { name: () => $t(L.Groceries) };
+
+   ComputerGame = { name: () => $t(L.ComputerGame) };
+   CloudService = { name: () => $t(L.CloudService) };
 
 
 

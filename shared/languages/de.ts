@@ -94,6 +94,12 @@ export const DE = {
    LargeScaleRecyclingPlantDesc: "In der großen Recycling-Anlage können Rohstoffe zurückgewonnen werden. Die Verarbeitungskapazität beträgt 10M EV pro Zyklus (bis zu 90% Wirkungsgrad), sämtliche Multiplikatoren (Gebäudestufe, Elektrifizierung, Produktion) werden angewendet.",
    // InputResourceForRecycling: "Eingaberessource für das Recycling",
    // OutputResourceForRecycling: "Produktionsergebnis im Recycling",
+   PublicTransport: "ÖPNV",
+   PublicTransportLD: "ÖPFV (Fernverkehr)",
+   TrainStationLocal: "Regionaler Bahnhof",
+   TrainStationLocalDesc: "Erhöht den Produktionsmultiplikator umliegender Gebäude (Radius je nach Gebäudeausbau 1-3 Felder). Darf nicht im Radius eines anderen Bahnhofs liegen (Deaktiviert andere Bahnhöfe im eigenen Radius).",
+   TrainStationCentral: "Hauptbahnhof",
+   TrainStationCentralDesc: "Kann ausgebaut werden. Gewährt einen Gebäudelevel Boost bei umliegenden Gebäuden (Radius je nach Ausbau des Wunders 3-5 Felder). Deaktiviert andere Bahnhöfe im eigenen Radius.",
 
    // Lydia: more culture
    HuldrychZwingli: "Huldrych Zwingli",
@@ -170,6 +176,22 @@ export const DE = {
    ContainerPortHamburg: "Containerhafen Hamburg",             // Deutschland
    ContainerPortValencia: "Containerhafen Valencia",           // Spanien
    ContainerPortDesc: "Die Einführung des modernen ISO-Containers im Jahr 1956 hat den Schiffsverkehr und in der Folge den weltweiten Handel revolutioniert. Dieses Wunder kann ausgebaut werden. Jeder Ausbau erhöht bei allen Gebäuden den Produktionsmultiplikator je nach Hafen bzw. Baukosten (ein wenig). Ferner: Alle Märkte kontrollieren. Alle Märkte erhalten verschiedene Marktangebote.",
+   // 2016-04-18: more of those ports
+   ContainerPortShanghai: "Containerhafen Shanghai",
+   ContainerPortSingapore: "Containerhafen Singapur",
+   ContainerPortNingboZhoushan: "Containerhafen Ningbo-Zhoushan",
+   ContainerPortLosAngeles: "Containerhafen Los Angeles",
+   ContainerPortMundra: "Containerhafen Mundra",
+   ContainerPortPiraeus: "Containerhafen Piräus",
+   ContainerPortSantos: "Containerhafen Santos",
+   ContainerPortTokyo: "Containerhafen Tokio",
+   ContainerPortGioiaTauro: "Containerhafen Gioia Tauro",
+   ContainerPortPortSaid: "Containerhafen Port Said",
+   ContainerPortFelixstowe: "Containerhafen Felixstowe",
+   ContainerPortVancouver: "Containerhafen Vancouver",
+   ContainerPortAmbarli: "Containerhafen Ambarli",
+   ContainerPortMelbourne: "Containerhafen Melbourne",
+   ContainerPort: "Containerhafen",
 
    ModernFighter: "Moderner Kampfjet",
    StealthFighter: "Tarnkappenjäger",
@@ -260,6 +282,24 @@ export const DE = {
 
    Frauenwahlrecht: "Frauenwahlrecht",
    FrauenwahlrechtDesc: "Die Einführung des Frauenwahlrechts erhöht die Zufriedenheit um +2 und das Gebäudelevel aller Parlamente um +2.",
+
+
+   // Lydia: cloud services
+   ComputerGame: "Computerspiel",
+   GameStudio: "Spiele-Entwickler",
+
+   CloudService: "Cloud-Dienst",
+   CloudServices: "Cloud-Dienste",
+   CloudEcosystem: "Cloud-Landschaft (Ökosystem)",
+   CloudEcosystemDesc: "Die Cloud-Landschaft vereint verschiedene Cloud-Dienste in einem Ökosystem und fördert die Monetarisierung der Cloud-Nutzung.",
+
+   CloudAI: "KI-Dienste (Sprachmodelle)",
+   CloudAppStore: "App Store",
+   CloudGames: "Steam Spiele-Plattform",
+   CloudMusic: "Streaming-Dienste (Musik)",
+   CloudSearch: "Suchmaschinen",
+   CloudShop: "Shopping-Angebote",
+   CloudSocial: "Soziale Netzwerke (Cloud-Dienste)",
 
 
    // CivIdle Standard Backport

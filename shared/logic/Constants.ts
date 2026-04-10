@@ -74,10 +74,11 @@ export const TRADE_TILE_ALLY_BONUS = 2;
 
 export const GLOBAL_PARAMS = {
    BUILDINGS_HIGH_LEVEL: 25,					// defaults: vanilla: infinite ; lmc: 32 ; lmc_lydia: 29, works better for me than 32 if I tend to upgrade to 30 only before stacking
-   CARAVANSARIES_USE_EVERYTHING: true,		// defaults: vanilla: false ; lmc: true ; lmc_lydia: true
-
    CARAVANSARIES_EXTRA_RANGE: 0,				// defaults: vanilla: 0 ; lmc: 0 ; lmc_lydia: 0
-   // CARAVANSARIES_USE_SWISSBANK: false,		// defaults: vanilla: false ; lmc: false ; lmc_lydia: false
+   CARAVANSARIES_USE_EVERYTHING: true,		// defaults: vanilla: false ; lmc: true ; lmc_lydia: true
+   CARAVANSARIES_USE_WONDERS: true, 		// defaults: vanilla: false ; lmc: ?? ; lmc_lydia: true since 2026-04-12
+   CARAVANSARIES_USE_SWISSBANK: false,		// defaults: vanilla: false ; lmc: false ; lmc_lydia: false
+
    DEBUG_DOWNGRADING: false,
    SHOW_DOWNGRADING: true,		// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
    DEBUG_STACKING: false,
@@ -351,7 +352,10 @@ export function calculateTierAndPrice(log?: (val: string) => void) {
    }
 
    forEach(Config.BuildingTier, (building) => {
-      if (isSpecialBuilding(building)) {
+      // Lydia @ 2026-04-17: TEST ... show real tier of producing wonders like Cloud Services
+      // ... Consequence: construction menu does not show them in the wonder filter anymore but in the respective tier then
+      // ... Do I really want this?
+      if (isSpecialBuilding(building) && isEmpty(Config.Building[building].output)) {
          Config.BuildingTier[building] = 0;
       }
    });

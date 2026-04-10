@@ -126,6 +126,7 @@ export class CityDefinitions {
       },
       uniqueBuildings: {
          IronDome: "ModernTactics",
+         ContainerPortSingapore: "Globalization",      // Singapore!
       },
       uniqueMultipliers: {},
       naturalWonders: { DeltaWorks: true },
@@ -159,6 +160,7 @@ export class CityDefinitions {
       uniqueBuildings: {
          CircusMaximus: "CivilService",
          Colosseum: "Theater",
+         ContainerPortGioiaTauro: "Globalization",
       },
       uniqueMultipliers: {},
       naturalWonders: { Alps: true, GrottaAzzurra: true },
@@ -186,7 +188,11 @@ export class CityDefinitions {
       buildingNames: {
          Headquarter: () => $t(L.Acropolis),
       },
-      uniqueBuildings: { StatueOfZeus: "Theater", Parthenon: "Democracy" },
+      uniqueBuildings: {
+         StatueOfZeus: "Theater",
+         Parthenon: "Democracy",
+         ContainerPortPiraeus: "Globalization",
+      },
       uniqueMultipliers: {},
       naturalWonders: { Aphrodite: true, Poseidon: true },
       requireGreatPeopleLevel: 5,
@@ -217,6 +223,7 @@ export class CityDefinitions {
       uniqueBuildings: {
          AbuSimbel: "Housing",
          GreatSphinx: "Arithmetic",
+         ContainerPortPortSaid: "Globalization",
       },
       uniqueMultipliers: {},
       naturalWonders: { NileRiver: true, MountSinai: true },
@@ -248,6 +255,8 @@ export class CityDefinitions {
          GreatWall: "LandTrade",
          YellowCraneTower: "Geography",
          PorcelainTower: "Banking",
+         ContainerPortShanghai: "Globalization",
+         ContainerPortNingboZhoushan: "Globalization",
       },
       uniqueMultipliers: {},
       naturalWonders: { MountTai: true, YangtzeRiver: true },
@@ -281,6 +290,7 @@ export class CityDefinitions {
          WallStreet: "Capitalism",
          TheMet: "RapidFire",
          ResearchFund: "UnitedNations",
+         ContainerPortLosAngeles: "Globalization",
       },
       uniqueMultipliers: {
          Skyscraper: {
@@ -351,6 +361,7 @@ export class CityDefinitions {
          ItsukushimaShrine: "Religion",
          GoldenPavilion: "Theocracy",
          OsakaCastle: "Electricity",
+         ContainerPortTokyo: "Globalization",
       },
       uniqueMultipliers: {},
       naturalWonders: { Kanagawa: true, MountFuji: true },
@@ -416,6 +427,7 @@ export class CityDefinitions {
          CambridgeUniversity: "Enlightenment",
          TowerBridge: "Electricity",
          EastIndiaCompany: "PrivateOwnership",
+         ContainerPortFelixstowe: "Globalization",
       },
       uniqueMultipliers: {},
       naturalWonders: {
@@ -452,6 +464,7 @@ export class CityDefinitions {
          MontSaintMichel: "Revolution",
          Louvre: "Railway",
          CentrePompidou: "Software",
+         ContainerPortValencia: "Globalization",      // Spain!
       },
       uniqueMultipliers: {},
       naturalWonders: {
@@ -486,6 +499,7 @@ export class CityDefinitions {
          Penthouse: "FinancialLeverage",
          BlueMosque: "Exploration",
          TopkapiPalace: "Aviation",
+         ContainerPortAmbarli: "Globalization",
       },
       uniqueMultipliers: {},
       naturalWonders: { Cappadocia: true, MountArarat: true, Pamukkale: true },
@@ -514,7 +528,11 @@ export class CityDefinitions {
       buildingNames: {
          Headquarter: () => $t(L.Brasilia),
       },
-      uniqueBuildings: { ItaipuDam: "Hydroelectricity", CathedralOfBrasilia: "Aviation" },
+      uniqueBuildings: {
+         ItaipuDam: "Hydroelectricity",
+         CathedralOfBrasilia: "Aviation",
+         ContainerPortSantos: "Globalization",
+      },
       uniqueMultipliers: {},
       naturalWonders: {
          Capybara: true,
@@ -550,7 +568,12 @@ export class CityDefinitions {
       buildingNames: {
          Headquarter: () => $t(L.RashtrapatiBhavan),
       },
-      uniqueBuildings: { RedFort: "RapidFire", SanchiStupa: "Physics", QutbMinar: "Banking" },
+      uniqueBuildings: {
+         RedFort: "RapidFire",
+         SanchiStupa: "Physics",
+         QutbMinar: "Banking",
+         ContainerPortMundra: "Globalization",
+      },
       uniqueMultipliers: {},
       naturalWonders: { GangesRiver: true, Sundarbans: true },
       requireGreatPeopleLevel: 100,
@@ -584,6 +607,7 @@ export class CityDefinitions {
          SydneyOperaHouse: "Television",
          SydneyHarbourBridge: "Hydroelectricity",
          GreatOceanRoad: "Rocketry",
+         ContainerPortMelbourne: "Globalization",
       },
       uniqueMultipliers: {},
       naturalWonders: { GreatBarrierReef: true, Uluru: true },
@@ -652,6 +676,7 @@ export class CityDefinitions {
          AILab: "ArtificialIntelligence",
          ChateauFrontenac: "Combustion",
          Habitat67: "ArtificialIntelligence",
+         ContainerPortVancouver: "Globalization",
       },
       uniqueMultipliers: {},
       naturalWonders: {

@@ -581,6 +581,7 @@ export function ResourcesTab({ gameState }: IBuildingComponentProps): React.Reac
             header={[
                { name: "", sortable: true },
                { name: $t(L.ResourceAmount), right: true, sortable: true },
+               { name: "x", right: true, sortable: true },
                { name: $t(L.StatisticsResourcesDeficit), right: true, sortable: true },
                { name: $t(L.StatisticsResourcesRunOut), right: true, sortable: true },
                { name: "", sortable: false },
@@ -652,6 +653,9 @@ export function ResourcesTab({ gameState }: IBuildingComponentProps): React.Reac
                      </td>
                      <td className="right">
                         <FormatNumber value={amount} />
+                     </td>
+                     <td className="right">
+                        <FormatNumber value={input > 0 ? output / input : null} />
                      </td>
                      <td>
                         <div className={classNames({ "text-right": true, "text-red": deficit < 0 })}>

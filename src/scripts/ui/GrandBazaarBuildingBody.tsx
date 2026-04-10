@@ -21,8 +21,10 @@ import { LookAtMode, WorldScene } from "../scenes/WorldScene";
 import { Singleton } from "../utilities/Singleton";
 import { playClick } from "../visuals/Sound";
 import { BuildingColorComponent } from "./BuildingColorComponent";
+import { BuildingConsumeComponent } from "./BuildingConsumeComponent";
 import { BuildingDescriptionComponent } from "./BuildingDescriptionComponent";
 import { BuildingElectricityComponent } from "./BuildingElectricityComponent";
+import { BuildingMoveComponent } from "./BuildingMoveComponent";
 import type { IBuildingComponentProps } from "./BuildingPage";
 import { BuildingStorageComponent } from "./BuildingStorageComponent";
 import { BuildingValueComponent } from "./BuildingValueComponent";
@@ -492,6 +494,8 @@ export function GrandBazaarBuildingBody({ gameState, xy }: IBuildingComponentPro
 
          <div className="sep10"></div>
          <UpgradeableWonderComponent gameState={gameState} xy={xy} />
+         <BuildingMoveComponent gameState={gameState} xy={xy} />
+         <BuildingConsumeComponent gameState={gameState} xy={xy} />
          <BuildingStorageComponent gameState={gameState} xy={xy} />
          <BuildingElectricityComponent gameState={gameState} xy={xy} />
          <BuildingValueComponent gameState={gameState} xy={xy} />
