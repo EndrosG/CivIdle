@@ -29,3 +29,7 @@ Running the Project:
 - Game's source code is licensed under **GNU General Public License v3.0**
 - Third party libraries are licensed under their corresponding licenses
 - Game's artworks and assets are included in this repository for development convenience. However, due to the complications of the original licenses, please **do not redistribute them**
+
+- This special / personal mod contains addition assets from external sources like freepic.com, wikipedia and others. Each of the addition assets as a "source" information in the image information (saved with GIMP as comment)!
+- This mod also contains a few very private photographs!
+- According to FishPond, the GameOwner, this mod shall not be used in Steam / live game because of the added content which is incompatible with Trade Server.
