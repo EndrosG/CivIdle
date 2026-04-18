@@ -1510,7 +1510,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "TrainStationLocal": {
          for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const b = gs.tiles.get(pointToTile(point))?.building;
-            if (b?.type === "TrainStationLocal") {
+            if (b?.type === "TrainStationLocal" && xy !== pointToTile(point)) {
                b.capacity = 0;
             }
             mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {

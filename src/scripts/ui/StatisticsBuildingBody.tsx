@@ -606,11 +606,16 @@ export function ResourcesTab({ gameState }: IBuildingComponentProps): React.Reac
                      );
                   case 2:
                      return (
+                        ((inputs.get(a) ?? 0) > 0 ? ((outputs.get(a) ?? 0) / (inputs.get(a) ?? 1)) : 0) -
+                        ((inputs.get(b) ?? 0) > 0 ? ((outputs.get(b) ?? 0) / (inputs.get(b) ?? 1)) : 0)
+                     );
+                  case 3:
+                     return (
                         (outputs.get(a) ?? 0) -
                         (inputs.get(a) ?? 0) -
                         ((outputs.get(b) ?? 0) - (inputs.get(b) ?? 0))
                      );
-                  case 3: {
+                  case 4: {
                      const deficitA = (outputs.get(a) ?? 0) - (inputs.get(a) ?? 0);
                      const deficitB = (outputs.get(b) ?? 0) - (inputs.get(b) ?? 0);
                      const timeLeftA =

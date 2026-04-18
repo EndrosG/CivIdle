@@ -1215,6 +1215,7 @@ export class BuildingDefinitions {
       name: () => $t(L.TrainStationLocal),
       desc: () => $t(L.TrainStationLocalDesc),
       input: { Train: 10, Bicycle: 20 },     // , Car: 1
+      inputMultiplier: BuildingInputMultiplier.Low,
       output: { PublicTransport: 1 },
       construction: { Steel: 20, Concrete: 5, Glass: 1 },      // , Computer: 1, Software: 1
       range: 1,
@@ -1224,6 +1225,7 @@ export class BuildingDefinitions {
       name: () => $t(L.TrainStationCentral),
       desc: () => $t(L.TrainStationCentralDesc),
       input: { Train: 15, PublicTransport: 15, Maglev: 2 },
+      inputMultiplier: BuildingInputMultiplier.Low,
       output: { PublicTransportLD: 1 },
       construction: { Train: 2, PublicTransport: 50, Maglev: 500, Software: 10, ReinforcedConcrete: 1 },
       max: 1,

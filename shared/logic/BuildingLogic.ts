@@ -1033,7 +1033,7 @@ export function canBeElectrified(b: Building): boolean {
       return true;
    }
    // Added by Lydia
-   if (b.match("Recycling") || b.match("Cloud")) {
+   if (b.match("Recycling") || b.match("Cloud") || b.match("TrainStation")) {
       return true;
    }
 
@@ -1630,10 +1630,12 @@ export function getBuildingRange(xy: Tile, building: IBuildingData, gs: GameStat
       case "WindMill": {
          return 1;
       }
-      case "WindPark":
+      case "WindPark": {
+         return Math.floor((configBT.range ?? 1) + (building.level + totalLevelBoostFor(xy)) * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) / 20);
+      }
       case "TrainStationLocal":
       case "TrainStationCentral": {
-         return Math.floor((configBT.range ?? 1) + (building.level + totalLevelBoostFor(xy)) * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) / 20);
+         return Math.floor((configBT.range ?? 1) + building.level * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) / 20);
       }
 
       case "KotiRepository":
