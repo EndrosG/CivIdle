@@ -1217,9 +1217,19 @@ export class BuildingDefinitions {
       input: { Train: 10, Bicycle: 20 },     // , Car: 1
       inputMultiplier: BuildingInputMultiplier.Low,
       output: { PublicTransport: 1 },
-      construction: { Steel: 20, Concrete: 5, Glass: 1 },      // , Computer: 1, Software: 1
+      construction: { Steel: 10, Concrete: 4, Glass: 2 },      // , Computer: 1, Software: 1
       range: 1,
       // power: true,
+   };
+   TrainStationRegional: IBuildingDefinition = {
+      name: () => $t(L.TrainStationRegional),
+      desc: () => $t(L.TrainStationLocalDesc),
+      input: { Train: 20, Bicycle: 40 },     // , Car: 1
+      inputMultiplier: BuildingInputMultiplier.Low,
+      output: { PublicTransport: 2 },
+      construction: { Steel: 25, Concrete: 10, Glass: 5, Computer: 2, Software: 2 },
+      range: 1,
+      power: true,
    };
    TrainStationCentral: IBuildingDefinition = {
       name: () => $t(L.TrainStationCentral),
@@ -1227,7 +1237,7 @@ export class BuildingDefinitions {
       input: { Train: 15, PublicTransport: 15, Maglev: 2 },
       inputMultiplier: BuildingInputMultiplier.Low,
       output: { PublicTransportLD: 1 },
-      construction: { Train: 2, PublicTransport: 50, Maglev: 500, Software: 10, ReinforcedConcrete: 1 },
+      construction: { Train: 0.25, PublicTransport: 6, Maglev: 60, Software: 2, ReinforcedConcrete: 0.5 },
       max: 1,
       special: BuildingSpecial.WorldWonder,
       range: 3,
@@ -1383,9 +1393,9 @@ export class BuildingDefinitions {
    ContainerPortSingapore: IBuildingDefinition = {
       name: () => $t(L.ContainerPortSingapore),
       desc: () => $t(L.ContainerPortDesc),
-      input: { Container: 49 },
+      input: { Container: 39 },
       output: {},
-      construction: { Container: 49 },
+      construction: { Container: 39 },
       max: 1,
       special: BuildingSpecial.WorldWonder,
       power: true,

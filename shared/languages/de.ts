@@ -96,8 +96,9 @@ export const DE = {
    // OutputResourceForRecycling: "Produktionsergebnis im Recycling",
    PublicTransport: "ÖPNV",
    PublicTransportLD: "ÖPFV (Fernverkehr)",
-   TrainStationLocal: "Regionaler Bahnhof",
+   TrainStationLocal: "S-Bahnstation",
    TrainStationLocalDesc: "Erhöht den Produktionsmultiplikator umliegender Gebäude (Radius je nach Gebäudeausbau 1-3 Felder). Darf nicht im Radius eines anderen Bahnhofs liegen (Deaktiviert andere Bahnhöfe im eigenen Radius).",
+   TrainStationRegional: "Kleiner Bahnhof",
    TrainStationCentral: "Hauptbahnhof",
    TrainStationCentralDesc: "Kann ausgebaut werden. Gewährt einen Gebäudelevel Boost bei umliegenden Gebäuden (Radius je nach Ausbau des Wunders 3-5 Felder). Deaktiviert andere Bahnhöfe im eigenen Radius.",
 

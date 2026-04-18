@@ -1634,6 +1634,7 @@ export function getBuildingRange(xy: Tile, building: IBuildingData, gs: GameStat
          return Math.floor((configBT.range ?? 1) + (building.level + totalLevelBoostFor(xy)) * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) / 20);
       }
       case "TrainStationLocal":
+      case "TrainStationRegional":
       case "TrainStationCentral": {
          return Math.floor((configBT.range ?? 1) + building.level * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) / 20);
       }

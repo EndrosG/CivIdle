@@ -971,6 +971,8 @@ export class TechDefinitions {
          CarFactory: { output: -1 },
          AirplaneFactory: { output: -1 },
          Parliament: { output: 1 },
+         TrainStationLocal: { output: 2 },
+         TrainStationRegional: { output: 3 },
       },
    };
 
@@ -1026,6 +1028,13 @@ export class TechDefinitions {
          "DefenseCapability",
       ],
    };
+   // Added by Lydia
+   PublicTransport: ITechDefinition = {
+      name: () => $t(L.PublicTransport),
+      column: 25,
+      requireTech: ["Nanotechnology", "Software"],
+      unlockBuilding: ["TrainStationRegional", "TrainStationCentral"],
+   };
    Genetics: ITechDefinition = {
       name: () => $t(L.Genetics),
       column: 25,
@@ -1036,7 +1045,7 @@ export class TechDefinitions {
       name: () => $t(L.CloudComputing),
       column: 25,
       requireTech: ["Software", "WorldWideWeb"],
-      unlockBuilding: ["SupercomputerLab", "TrainStationCentral", "SmartphoneFactory", "GameStudio"],
+      unlockBuilding: ["SupercomputerLab", "SmartphoneFactory", "GameStudio"],
    };
    SocialNetwork: ITechDefinition = {
       name: () => $t(L.SocialNetwork),
@@ -1061,7 +1070,7 @@ export class TechDefinitions {
    Robotics: ITechDefinition = {
       name: () => $t(L.Robotics),
       column: 26,
-      requireTech: ["Genetics"],
+      requireTech: ["PublicTransport", "Genetics"],
       unlockBuilding: ["RobocarFactory", "SpaceCenter"],
       additionalUpgrades: () => [$t(L.XBaseStorageForWarehouseAndCaravansary, { percent: formatPercent(1) })],
    };

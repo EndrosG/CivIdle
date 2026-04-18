@@ -94,8 +94,9 @@ export const EN = {
    LargeScaleRecyclingPlantDesc: "Primarily used to recycle goods into raw materials. The processing capacity is 10M EV per cycle with up to 90% efficiency; all multipliers for building level, electrification, and production are applied.",
    PublicTransport: "Public Transport",
    PublicTransportLD: "Long-Distance Public Transport",
-   TrainStationLocal: "Local Train Station",
-   TrainStationLocalDesc: "All nearby buildings get +1 Production Multiplier per level of the Local Train Station. Range depends on level, 1-3 tiles. Turns off other Trains Stations within its range.",
+   TrainStationLocal: "Commuter Train Station",
+   TrainStationLocalDesc: "All nearby buildings get +0.5 Production Multiplier per level of the Local Train Station. Range depends on level, 1-3 tiles. Turns off other Trains Stations within its range.",
+   TrainStationRegional: "Small Train Station",
    TrainStationCentral: "Central Station",
    TrainStationCentralDesc: "All nearby buildings get +1 LevelBoost and +0.5 Storage Multiplier per level of the Central Station. Range depends on level, 3-5 tiles. Turns off other Trains Stations within its range.",
 

@@ -1507,14 +1507,15 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       }
 
       // Lydia: public transport, another environmental thing
-      case "TrainStationLocal": {
+      case "TrainStationLocal":
+      case "TrainStationRegional": {
          for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const b = gs.tiles.get(pointToTile(point))?.building;
-            if (b?.type === "TrainStationLocal" && xy !== pointToTile(point)) {
+            if (b?.type.match("TrainStation") && xy !== pointToTile(point)) {
                b.capacity = 0;
             }
             mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {
-               output: buildingLevelStack,
+               output: buildingLevelStack / 2,
                source: buildingName,
             });
          }
@@ -1522,9 +1523,10 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       }
       case "TrainStationCentral": {
          addMultiplier("TrainStationLocal", OSmulti, buildingName);
+         addMultiplier("TrainStationRegional", OSmulti, buildingName);
          for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
             const b = gs.tiles.get(pointToTile(point))?.building;
-            if (b?.type === "TrainStationLocal") {
+            if (b?.type.match("TrainStation") && xy !== pointToTile(point)) {
                b.capacity = 0;
             }
             mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {
@@ -1533,6 +1535,13 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                source: buildingName,
             });
          }
+         // easter egg of Environmental Movement because there is no such upgrade effect
+         getBuildingsByType("TrainStationLocal", gs)?.forEach((tile, xy) => {
+            Tick.next.happinessExemptions.add(xy);
+         });
+         getBuildingsByType("TrainStationRegional", gs)?.forEach((tile, xy) => {
+            Tick.next.happinessExemptions.add(xy);
+         });
          break;
       }
 
