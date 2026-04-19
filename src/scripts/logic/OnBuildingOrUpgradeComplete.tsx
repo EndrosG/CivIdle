@@ -1,7 +1,7 @@
 import { isSpecialBuilding } from "../../../shared/logic/BuildingLogic";
 import { Config } from "../../../shared/logic/Config";
 import type { GreatPeopleChoiceV2 } from "../../../shared/logic/GameState";
-import { getGameState } from "../../../shared/logic/GameStateLogic";
+import { getGameOptions, getGameState } from "../../../shared/logic/GameStateLogic";
 import { rollGreatPeopleThisRun } from "../../../shared/logic/RebirthLogic";
 import { getCurrentAge } from "../../../shared/logic/TechLogic";
 import type { IChateauFrontenacBuildingData } from "../../../shared/logic/Tile";
@@ -18,7 +18,7 @@ export function onBuildingOrUpgradeComplete(xy: Tile): void {
    }
 
    switch (building.type) {
-      // added by Lydia
+      // Added by Lydia
       case "TourDeFrance":
       case "GiroDItalia": {
          // These two wonders give a fixed (themed) choice set ... bicycle, newspaper / sports and magazine GP
@@ -34,6 +34,16 @@ export function onBuildingOrUpgradeComplete(xy: Tile): void {
             playAgeUp();
             showModal(<ChooseGreatPersonModal permanent={false} />);
          }
+         break;
+      }
+      // Added by Lydia, copied from RebirthModal
+      case "ContainerHut": {
+         gs.tiles.forEach((tile, xy) => {
+            const b = tile.building;
+            if (b && b.level > (getGameOptions().maxBuildingLevels[b.type] ?? 0)) {
+               getGameOptions().maxBuildingLevels[b.type] = b.level;
+            }
+         });
          break;
       }
 

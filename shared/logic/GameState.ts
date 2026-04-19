@@ -284,6 +284,7 @@ export class GameOptions {
    greedyTransport = false;
    offlineProductionPercent = 0;
    rebirthInfo: RebirthInfo[] = [];
+   maxBuildingLevels: Partial<Record<Building, number>> = {};
    greatPeople: Partial<Record<GreatPerson, { level: number; amount: number }>> = {};
    ageWisdom: PartialTabulate<TechAge> = {};
    greatPeopleChoicesV2: GreatPeopleChoiceV2[] = [];

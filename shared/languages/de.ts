@@ -13,6 +13,8 @@ export const DE = {
    SourceGreatPersonPermanentShard: "Dauerhafte Persönlichkeits-Scherben: %{person}",
    MakeGreatPeopleFromThisRunPermanent: "GP aus diesem Durchgang in perm GP umwandeln",
    PorcelainHut: "Hütte aus Porzellan",
+   ContainerHut: "Wohncontainer (Hütte)",
+   ContainerHutDesc: "Setzt beim Bau oder Ausbau die Stufen der aktuellen Containerhäfen zurück auf 1 (ohne EV-Erstattung).",
 
    DysonHabitat: "Dyson-Habitat",
    DysonHabitat2: "Dyson-Habitat 2.0",
@@ -193,6 +195,9 @@ export const DE = {
    ContainerPortAmbarli: "Containerhafen Ambarli",
    ContainerPortMelbourne: "Containerhafen Melbourne",
    ContainerPort: "Containerhafen",
+   ContainerRoute: "Route zum %{portName}",
+   ContainerShipping: "Container-Schifffahrt",
+   ContainerShippingDesc: "Der (örtliche) Containerhafen unterhält Schifffahrtsrouten zu den größten Containerhäfen aus früheren Durchgängen: Je weiter die Containerhäfen in früheren Durchgängen ausgebaut wurden, desto stärker ist der Effekt des aktuellen Containerhafens.",
 
    ModernFighter: "Moderner Kampfjet",
    StealthFighter: "Tarnkappenjäger",

@@ -11,6 +11,7 @@ export const TextureAliases = {
     "Building_Retreat1": "Building_House",
     "Building_Retreat2": "Building_Villa",
     "Building_PorcelainHut": "Building_Hut",
+    "Building_ContainerHut": "Building_ContainerFactory",
     "Building_ZPMLab": "Building_SupercomputerLab",
 
     "Building_AlloyFactory": "Building_SteelMill",

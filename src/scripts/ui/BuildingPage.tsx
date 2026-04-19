@@ -16,6 +16,7 @@ import { BroadwayBuildingBody } from "./BroadwayBuildingBody";
 import { CathedralOfBrasiliaBuildingBody } from "./CathedralOfBrasiliaBuildingBody";
 import { CentrePompidouBuildingBody } from "./CentrePompidouBuildingBody";
 import { ChateauFrontenacBuildingBody } from "./ChateauFrontenacBuildingBody";
+import { ContainerShippingBuildingBody } from "./ContainerShippingBuildingBody";
 import { CothonOfCarthageBuildingBody } from "./CothonOfCarthageBuildingBody";
 import { DefaultBuildingBody } from "./DefaultBuildingBody";
 import { DinosaurProvincialParkBuildingBody } from "./DinosaurProvincialParkBuildingBody";
@@ -81,7 +82,7 @@ const BuildingBodyOverride: Partial<Record<Building, FunctionComponent<IBuilding
    ContainerPortVancouver: GrandBazaarBuildingBody,
    ContainerPortAmbarli: GrandBazaarBuildingBody,
    ContainerPortMelbourne: GrandBazaarBuildingBody,
-   ContainerPort: GrandBazaarBuildingBody,
+   ContainerPort: ContainerShippingBuildingBody,
 
    Petra: PetraBuildingBody,
    OxfordUniversity: ScienceProductionWonderBuildingBody,
