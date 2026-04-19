@@ -1042,6 +1042,13 @@ export class BuildingDefinitions {
       output: { Worker: 1 },
       construction: { Wood: 1, Sand: 1 },
    };
+   ContainerHut: IBuildingDefinition = {
+      name: () => $t(L.ContainerHut),
+      desc: () => $t(L.ContainerHutDesc),
+      input: {},
+      output: { Worker: 1 },
+      construction: { Container: 1 },
+   };
    ZPMLab: IBuildingDefinition = {
       name: () => $t(L.ZPMLab),
       input: {},
@@ -1326,6 +1333,7 @@ export class BuildingDefinitions {
       power: true,
    };
 
+   // Lydia: ContainerShipping
    ContainerFactory: IBuildingDefinition = {
       name: () => $t(L.ContainerFactory),
       input: { Steel: 20, Lumber: 1 },
@@ -1535,7 +1543,7 @@ export class BuildingDefinitions {
    };
    ContainerPort: IBuildingDefinition = {
       name: () => $t(L.ContainerPort),
-      desc: () => $t(L.ContainerPortDesc),
+      desc: () => $t(L.ContainerShippingDesc),
       input: { Container: 1 },
       output: {},
       construction: { Container: 1 },
@@ -1544,7 +1552,6 @@ export class BuildingDefinitions {
       power: true,
       wikipedia: "Container_port",
    };
-
 
 
    ModernFighterFactory: IBuildingDefinition = {

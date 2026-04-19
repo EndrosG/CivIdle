@@ -517,6 +517,14 @@ export function RebirthModal(): React.ReactNode {
                         carryOverScience = Math.floor(getScienceAmount(gs) * ascensionLevel / 1e2);
                      }
 
+                     // Added by Lydia: save maxBuildingLevels
+                     gs.tiles.forEach((tile, xy) => {
+                        const b = tile.building;
+                        if (b && b.level > (getGameOptions().maxBuildingLevels[b.type] ?? 0)) {
+                           getGameOptions().maxBuildingLevels[b.type] = b.level;
+                        }
+                     });
+
                      getGameOptions().rebirthInfo.push({
                         greatPeopleAtRebirth: greatPeopleAtRebirthCount,
                         greatPeopleThisRun: gs.cementedGreatPeople - gs.claimedGreatPeople,

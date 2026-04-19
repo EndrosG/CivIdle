@@ -13,6 +13,8 @@ export const EN = {
    SourceGreatPersonPermanentShard: "Permanent Great Person Shard: %{person}",
    MakeGreatPeopleFromThisRunPermanent: "Make Great People from this run permanent",
    PorcelainHut: "Porcelain Hut",
+   ContainerHut: "Living Container (Hut)",
+   ContainerHutDesc: "When completed or upgraded, resets the building levels of all current Container Ports to 1 without EV refunding.",
 
    DysonHabitat: "Dyson Habitat",
    DysonHabitat2: "Dyson Habitat 2.0",
@@ -191,7 +193,9 @@ export const EN = {
    ContainerPortAmbarli: "Container Port of Ambarli",
    ContainerPortMelbourne: "Container Port of Melbourne",
    ContainerPort: "Container Port",
-
+   ContainerRoute: "Route to %{portName}",
+   ContainerShipping: "Container Shipping",
+   ContainerShippingDesc: "The (local) Container Port maintains shipping routes to the largest Container Ports from previous runs: The higher the Container Ports were developed in previous runs, the stronger the effect of the current Container Port.",
 
    ModernFighter: "Modern Fighter Jet",
    StealthFighter: "Stealth Fighter",

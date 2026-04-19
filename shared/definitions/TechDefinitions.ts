@@ -980,7 +980,7 @@ export class TechDefinitions {
       name: () => $t(L.Globalization),
       column: 23,
       requireTech: ["Television", "MonetarySystem"],
-      unlockBuilding: ["OpticalFiberPlant", "PortOfSingapore", "Warehouse2", "ContainerPort"],
+      unlockBuilding: ["OpticalFiberPlant", "PortOfSingapore", "Warehouse2", "ContainerPort", "ContainerPortSingapore"],
       additionalUpgrades: () => [$t(L.XBaseStorageForWarehouseAndCaravansary, { percent: formatPercent(1) })],
    };
 
@@ -1153,7 +1153,7 @@ export class TechDefinitions {
       name: () => $t(L.AscensionTheory),
       column: 31,
       requireTech: ["Future4"],
-      unlockBuilding: ["Retreat2", "PorcelainHut"],
+      unlockBuilding: ["Retreat2", "PorcelainHut", "ContainerHut"],
    };
 }
 

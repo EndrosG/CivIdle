@@ -126,7 +126,7 @@ export class CityDefinitions {
       },
       uniqueBuildings: {
          IronDome: "ModernTactics",
-         ContainerPortSingapore: "Globalization",      // Singapore!
+         // ContainerPortSingapore: "Globalization",      // Singapore!
       },
       uniqueMultipliers: {},
       naturalWonders: { DeltaWorks: true },

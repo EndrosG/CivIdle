@@ -1510,14 +1510,16 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "TrainStationLocal":
       case "TrainStationRegional": {
          for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
-            const b = gs.tiles.get(pointToTile(point))?.building;
-            if (b?.type.match("TrainStation") && xy !== pointToTile(point)) {
-               b.capacity = 0;
+            if (xy !== pointToTile(point)) {
+               const b = gs.tiles.get(pointToTile(point))?.building;
+               if (b?.type.match("TrainStation")) {
+                  b.capacity = 0;
+               }
+               mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {
+                  output: buildingLevelStack / 2,
+                  source: buildingName,
+               });
             }
-            mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {
-               output: buildingLevelStack / 2,
-               source: buildingName,
-            });
          }
          break;
       }
@@ -1525,15 +1527,17 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          addMultiplier("TrainStationLocal", OSmulti, buildingName);
          addMultiplier("TrainStationRegional", OSmulti, buildingName);
          for (const point of grid.getRange(tileToPoint(xy), buildingRange)) {
-            const b = gs.tiles.get(pointToTile(point))?.building;
-            if (b?.type.match("TrainStation") && xy !== pointToTile(point)) {
-               b.capacity = 0;
+            if (xy !== pointToTile(point)) {
+               const b = gs.tiles.get(pointToTile(point))?.building;
+               if (b?.type.match("TrainStation")) {
+                  b.capacity = 0;
+               }
+               mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {
+                  levelBoost: buildingLevelStack,
+                  storage: buildingLevelStack / 2,
+                  source: buildingName,
+               });
             }
-            mapSafePush(Tick.next.tileMultipliers, pointToTile(point), {
-               levelBoost: buildingLevelStack,
-               storage: buildingLevelStack / 2,
-               source: buildingName,
-            });
          }
          // easter egg of Environmental Movement because there is no such upgrade effect
          getBuildingsByType("TrainStationLocal", gs)?.forEach((tile, xy) => {
@@ -1545,7 +1549,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          break;
       }
 
-      // Lydia: ContainerLogistics
+      // Lydia: ContainerShipping
       case "ContainerPortRotterdam":
       case "ContainerPortAntwerp":
       case "ContainerPortHamburg":
@@ -1564,7 +1568,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
       case "ContainerPortVancouver":
       case "ContainerPortAmbarli":
       case "ContainerPortMelbourne":
-      case "ContainerPort": {
+      {
          const extraLevel = getWonderExtraLevel(building.type);
          const basecost = Config.Building[building.type].construction?.Container ?? 0;
          const effect = basecost / 10 * (3 + building.level + extraLevel) * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1);
@@ -1585,6 +1589,33 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
             source: buildingName,
          });
          addMultiplier("ContainerFactory", { levelBoost: effect, storage: effect / 2 }, buildingName);
+         break;
+      }
+      case "ContainerPort": {
+         forEach(getGameOptions().maxBuildingLevels, (btype, blevel) => {
+            if (btype !== "ContainerPort" && btype.match("ContainerPort")) {
+               const basecost = Config.Building[btype].construction?.Container ?? 0;
+               const effect = basecost / 10 * (3 + blevel);
+               const routeName = $t(L.ContainerRoute, { portName: Config.Building[btype].name()});
+               Tick.next.globalMultipliers.builderCapacity.push({
+                  value: effect,
+                  source: routeName,
+               });
+               Tick.next.globalMultipliers.output.push({
+                  value: effect / 5,
+                  source: routeName,
+               });
+               Tick.next.globalMultipliers.storage.push({
+                  value: effect / 5,
+                  source: routeName,
+               });
+               Tick.next.globalMultipliers.transportCapacity.push({
+                  value: effect / 5,
+                  source: routeName,
+               });
+               addMultiplier("ContainerFactory", { levelBoost: effect, storage: effect / 2 }, routeName);
+            }
+         });
          break;
       }
 
