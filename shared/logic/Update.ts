@@ -369,6 +369,8 @@ export function transportAndConsumeResources(
       isSpecialBuilding(building.type)
    ) {
       Tick.next.specialBuildings.set(building.type, tile as Required<ITileData>);
+      // Added by Lydia
+      Tick.next.specialBuildingsArr.push({ btype: building.type, tile });
    }
 
    if (building.status === "building" || building.status === "upgrading") {

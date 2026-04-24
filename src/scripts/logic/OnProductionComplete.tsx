@@ -2150,6 +2150,7 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
          if (hagiaSophia && grid.distanceTile(hagiaSophia.tile, xy) <= 1) {
             multiplier += hagiaSophia.building.level;
          }
+         /*
          Tick.current.specialBuildings.forEach((data, building) => {
             if (isWorldWonder(building)) {
                grid.getNeighbors(tileToPoint(data.tile)).forEach((p) => {
@@ -2158,6 +2159,19 @@ export function onProductionComplete({ xy, offline }: { xy: Tile; offline: boole
                      worker: multiplier,
                      storage: multiplier,
                      source: `${Config.Building[building].name()} (${buildingName})`,
+                  });
+               });
+            }
+         });
+         */
+         Tick.current.specialBuildingsArr.forEach(({btype, tile}) => {
+            if (isWorldWonder(btype)) {
+               grid.getNeighbors(tileToPoint(tile.tile)).forEach((p) => {
+                  mapSafePush(Tick.next.tileMultipliers, pointToTile(p), {
+                     output: multiplier,
+                     worker: multiplier,
+                     storage: multiplier,
+                     source: `${Config.Building[btype].name()} (${buildingName})`,
                   });
                });
             }
