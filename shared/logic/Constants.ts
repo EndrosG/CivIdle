@@ -73,26 +73,30 @@ export const TRADE_TILE_NEIGHBOR_BONUS = 1;
 export const TRADE_TILE_ALLY_BONUS = 2;
 
 export const GLOBAL_PARAMS = {
-   BUILDINGS_HIGH_LEVEL: 25,					// defaults: vanilla: infinite ; lmc: 32 ; lmc_lydia: 29, works better for me than 32 if I tend to upgrade to 30 only before stacking
-   CARAVANSARIES_EXTRA_RANGE: 0,				// defaults: vanilla: 0 ; lmc: 0 ; lmc_lydia: 0
-   CARAVANSARIES_USE_EVERYTHING: true,		// defaults: vanilla: false ; lmc: true ; lmc_lydia: true
-   CARAVANSARIES_USE_WONDERS: true, 		// defaults: vanilla: false ; lmc: ?? ; lmc_lydia: true since 2026-04-12
-   CARAVANSARIES_USE_SWISSBANK: false,		// defaults: vanilla: false ; lmc: false ; lmc_lydia: false
+   BUILDINGS_HIGH_LEVEL: 25,					// defaults: vanilla: infinite ; lmc: 32 ; lydia: 29, works better for me than 32 if I tend to upgrade to 30 only before stacking
+   CARAVANSARIES_EXTRA_RANGE: 0,				// defaults: vanilla: 0 ; lmc: 0 ; lydia: 0
+   CARAVANSARIES_USE_EVERYTHING: true,		// defaults: vanilla: false ; lmc: true ; lydia: true
+   CARAVANSARIES_USE_WONDERS: true, 		// defaults: vanilla: false ; lmc: ?? ; lydia: true since 2026-04-12
+   CARAVANSARIES_USE_SWISSBANK: false,		// defaults: vanilla: false ; lmc: false ; lydia: false
+   ADDTRADE_RESPECT_CONSTRUCTION: true,   // defualts: vanilla: false ; lmc: false ; lydia: true since 2026-05-01
+   ADDTRADE_IGNORE_NEGATIVES: true,       // defualts: vanilla: false ; lmc: false ; lydia: true since 2026-05-01
+   CLAIMTRADE_IGNORE_NEGATIVES: false,    // defualts: vanilla: false ; lmc: false ; lydia: false since 2026-05-01 (it should be "true" in vanilla client!)
+   FILTERTRADE_ALL_MATERIALS: true,       // defualts: vanilla: false ; lmc: false ; lydia: true since 2026-05-01
 
    DEBUG_DOWNGRADING: false,
-   SHOW_DOWNGRADING: true,		// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
+   SHOW_DOWNGRADING: true,		      // defaults: vanilla: false ; lmc: false ; lydia: true
    DEBUG_STACKING: false,
-   SHOW_STACKING: true,			// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
-   USE_STACKING: true,			// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
-   WONDER_STACKING: true,		// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
-   WONDER_LEVEL_HAPPINESS: false,   // defaults: vanilla: false ; lmc: false ; lmc_lydia: false -- it's too strong
-   DEBUG_HIDDEN: true,			// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
-   BUILDINGS_IGNORE_CITIES: true,	// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
-   GP_IGNORE_CITIES: true,	// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
-   GP_IGNORE_PROMOTION: true,			// defaults: vanilla: false ; lmc: false ; lmc_lydia: true
+   SHOW_STACKING: true,			      // defaults: vanilla: false ; lmc: false ; lydia: true
+   USE_STACKING: true,			      // defaults: vanilla: false ; lmc: false ; lydia: true
+   WONDER_STACKING: true,		      // defaults: vanilla: false ; lmc: false ; lydia: true
+   WONDER_LEVEL_HAPPINESS: false,   // defaults: vanilla: false ; lmc: false ; lydia: false -- it's too strong
+   DEBUG_HIDDEN: true,			      // defaults: vanilla: false ; lmc: false ; lydia: true
+   BUILDINGS_IGNORE_CITIES: true,	// defaults: vanilla: false ; lmc: false ; lydia: true
+   GP_IGNORE_CITIES: true,	         // defaults: vanilla: false ; lmc: false ; lydia: true
+   GP_IGNORE_PROMOTION: true,			// defaults: vanilla: false ; lmc: false ; lydia: true
    // ignores GP type "promote"
-   GP_AUTO_CHOICE_AFTER: 10,	// defaults: vanilla: infinite ; lmc: infinite ; lmc_lydia: 500, but 10 from UserScript
-   NAR_MULTI: 1,					// defaults: vanilla: 0, lmc: 0, lmc_lydia: 1 -- wonder only exists in lmc_lydia
+   GP_AUTO_CHOICE_AFTER: 10,	      // defaults: vanilla: infinite ; lmc: infinite ; lydia: 500, but 10 from UserScript
+   NAR_MULTI: 1,					      // defaults: vanilla: 0, lmc: 0, lydia: 1 -- wonder only exists in lmc_lydia
    PALM_JUMEIRAH_MULTI: 1e5,
    MARINA_BAY_SANDS_MULTI: 1,
 };

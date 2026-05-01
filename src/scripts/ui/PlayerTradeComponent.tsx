@@ -2,16 +2,17 @@ import Tippy from "@tippyjs/react";
 import classNames from "classnames";
 import { useCallback, useState } from "react";
 import { TableVirtuoso } from "react-virtuoso";
-import type { Material } from "../../../shared/definitions/MaterialDefinitions";
+import { NoPrice, NoStorage, type Material } from "../../../shared/definitions/MaterialDefinitions";
 import { Config } from "../../../shared/logic/Config";
-import { TRADE_CANCEL_REFUND_PERCENT } from "../../../shared/logic/Constants";
+import { GLOBAL_PARAMS, TRADE_CANCEL_REFUND_PERCENT } from "../../../shared/logic/Constants";
 import { getTradePercentage, hasResourceForPlayerTrade } from "../../../shared/logic/PlayerTradeLogic";
-import { addResourceTo, getAvailableStorage } from "../../../shared/logic/ResourceLogic";
+import { addResourceTo, combineResources, getAvailableStorage } from "../../../shared/logic/ResourceLogic";
 import { Tick } from "../../../shared/logic/TickLogic";
 import { UserAttributes, type IClientTrade } from "../../../shared/utilities/Database";
 import {
    CURRENCY_PERCENT_EPSILON,
    cls,
+   forEach,
    formatNumber,
    formatPercent,
    hasFlag,
@@ -101,6 +102,18 @@ export function PlayerTradeComponent({
       resourceSet.add(t.buyResource);
       resourceSet.add(t.sellResource);
    });
+   // Added by Lydia @ 2026-05-01 : I want to define trade filters on resources which I do have, not only which exist in current trades
+   if (GLOBAL_PARAMS.FILTERTRADE_ALL_MATERIALS) {
+      const availableResources = combineResources(
+         Array.from(Tick.current.playerTradeBuildings.values()).map((m) => m.resources),
+      );
+      forEach(availableResources, (res) => {
+         if (!NoPrice[res] && !NoStorage[res]) {
+            resourceSet.add(res);
+         }
+      });
+   }
+
    const resources = Array.from(resourceSet);
    const filterCount =
       resourceWantFilters.size +

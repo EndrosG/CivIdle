@@ -4,6 +4,7 @@ import { clamp, forEach, reduceOf, safeAdd, type Tile } from "../utilities/Helpe
 import type { PartialTabulate } from "../utilities/TypeDefinitions";
 import { getStorageFor } from "./BuildingLogic";
 import { Config } from "./Config";
+import { GLOBAL_PARAMS } from "./Constants";
 import type { GameState } from "./GameState";
 import { Tick } from "./TickLogic";
 import { hashTileAndRes } from "./Update";
@@ -34,8 +35,14 @@ export function deductResourceFrom(
    let amountLeft = clamp(amount, 0, Number.POSITIVE_INFINITY);
 
    for (const tile of tiles) {
-      const resources = gs.tiles.get(tile)?.building?.resources;
-      if (!resources || !resources[res]) {
+      // Added by Lydia @ 2026-05-01 : do not take from incomplete buildings
+      const building = gs.tiles.get(tile)?.building;
+      if (!building || (GLOBAL_PARAMS.ADDTRADE_RESPECT_CONSTRUCTION && building.status !== "completed")) {
+         continue;
+      }
+      const resources = building.resources;
+      // Modified by Lydia @ 2026-05-01 : do not eliminate negative resources any longer this way
+      if (!resources || !resources[res] || (GLOBAL_PARAMS.ADDTRADE_IGNORE_NEGATIVES && resources[res] < 0)) {
          continue;
       }
       if (resources[res] >= amountLeft) {
@@ -87,6 +94,10 @@ export function addResourceTo(
 
       const { total, used } = getStorageFor(tile, gs);
       const available = total - used;
+      // Added by Lydia @ 2026-05-01 : this would prevent the negative amounts in buildings
+      if (GLOBAL_PARAMS.CLAIMTRADE_IGNORE_NEGATIVES && available < 0) {
+         continue;
+      }
 
       if (available >= amountLeft) {
          const amountToAdd = amountLeft;
