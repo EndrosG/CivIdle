@@ -99,6 +99,7 @@ export const GLOBAL_PARAMS = {
    NAR_MULTI: 1,					      // defaults: vanilla: 0, lmc: 0, lydia: 1 -- wonder only exists in lmc_lydia
    PALM_JUMEIRAH_MULTI: 1e5,
    MARINA_BAY_SANDS_MULTI: 1,
+   EXTRA_STORAGE: 1e11,             // 100B
 };
 globalThis.GLOBAL_PARAMS = GLOBAL_PARAMS;
 

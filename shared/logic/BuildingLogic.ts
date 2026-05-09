@@ -338,7 +338,7 @@ export function getStorageFor(xy: Tile, gs: GameState): IStorageResult {
       }
    }
    // Modified by Lydia: add 100b per building if appropriate, but not for Petra (does not work this way, only mixes up display)
-   return { base, multiplier, total: base * multiplier + (building.type !== "Petra" && base > 0 ? 1e11 * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) : 0), used };
+   return { base, multiplier, total: base * multiplier + (building.type !== "Petra" && base > 0 ? GLOBAL_PARAMS.EXTRA_STORAGE * (GLOBAL_PARAMS.USE_STACKING ? building.stack : 1) : 0), used };
 }
 
 export function getStorageRequired(res: PartialTabulate<Material>): number {
