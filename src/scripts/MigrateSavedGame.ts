@@ -40,6 +40,9 @@ export function migrateSavedGame(save: SavedGame) {
    if (!save.current.tradeValue) {
       save.current.tradeValue = 0;
    }
+   if (!save.current.tradeProfit) {
+      save.current.tradeProfit = 0;
+   }
 
    save.current.tiles.forEach((tile, xy) => {
       if (!grid.isValid(tileToPoint(xy))) {

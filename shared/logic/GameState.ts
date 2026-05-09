@@ -59,6 +59,7 @@ export class GameState {
    rebirthed = false;
    festival = false;
    tradeValue = 0;
+   tradeProfit = 0;
    favoriteTiles: Set<Tile> = new Set();
    claimedGreatPeople = 0;
    cementedGreatPeople = 0;
@@ -336,6 +337,8 @@ export interface RebirthInfo {
    totalEmpireValue: number;
    totalTicks: number;
    totalSeconds: number;
+   tradeValue: number;
+   tradeProfit: number;
    flags: RebirthFlags;
    city: City;
    time: number;

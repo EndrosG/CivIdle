@@ -64,6 +64,7 @@ export function PendingClaimComponent({ gameState }: { gameState: GameState }) {
                   safeAdd(eic.building.resources, "TradeValue", tradeValue);
                }
                gameState.tradeValue += tradeValue;
+               gameState.tradeProfit += tradeValue;
             });
          } else {
             playError();

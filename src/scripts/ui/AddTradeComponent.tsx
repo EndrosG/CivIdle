@@ -255,6 +255,7 @@ export function AddTradeFormComponent({
                      const token = uuid4();
                      await client.updateGameId(token);
                      getGameState().id = token;
+                     gameState.tradeProfit -= transaction.amount * (Config.MaterialPrice[trade.sellResource] ?? 0);
                      playKaching();
                      showToast($t(L.PlayerTradeAddSuccess));
                      if (!options.keepNewTradeWindowOpen) {

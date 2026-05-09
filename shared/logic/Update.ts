@@ -892,12 +892,14 @@ export function transportAndConsumeResources(
          totalBought += buyAmount;
 
          // Backport / Re-Added by Lydia -- either FishPond removed it or it was part of LMC
+         // Lydia @ 2026-05-09 : added tradeProfit
+         const tradeValue = sellAmount * (Config.MaterialPrice[sellResource] ?? 0);
+         const tradeProfit = buyAmount * (Config.MaterialPrice[buyResource] ?? 0) - sellAmount * (Config.MaterialPrice[sellResource] ?? 0);
+         gs.tradeValue += tradeValue;
+         gs.tradeProfit += tradeProfit;
          const eic = Tick.current.specialBuildings.get("EastIndiaCompany");
-         if (eic) {
-            const value = (Config.MaterialPrice[sellResource] ?? 0) * sellAmount;
-            if (value > 0) {
-               safeAdd(eic.building.resources, "TradeValue", value);
-            }
+         if (eic && tradeValue > 0) {
+            safeAdd(eic.building.resources, "TradeValue", tradeValue);
          }
       });
       if (totalBought > 0) {

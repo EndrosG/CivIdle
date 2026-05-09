@@ -450,6 +450,7 @@ function PlayerTradeTableRow({
                                     Array.from(Tick.current.playerTradeBuildings.keys()),
                                     gameState,
                                  );
+                                 gameState.tradeProfit += cancelledTrade.sellAmount * TRADE_CANCEL_REFUND_PERCENT * (Config.MaterialPrice[cancelledTrade.sellResource] ?? 0);
                                  playKaching();
                               } catch (error) {
                                  showToast(String(error));

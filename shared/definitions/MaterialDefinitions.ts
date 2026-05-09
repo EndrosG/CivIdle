@@ -51,7 +51,6 @@ export class MaterialDefinitions {
    CloudService = { name: () => $t(L.CloudService) };
 
 
-
    Worker: IMaterialDefinition = { name: () => $t(L.Worker) };
    Power: IMaterialDefinition = { name: () => $t(L.Power) };
    Science: IMaterialDefinition = { name: () => $t(L.Science) };

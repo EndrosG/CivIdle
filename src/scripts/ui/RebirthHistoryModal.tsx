@@ -56,6 +56,22 @@ export function RebirthHistoryModal(): React.ReactNode {
                               <FormatNumber value={rebirth.totalEmpireValue} />
                            </td>
                         </tr>
+                        {rebirth.tradeValue && rebirth.tradeValue !== 0 ? (
+                           <tr>
+                              <td>{$t(L.TradeValue)}</td>
+                              <td className="text-right text-strong">
+                                 <FormatNumber value={rebirth.tradeValue} />
+                              </td>
+                           </tr>
+                        ) : null}
+                        {rebirth.tradeProfit && rebirth.tradeProfit !== 0 ? (
+                           <tr>
+                              <td>{$t(L.TradeProfit)}</td>
+                              <td className="text-right text-strong">
+                                 <FormatNumber value={rebirth.tradeProfit} />
+                              </td>
+                           </tr>
+                        ) : null}
                         <tr>
                            <td>{$t(L.TotalGameTimeThisRun)}</td>
                            <td className="text-right text-strong">{formatHMS(rebirth.totalTicks * 1000)}</td>

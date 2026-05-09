@@ -308,6 +308,9 @@ export const DE = {
    CloudSocial: "Soziale Netzwerke (Cloud-Dienste)",
 
 
+   TradeProfit: "Handelsprofit",
+
+
    // CivIdle Standard Backport
    // ConsumptionMultiplier: "Verbrauchsmultiplikator",
 

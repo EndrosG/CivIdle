@@ -447,7 +447,7 @@ export function RebirthModal(): React.ReactNode {
                   onClick={async () => {
                      if (
                         getPermanentGreatPeopleLevel(getGameOptions()) <
-                           Config.City[nextCity].requireGreatPeopleLevel ||
+                        Config.City[nextCity].requireGreatPeopleLevel ||
                         !hasSupporterPack()
                      ) {
                         playError();
@@ -532,6 +532,8 @@ export function RebirthModal(): React.ReactNode {
                         totalEmpireValue: Tick.current.totalValue,
                         totalTicks: gs.tick,
                         totalSeconds: gs.seconds,
+                        tradeValue: gs.tradeValue,
+                        tradeProfit: gs.tradeProfit,
                         city: currentCity,
                         time: Date.now(),
                         flags,

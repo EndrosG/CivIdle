@@ -15,6 +15,10 @@ export function CurrentRunStatsComponent({
    return (
       <ul className={className}>
          <li className="row">
+            <div className="f1">{$t(L.TradeProfit)}</div>
+            <FormatNumber value={gameState.tradeProfit} />
+         </li>
+         <li className="row">
             <div className="f1">{$t(L.TotalGameTimeThisRun)}</div>
             <div>
                <TextWithHelp content={getHMS(gameState.tick * SECOND).join(":")}>

@@ -18,7 +18,7 @@ export function BuildingStorageComponent({ gameState, xy }: IBuildingComponentPr
    const storage = getStorageFor(xy, gameState);
    const building = gameState.tiles.get(xy)?.building;
    // Modified by Lydia to show storage details for Wonders
-   if (building == null || !Number.isFinite(storage.total) || (storage.total <= 0 && storage.used <= 0)) {
+   if (building == null || !Number.isFinite(storage.total) || (storage.total <= 0 && storage.used === 0)) {
       return null;
    }
    const percentage = storage.used / storage.total;

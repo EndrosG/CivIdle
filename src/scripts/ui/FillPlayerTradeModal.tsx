@@ -134,6 +134,7 @@ export function FillPlayerTradeModal({
          return;
       }
       let totalAmount = 0;
+      let tradeProfit = 0;
       const queue: Array<{ amount: number; rollback: () => void; tile: Tile }> = [];
       for (const [tile, amount] of fills) {
          if (amount <= 0) continue;
@@ -142,6 +143,7 @@ export function FillPlayerTradeModal({
          const r = deductResourceFrom(trade.buyResource, amount, [tile], gs);
          queue.push({ amount: r.amount, rollback: r.rollback, tile });
          totalAmount += r.amount;
+         tradeProfit -= amount * (Config.MaterialPrice[trade.buyResource] ?? 0);
       }
       try {
          const resources = await client.fillTrade({
@@ -162,6 +164,8 @@ export function FillPlayerTradeModal({
          }
          const tradeValue = receivedAmount * (Config.MaterialPrice[trade.sellResource] ?? 0);
          gs.tradeValue += tradeValue;
+         tradeProfit += tradeValue;
+         gs.tradeProfit += tradeProfit;
          const eic = Tick.current.specialBuildings.get("EastIndiaCompany");
          if (eic) {
             safeAdd(eic.building.resources, "TradeValue", tradeValue);
