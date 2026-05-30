@@ -309,6 +309,8 @@ export const DE = {
 
 
    TradeProfit: "Handelsprofit",
+   PlayerTradePlayerBanNameFilter: "auszuschließende Spieler",
+   PlayerTradePercentageFilter: "Prozent-Filter (Profit)",
 
 
    // CivIdle Standard Backport

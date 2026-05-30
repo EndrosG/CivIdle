@@ -243,6 +243,17 @@ export type CursorOption = keyof typeof CursorOptions;
 export const TransportSourceCacheTimeoutMin = 10;
 export const TransportSourceCacheTimeoutMax = 60 * 5;
 
+export class TradeFilters {
+   savedResourceWantFilters: Set<Material> = new Set();
+   savedResourceOfferFilters: Set<Material> = new Set();
+   savedAccountRanks: Set<string> = new Set();
+   savedPlayerFlags: Set<string> = new Set();
+   savedPlayerNameFilter = "";
+   savedPlayerBanNameFilter = "";
+   savedMaxTradeAmountFilter = 0;
+   savedTradePercentageFilter = -100;
+}
+
 export class GameOptions {
    useModernUI = true;
    useMonospaceNumbers = true;
@@ -305,6 +316,7 @@ export class GameOptions {
    rankUpFlags = RankUpFlags.NotUpgraded;
    showNaturalWonderPopup = true;
    keepNewTradeWindowOpen = false;
+   tradeFilters = new TradeFilters();
    supporterPackPurchased = false;
    warehouseQuickMode = true;
    migrationFlags = MigrationFlags.None;

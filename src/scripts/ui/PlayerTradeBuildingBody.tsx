@@ -23,7 +23,7 @@ import { WarningComponent } from "./WarningComponent";
 export function PlayerTradeBuildingBody({ gameState, xy }: IBuildingComponentProps): React.ReactNode {
    const myXy = getOwnedTradeTile();
    let tradeButton: React.ReactNode = null;
-   if (myXy) {
+   if (myXy || import.meta.env.DEV) {
       tradeButton = (
          <>
             <button
